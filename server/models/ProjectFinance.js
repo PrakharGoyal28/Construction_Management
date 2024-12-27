@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const ProjectFinanceSchema = new mongoose.Schema({
+const projectFinanceSchema = new mongoose.Schema({
     ProjectID: { type: String, ref: 'Project', required: true },
     TotalBudget: { type: Number, required: true },
     CostBreakdown: { type: String },
@@ -8,6 +8,6 @@ const ProjectFinanceSchema = new mongoose.Schema({
     RecentTransactions: { type: String },
   });
 
-     const Project = mongoose.model('Project', ProjectFinanceSchema);
+     const Project = mongoose.model('Project', projectFinanceSchema);
     
       export default Project;

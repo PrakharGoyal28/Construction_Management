@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const MaterialSchema = new mongoose.Schema({
+const materialSchema = new mongoose.Schema({
     Name: { type: String, required: true },
     VendorID: { type: String, ref: 'Vendor', required: true },
     PastOrders: { type: String },
@@ -8,6 +8,6 @@ const MaterialSchema = new mongoose.Schema({
     Quantity: {type: Number},
   });
 
-   const Material = mongoose.model('Material', MaterialSchema);
+   const Material = mongoose.model('Material', materialSchema);
   
     export default Material;
