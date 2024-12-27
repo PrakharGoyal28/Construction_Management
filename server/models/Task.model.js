@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const TaskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
     TaskName: { type: String, required: true },
     AssignedTo: { type: String, ref: 'Labour' },
     Deadline: { type: Date },
@@ -10,6 +10,6 @@ const TaskSchema = new mongoose.Schema({
     LabourRequired: { type: Number },
   });
 
-  const Task = mongoose.model('Task', TaskSchema);
+  const Task = mongoose.model('Task', taskSchema);
 
   export default Task;
