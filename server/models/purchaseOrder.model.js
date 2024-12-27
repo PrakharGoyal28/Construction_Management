@@ -10,6 +10,6 @@ const purchaseOrderSchema = new mongoose.Schema({
     StorageLocation:{type: String},
 
     Status: { type: String },
-});
+},{timestamps:true});
 
 export const PurchaseOrder = mongoose.model("Inventory", purchaseOrderSchema)

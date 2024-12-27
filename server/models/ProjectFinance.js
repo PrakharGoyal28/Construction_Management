@@ -8,6 +8,6 @@ const projectFinanceSchema = new mongoose.Schema({
     RecentTransactions: { type: String },
   });
 
-     const Project = mongoose.model('Project', projectFinanceSchema);
+     const ProjectFinance = mongoose.model('Project', projectFinanceSchema);
     
-      export default Project;
+      export default ProjectFinance;
