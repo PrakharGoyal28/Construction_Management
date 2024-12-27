@@ -4,7 +4,11 @@ const inventorySchema = new mongoose.Schema({
     MaterialIds: [
         { type: String, ref: 'Material', required: true }
     ],
+    FutureMaterialIds: [
+        { type: String, ref: 'Material', required: true }
+    ],
     ProjectID: { type: String, ref: 'Project', required: true },
+    
 });
 
 
