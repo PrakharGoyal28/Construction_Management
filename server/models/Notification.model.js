@@ -8,6 +8,5 @@ const notificationSchema = new mongoose.Schema({
     Date: { type: Date },
 });
 
-const Notification = mongoose.model('Notification', notificationSchema);
+export const Notification = mongoose.model('Notification', notificationSchema);
 
-export default Notification;

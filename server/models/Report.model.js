@@ -7,6 +7,5 @@ const reportSchema = new mongoose.Schema({
     Content: { type: String },
   });
 
-const Report = mongoose.model('Report', reportSchema);
+export const Report = mongoose.model('Report', reportSchema);
 
-export default Report;

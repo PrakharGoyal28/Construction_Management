@@ -7,6 +7,5 @@ const transactionSchema = new mongoose.Schema({
     Description: { type: String },
   });
  
-   const Transaction = mongoose.model('Transaction', transactionSchema);
+  export const Transaction = mongoose.model('Transaction', transactionSchema);
   
-    export default Transaction;
