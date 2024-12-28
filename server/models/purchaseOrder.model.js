@@ -8,7 +8,6 @@ const purchaseOrderSchema = new mongoose.Schema({
     Description:{type: String},
     Price:{type : Number},
     StorageLocation:{type: String},
-
     Status: { type: String },
 },{timestamps:true});
 

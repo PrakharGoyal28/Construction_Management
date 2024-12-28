@@ -6,5 +6,4 @@ const approvalSchema = new mongoose.Schema({
   },{timestamps:true});
   
 
-//for qc check
 export const Approval = mongoose.model("Approval", approvalSchema)
