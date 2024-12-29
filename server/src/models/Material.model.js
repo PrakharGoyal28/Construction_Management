@@ -7,6 +7,6 @@ const materialSchema = new mongoose.Schema({
     Quantity: {type: Number},
   });
 
-   const Material = mongoose.model('Material', materialSchema);
+   export const Material = mongoose.model('Material', materialSchema);
   
-    export default Material;
+

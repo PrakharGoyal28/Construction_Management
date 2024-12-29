@@ -6,6 +6,7 @@ const ProjectSchema = new mongoose.Schema({
     UserID: { type: String, ref: 'User', required: true },
     StartDate: { type: Date },
     EndDate: { type: Date },
+    TotalBudget:{type: Number},
     Status: { type: String },
     Description: { type: String },
   });
