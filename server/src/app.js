@@ -11,4 +11,17 @@ app.use(express.urlencoded({extended:true,limit:"100kb"}))
 app.use(express.static("public"))
 app.use(cookieParser())
 
+
+// routes import
+import userRouter from "./routes/user.routes.js"
+import labourRouter from "./routes/labour.routes.js"
+
+
+
+
+//route declar
+// app.use("/",home) TODO: add home route
+app.use("/api/v1/users",userRouter)
+app.use("/api/v1/labours",labourRouter)
+
 export{app}
