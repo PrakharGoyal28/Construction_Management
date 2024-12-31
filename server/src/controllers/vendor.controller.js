@@ -70,8 +70,29 @@ const updateVendor = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponce(200, updatedVendor, "Vendor updated successfully."));
 });
 
+const getPurchaseOrdersByVendorId = asyncHandler(async (req, res) => {
+    const { vendorId } = req.params;
+  
+    // Validation: Ensure VendorID is provided
+    if (!vendorId) {
+      throw new ApiError(400, "VendorID is required.");
+    }
+  
+    // Fetch purchase orders for the given VendorID
+    const purchaseOrders = await PurchaseOrder.find({ VendorID: vendorId })
+      
+      .exec();
+  
+    if (!purchaseOrders || purchaseOrders.length === 0) {
+      throw new ApiError(404, "No purchase orders found for the given VendorID.");
+    }
+  
+    res.status(200).json(new ApiResponce(200, purchaseOrders, `Purchase orders for VendorID: ${vendorId}`));
+  });
+
 export {
     addVendor,
     deleteVendor,
     updateVendor,
+    getPurchaseOrdersByVendorId
 }
