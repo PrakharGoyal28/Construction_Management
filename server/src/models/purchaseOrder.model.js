@@ -9,6 +9,9 @@ const purchaseOrderSchema = new mongoose.Schema({
     Price:{type : Number},
     StorageLocation:{type: String},
     Status: { type: String },
+    MaterialIds: [
+        { type: String, ref: 'Material', required: true }
+    ],
 },{timestamps:true});
 
 export const PurchaseOrder = mongoose.model("Inventory", purchaseOrderSchema)
