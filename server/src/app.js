@@ -15,6 +15,7 @@ app.use(cookieParser())
 // routes import
 import userRouter from "./routes/user.routes.js"
 import labourRouter from "./routes/labour.routes.js"
+import projectRouter from "./routes/project.routes.js"
 
 
 
@@ -23,5 +24,6 @@ import labourRouter from "./routes/labour.routes.js"
 // app.use("/",home) TODO: add home route
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/labours",labourRouter)
+app.use("/api/v1/projects",projectRouter)
 
 export{app}

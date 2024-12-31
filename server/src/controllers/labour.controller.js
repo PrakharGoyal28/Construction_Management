@@ -1,6 +1,6 @@
+import { Labour } from "../models/labour.schema.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { Labour } from "../models/labour.schema.js";
 import { ApiResponce } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
