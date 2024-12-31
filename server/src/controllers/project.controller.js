@@ -76,8 +76,27 @@ const updateProject = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponce(200, updatedProject, "Project updated successfully."));
 });
 
+const getProjectDetails = asyncHandler(async (req, res) => {
+    const { projectId } = req.params;
+
+    if (!projectId) {
+        throw new ApiError(400, "Project ID is required.");
+    }
+
+    // Find the project by ID
+    const project = await Project.findById(projectId)
+        .populate("UserID", "Name Email") // Populate user details (optional)
+        .exec();
+
+    if (!project) {
+        throw new ApiError(404, "Project not found.");
+    }
+
+    res.status(200).json(new ApiResponce(200, project, "Project details retrieved successfully."));
+});
 export {
     addProject,
     deleteProject,
-    updateProject
+    updateProject,
+    getProjectDetails
 };

@@ -10,11 +10,8 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post("/add", verifyJWT, checkRole, addProject);
-
-
-router.delete("/delete/:projectId", deleteProject);
-
-
-router.put("/update/:projectId", updateProject);
+router.get("/project/:projectId", getProjectDetails);
+router.delete("/delete/:projectId", verifyJWT, checkRole, deleteProject);
+router.put("/update/:projectId", verifyJWT, checkRole, updateProject);
 
 export default router;
