@@ -1,4 +1,4 @@
-import { Labour } from "../models/labour.schema.js";
+import { Labour } from "../models/labour.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponse.js";

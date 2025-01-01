@@ -1,4 +1,4 @@
-import { Task } from "../models/Task.model";
+import { Task } from "../models/task.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponse.js";

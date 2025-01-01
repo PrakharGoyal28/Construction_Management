@@ -1,4 +1,4 @@
-import { Vendor } from "../models/vendor.model";
+import { Vendor } from "../models/vendor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponse.js";

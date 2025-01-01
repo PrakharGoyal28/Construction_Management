@@ -16,6 +16,9 @@ app.use(cookieParser())
 import userRouter from "./routes/user.routes.js"
 import labourRouter from "./routes/labour.routes.js"
 import projectRouter from "./routes/project.routes.js"
+import materialRouter from "./routes/material.routes.js"
+
+
 
 
 
@@ -25,5 +28,6 @@ import projectRouter from "./routes/project.routes.js"
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/labours",labourRouter)
 app.use("/api/v1/projects",projectRouter)
+app.use('/api/v1/materials',materialRouter)
 
 export{app}
