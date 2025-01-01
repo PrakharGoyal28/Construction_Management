@@ -21,4 +21,3 @@ const labourSchema = new mongoose.Schema({
   });
   
 export const Labour = mongoose.model("Labour", labourSchema)
-  

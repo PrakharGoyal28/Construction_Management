@@ -1,4 +1,4 @@
-import asyncHandler from "express-async-handler";
+// import asyncHandler from "express-async-handler";
 import { Project } from "../models/project.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";

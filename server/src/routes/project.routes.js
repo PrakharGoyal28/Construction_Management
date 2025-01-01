@@ -2,6 +2,7 @@ import express from "express";
 import {
     addProject,
     deleteProject,
+    getProjectDetails,
     updateProject
 } from "../controllers/project.controller.js";
 import { checkRole } from "../middlewares/auth.middleware.js";
