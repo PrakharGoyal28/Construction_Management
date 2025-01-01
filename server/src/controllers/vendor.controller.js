@@ -2,6 +2,7 @@ import { Vendor } from "../models/vendor.model";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponce } from "../utils/ApiResponse.js";
+import { PurchaseOrder } from "../models/purchaseOrder.model";
 
 // Controller to add a new vendor
 const addVendor = asyncHandler(async (req, res) => {
