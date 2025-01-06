@@ -1,5 +1,5 @@
 import {asyncHandler} from "express-async-handler";
-import { PurchaseOrder } from "../models/PurchaseOrder.js";
+import { PurchaseOrder } from "../models/purchaseOrder.model.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 

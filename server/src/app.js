@@ -19,8 +19,12 @@ import projectRouter from "./routes/project.routes.js"
 import materialRouter from "./routes/material.routes.js"
 import inventoryRouter from "./routes/inventory.routes.js"
 import projectFinanceRouter from "./routes/projectFinance.routes.js"
-import financeRouter from "./routes/finance.routes.js"
+import financeRouter from "./routes/transaction.routes.js"
 import purchaseOrderRouter from "./routes/purchaseOrder.routes.js"
+import approvalRouter from "./routes/approval.routes.js"
+import notificationRouter from "./routes/notification.routes.js"
+import reportRouter from "./routes/report.routes.js"
+
 
 
 
@@ -36,6 +40,11 @@ app.use("/api/v1/inventory",inventoryRouter)
 app.use("/api/v1/projectfinance",projectFinanceRouter)
 app.use("/api/v1/finance",financeRouter)
 app.use("/api/v1/purchaseOrder",purchaseOrderRouter)
+app.use("/api/v1/approval",approvalRouter)
+app.use("/api/v1/notification",notificationRouter)
+app.use("/api/v1/report",reportRouter)
+
+
 
 
 
