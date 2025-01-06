@@ -4,7 +4,7 @@ import {ApiResponce} from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // Controller to create an inventory record
-export const createInventory = asyncHandler(async (req, res) => {
+const createInventory = asyncHandler(async (req, res) => {
   const { MaterialIds, FutureMaterialIds, ProjectID } = req.body;
 
   if (!MaterialIds || !FutureMaterialIds || !ProjectID) {
@@ -23,7 +23,7 @@ export const createInventory = asyncHandler(async (req, res) => {
 });
 
 // Controller to update inventory
-export const updateInventory = asyncHandler(async (req, res) => {
+const updateInventory = asyncHandler(async (req, res) => {
   const { inventoryId } = req.params;
   const { MaterialIds, FutureMaterialIds, ProjectID } = req.body;
 
@@ -47,7 +47,7 @@ export const updateInventory = asyncHandler(async (req, res) => {
 });
 
 // Controller to delete inventory
-export const deleteInventory = asyncHandler(async (req, res) => {
+const deleteInventory = asyncHandler(async (req, res) => {
   const { inventoryId } = req.params;
 
   if (!inventoryId) {
@@ -64,7 +64,7 @@ export const deleteInventory = asyncHandler(async (req, res) => {
 });
 
 // Controller to get inventory by ID
-export const getInventoryById = asyncHandler(async (req, res) => {
+const getInventoryById = asyncHandler(async (req, res) => {
   const { inventoryId } = req.params;
 
   if (!inventoryId) {
@@ -84,7 +84,7 @@ export const getInventoryById = asyncHandler(async (req, res) => {
 });
 
 // Controller to get inventory by project ID
-export const getInventoryByProjectId = asyncHandler(async (req, res) => {
+const getInventoryByProjectId = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
   if (!projectId) {
@@ -101,3 +101,11 @@ export const getInventoryByProjectId = asyncHandler(async (req, res) => {
 
   res.status(200).json(new ApiResponce(200, inventories, "Inventories retrieved successfully."));
 });
+
+export {
+  createInventory,
+  updateInventory,
+  deleteInventory,
+  getInventoryByProjectId,
+  getInventoryById
+}
