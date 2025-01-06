@@ -12,7 +12,6 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 
-// routes import
 import userRouter from "./routes/user.routes.js"
 import labourRouter from "./routes/labour.routes.js"
 import projectRouter from "./routes/project.routes.js"
@@ -24,14 +23,13 @@ import purchaseOrderRouter from "./routes/purchaseOrder.routes.js"
 import approvalRouter from "./routes/approval.routes.js"
 import notificationRouter from "./routes/notification.routes.js"
 import reportRouter from "./routes/report.routes.js"
+import vendorRouter from "./routes/vendor.routes.js"
+import taskRouter from "./routes/task.routes.js"
 
 
 
 
 
-
-//route declar
-// app.use("/",home) TODO: add home route
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/labours",labourRouter)
 app.use("/api/v1/projects",projectRouter)
@@ -43,6 +41,9 @@ app.use("/api/v1/purchaseOrder",purchaseOrderRouter)
 app.use("/api/v1/approval",approvalRouter)
 app.use("/api/v1/notification",notificationRouter)
 app.use("/api/v1/report",reportRouter)
+app.use("/api/v1/vendor",vendorRouter)
+app.use("/api/v1/task",taskRouter)
+
 
 
 
