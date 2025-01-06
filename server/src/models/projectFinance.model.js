@@ -8,5 +8,5 @@ const projectFinanceSchema = new mongoose.Schema({
     RecentTransactions: { type: String },
   });
 
-   export const ProjectFinance = mongoose.model('Project', projectFinanceSchema);
+   export const ProjectFinance = mongoose.model('ProjectFinance', projectFinanceSchema);
     

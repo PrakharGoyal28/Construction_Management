@@ -1,4 +1,4 @@
-import {asyncHandler} from "express-async-handler";
+import {asyncHandler} from "../utils/asyncHandler.js";
 import { PurchaseOrder } from "../models/purchaseOrder.model.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
