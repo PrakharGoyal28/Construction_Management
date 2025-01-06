@@ -1,7 +1,7 @@
 import { Vendor } from "../models/vendor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { PurchaseOrder } from "../models/purchaseOrder.model";
 
 const addVendor = asyncHandler(async (req, res) => {
@@ -25,7 +25,7 @@ const addVendor = asyncHandler(async (req, res) => {
         IFSC,
     });
 
-    res.status(201).json(new ApiResponce(201, vendor, "Vendor added successfully."));
+    res.status(201).json(new ApiResponse(201, vendor, "Vendor added successfully."));
 });
 
 // Controller to delete a vendor
@@ -43,7 +43,7 @@ const deleteVendor = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Vendor not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, null, "Vendor deleted successfully."));
+    res.status(200).json(new ApiResponse(200, null, "Vendor deleted successfully."));
 });
 
 // Controller to update vendor details
@@ -65,7 +65,7 @@ const updateVendor = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Vendor not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, updatedVendor, "Vendor updated successfully."));
+    res.status(200).json(new ApiResponse(200, updatedVendor, "Vendor updated successfully."));
 });
 
 const getPurchaseOrdersByVendorId = asyncHandler(async (req, res) => {
@@ -85,7 +85,7 @@ const getPurchaseOrdersByVendorId = asyncHandler(async (req, res) => {
       throw new ApiError(404, "No purchase orders found for the given VendorID.");
     }
   
-    res.status(200).json(new ApiResponce(200, purchaseOrders, `Purchase orders for VendorID: ${vendorId}`));
+    res.status(200).json(new ApiResponse(200, purchaseOrders, `Purchase orders for VendorID: ${vendorId}`));
   });
 
 export {

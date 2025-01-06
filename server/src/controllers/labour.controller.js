@@ -1,7 +1,7 @@
 import { Labour } from "../models/labour.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
@@ -30,7 +30,7 @@ const registerLabour = asyncHandler(async (req, res) => {
     if (savedLabour) {
         return res
             .status(201)
-            .json(new ApiResponce(201, savedLabour, "Labour registered successfully"));
+            .json(new ApiResponse(201, savedLabour, "Labour registered successfully"));
     } else {
         throw new ApiError(500, "Something went wrong while creating the labour");
     }
@@ -81,7 +81,7 @@ const updateAttendance = asyncHandler(async (req, res) => {
     const updatedLabour = await labour.save();
 
     return res.status(200).json(
-        new ApiResponce(200, updatedLabour, "Attendance updated successfully")
+        new ApiResponse(200, updatedLabour, "Attendance updated successfully")
     );
 });
 const getLabourDetails = asyncHandler(async (req, res) => {
@@ -142,7 +142,7 @@ const getLabourDetails = asyncHandler(async (req, res) => {
 
     // Return both the current status (attendance) and all other information
     return res.status(200).json(
-        new ApiResponce(200, {
+        new ApiResponse(200, {
             labour: {
                 Name: labour.Name,
                 Contact: labour.Contact,
@@ -167,11 +167,11 @@ const getLaboursByProjectId = asyncHandler(async (req, res) => {
     const labours = await Labour.find({ ProjectID: projectId });
 
     if (!labours || labours.length === 0) {
-        throw new ApiResponce(404, "No labours found for the given Project ID");
+        throw new ApiResponse(404, "No labours found for the given Project ID");
     }
 
     return res.status(200).json(
-        new ApiResponce(200, labours, `Labours for project ${projectId} retrieved successfully`)
+        new ApiResponse(200, labours, `Labours for project ${projectId} retrieved successfully`)
     );
 });
 

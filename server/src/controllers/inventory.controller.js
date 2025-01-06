@@ -1,6 +1,6 @@
 import { Inventory } from "../models/inventry.model.js";
 import {ApiError} from "../utils/ApiError.js";
-import {ApiResponce} from "../utils/ApiResponse.js";
+import {ApiResponse} from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 // Controller to create an inventory record
@@ -19,7 +19,7 @@ const createInventory = asyncHandler(async (req, res) => {
 
   await inventory.save();
 
-  res.status(201).json(new ApiResponce(201, inventory, "Inventory created successfully."));
+  res.status(201).json(new ApiResponse(201, inventory, "Inventory created successfully."));
 });
 
 // Controller to update inventory
@@ -43,7 +43,7 @@ const updateInventory = asyncHandler(async (req, res) => {
 
   await inventory.save();
 
-  res.status(200).json(new ApiResponce(200, inventory, "Inventory updated successfully."));
+  res.status(200).json(new ApiResponse(200, inventory, "Inventory updated successfully."));
 });
 
 // Controller to delete inventory
@@ -60,7 +60,7 @@ const deleteInventory = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Inventory not found.");
   }
 
-  res.status(200).json(new ApiResponce(200, inventory, "Inventory deleted successfully."));
+  res.status(200).json(new ApiResponse(200, inventory, "Inventory deleted successfully."));
 });
 
 // Controller to get inventory by ID
@@ -80,7 +80,7 @@ const getInventoryById = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Inventory not found.");
   }
 
-  res.status(200).json(new ApiResponce(200, inventory, "Inventory retrieved successfully."));
+  res.status(200).json(new ApiResponse(200, inventory, "Inventory retrieved successfully."));
 });
 
 // Controller to get inventory by project ID
@@ -99,7 +99,7 @@ const getInventoryByProjectId = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No inventories found for the given project ID.");
   }
 
-  res.status(200).json(new ApiResponce(200, inventories, "Inventories retrieved successfully."));
+  res.status(200).json(new ApiResponse(200, inventories, "Inventories retrieved successfully."));
 });
 
 export {

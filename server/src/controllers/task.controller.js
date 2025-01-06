@@ -1,7 +1,7 @@
 import { Task } from "../models/task.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 const createTask = asyncHandler(async (req, res) => {
     const { TaskName, AssignedTo, Deadline, Status, Description, ProjectID, LabourRequired } = req.body;
@@ -22,7 +22,7 @@ const createTask = asyncHandler(async (req, res) => {
         LabourRequired,
     });
 
-    res.status(201).json(new ApiResponce(201, newTask, "Task created successfully."));
+    res.status(201).json(new ApiResponse(201, newTask, "Task created successfully."));
 });
 
 const updateTask = asyncHandler(async (req, res) => {
@@ -53,7 +53,7 @@ const updateTask = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Task not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, updatedTask, "Task updated successfully."));
+    res.status(200).json(new ApiResponse(200, updatedTask, "Task updated successfully."));
 });
 const deleteTask = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
@@ -70,7 +70,7 @@ const deleteTask = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Task not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, deletedTask, "Task deleted successfully."));
+    res.status(200).json(new ApiResponse(200, deletedTask, "Task deleted successfully."));
 });
 const getTaskDetails = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
@@ -89,7 +89,7 @@ const getTaskDetails = asyncHandler(async (req, res) => {
       throw new ApiError(404, "Task not found.");
     }
   
-    res.status(200).json(new ApiResponce(200, task, "Task details retrieved successfully."));
+    res.status(200).json(new ApiResponse(200, task, "Task details retrieved successfully."));
   });
 
 export{

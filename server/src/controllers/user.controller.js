@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import {User} from "../models/user.model.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
@@ -59,7 +59,7 @@ const registerUser =asyncHandler( async (req,res)=>{
     }
 
     return res.status(201).json(
-        new ApiResponce(200,createdUser,"user registered successfully")
+        new ApiResponse(200,createdUser,"user registered successfully")
     )
 
 })
@@ -99,7 +99,7 @@ const loginUser=asyncHandler(async (req,res)=>{
     .cookie("accessToken",accessToken,options)
     .cookie("refreshToken",refreshToken,options)
     .json(
-        new ApiResponce(
+        new ApiResponse(
             200,
             {
                 user:loggedInUser,accessToken,refreshToken
@@ -128,7 +128,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
         return res.status(200)
         .clearCookie("accessToken",options)
         .clearCookie("refreshToken",options)
-        .json(new ApiResponce(200,{},"User logged out"))
+        .json(new ApiResponse(200,{},"User logged out"))
 })
 
 const refreshAccessToken=asyncHandler(async (req,res)=>{
@@ -158,7 +158,7 @@ const refreshAccessToken=asyncHandler(async (req,res)=>{
     .cookie("accessToken",accessToken,options)
     .cookie("refreshToken",newRefreshToken,options)
     .json(
-        new ApiResponce(
+        new ApiResponse(
             200,
             {
                 accessToken,refreshToken:newRefreshToken
@@ -184,13 +184,13 @@ const changeCurrentPassword=asyncHandler(async(req,res)=>{
     return res
     .status(200)
     .json(
-        new ApiResponce(200,{},"password changes successfully")
+        new ApiResponse(200,{},"password changes successfully")
     )
 })
 
 const getCurrentUser=asyncHandler(async(req,res)=>{
     return res.status(200)
-    .json(new ApiResponce(200,req.user,"current user exported"))
+    .json(new ApiResponse(200,req.user,"current user exported"))
 })
 
 const updateAccountDetails=asyncHandler(async(req,res)=>{
@@ -212,7 +212,7 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
     ).select("-password")
 
     return res.status(200)
-    .json(new ApiResponce(200,user,"Account detail updated"))
+    .json(new ApiResponse(200,user,"Account detail updated"))
 
 })
 

@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import { Material } from "../models/material.model.js";
 
 const addMaterial = asyncHandler(async (req, res) => {
@@ -20,7 +20,7 @@ const addMaterial = asyncHandler(async (req, res) => {
     Description,
   });
 
-  res.status(201).json(new ApiResponce(201, material, "Material added successfully."));
+  res.status(201).json(new ApiResponse(201, material, "Material added successfully."));
 });
 
 const getMaterialById = asyncHandler(async (req, res) => {
@@ -44,7 +44,7 @@ const getMaterialById = asyncHandler(async (req, res) => {
   }
 
   // Return the material details
-  res.status(200).json(new ApiResponce(200, material, "Material retrieved successfully."));
+  res.status(200).json(new ApiResponse(200, material, "Material retrieved successfully."));
 });
 
 const getMaterialsByProjectId = asyncHandler(async (req, res) => {
@@ -63,7 +63,7 @@ const getMaterialsByProjectId = asyncHandler(async (req, res) => {
     throw new ApiError(404, "No materials found for the specified Project ID.");
   }
 
-  res.status(200).json(new ApiResponce(200, materials, "Materials retrieved successfully."));
+  res.status(200).json(new ApiResponse(200, materials, "Materials retrieved successfully."));
 });
 const createPurchaseOrder = asyncHandler(async (req, res) => {
   const { Name, VendorID, Quantity, Description, Price, StorageLocation, Status, MaterialIds,UserId } = req.body;
@@ -96,7 +96,7 @@ const createPurchaseOrder = asyncHandler(async (req, res) => {
   // Save to the database
   const savedPurchaseOrder = await newPurchaseOrder.save();
 
-  res.status(201).json(new ApiResponce(201, savedPurchaseOrder, "Purchase order created successfully."));
+  res.status(201).json(new ApiResponse(201, savedPurchaseOrder, "Purchase order created successfully."));
 });
 
 

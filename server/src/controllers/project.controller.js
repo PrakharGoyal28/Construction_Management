@@ -2,7 +2,7 @@
 import { Project } from "../models/project.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
-import { ApiResponce } from "../utils/ApiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 
 const addProject = asyncHandler(async (req, res) => {
@@ -24,7 +24,7 @@ const addProject = asyncHandler(async (req, res) => {
         Description,
     });
 
-    res.status(201).json(new ApiResponce(201, newProject, "Project added successfully."));
+    res.status(201).json(new ApiResponse(201, newProject, "Project added successfully."));
 });
 
 const deleteProject = asyncHandler(async (req, res) => {
@@ -42,7 +42,7 @@ const deleteProject = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Project not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, deletedProject, "Project deleted successfully."));
+    res.status(200).json(new ApiResponse(200, deletedProject, "Project deleted successfully."));
 });
 
 const updateProject = asyncHandler(async (req, res) => {
@@ -73,7 +73,7 @@ const updateProject = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Project not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, updatedProject, "Project updated successfully."));
+    res.status(200).json(new ApiResponse(200, updatedProject, "Project updated successfully."));
 });
 
 const getProjectDetails = asyncHandler(async (req, res) => {
@@ -92,7 +92,7 @@ const getProjectDetails = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Project not found.");
     }
 
-    res.status(200).json(new ApiResponce(200, project, "Project details retrieved successfully."));
+    res.status(200).json(new ApiResponse(200, project, "Project details retrieved successfully."));
 });
 export {
     addProject,
