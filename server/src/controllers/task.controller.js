@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { deletCloudinary, uploadCloudinary } from "../utils/cloudinary.js";4
-import { Notification, Notification } from "../models/Notification.model.js";
+import { Notification } from "../models/Notification.model.js";
 
 const createTask = asyncHandler(async (req, res) => {
     const { TaskName, AssignedTo, Deadline, Status, Description, ProjectID, LabourRequired } = req.body;

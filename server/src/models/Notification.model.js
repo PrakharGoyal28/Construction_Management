@@ -9,5 +9,5 @@ const notificationSchema = new mongoose.Schema({
     user : { type: String, ref: 'User' }
 },{timestamps:true});
 
-export const Notification = mongoose.model('Notification', notificationSchema);
+export const Notification =mongoose.models.Notification || mongoose.model('Notification', notificationSchema);
 

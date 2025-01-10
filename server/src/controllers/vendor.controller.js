@@ -2,7 +2,7 @@ import { Vendor } from "../models/vendor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { PurchaseOrder } from "../models/purchaseOrder.model";
+import { PurchaseOrder } from "../models/purchaseOrder.model.js";
 
 const addVendor = asyncHandler(async (req, res) => {
     const { UserID, Address, BankName, AccountNo, GSTNo, IFSC } = req.body;
