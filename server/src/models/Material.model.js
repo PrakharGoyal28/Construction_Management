@@ -7,7 +7,9 @@ const materialSchema = new mongoose.Schema({
     ProjectId: { type: String, ref: 'Project', required: true },
     Quantity: {type: Number},
     Description: {type: String},
-  });
+    unit:{type: String},
+    unitPrice:{type: Number},
+  },{timestamps: true});
 
    export const Material = mongoose.model('Material', materialSchema);
   

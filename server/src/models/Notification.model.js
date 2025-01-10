@@ -3,10 +3,11 @@ import mongoose from 'mongoose';
 const notificationSchema = new mongoose.Schema({
     TaskID: { type: String, ref: 'Task' },
     Message: { type: String },
+    ImageUrl: { type: String },
     Type: { type: String },
     Status: { type: String },
-    Date: { type: Date },
-});
+    user : { type: String, ref: 'User' }
+},{timestamps:true});
 
 export const Notification = mongoose.model('Notification', notificationSchema);
 

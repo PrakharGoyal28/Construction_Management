@@ -216,6 +216,28 @@ const updateAccountDetails=asyncHandler(async(req,res)=>{
 
 })
 
+const getNotification = asyncHandler(async (req, res) => {
+    const userId = req.user?._id; // Assuming `req.user` is populated by the `verifyJWT` middleware.
+
+    if (!userId) {
+        throw new ApiError(401, "Unauthorized: User ID not found");
+    }
+
+    // Fetch notifications for the user
+    const notifications = await Notification.find({ users: userId })
+        .sort({ createdAt: -1 }) // Sort by newest first
+        .select("TaskID Message ImageUrl Type Status createdAt") // Select specific fields to return
+
+    if (!notifications || notifications.length === 0) {
+        return res.status(404).json(new ApiResponse(404, [], "No notifications found for the user"));
+    }
+
+    res.status(200).json(
+        new ApiResponse(200, notifications, "Notifications retrieved successfully")
+    );
+});
+
+
 export {
     registerUser,
     loginUser,

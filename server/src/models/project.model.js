@@ -4,6 +4,7 @@ import mongoose, { Schema } from "mongoose";
 const ProjectSchema = new mongoose.Schema({
     ProjectName: { type: String, required: true },
     UserID: { type: String, ref: 'User', required: true },
+    team: [{ type: String, ref: 'User' }],
     StartDate: { type: Date },
     EndDate: { type: Date },
     TotalBudget:{type: Number},
