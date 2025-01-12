@@ -2,8 +2,8 @@ import mongoose, { Schema } from "mongoose";
 
 const purchaseOrderSchema = new mongoose.Schema({
     Name: {type: String},
-    VendorID: { type: String, ref: 'Vendor', required: true },
-    UserId: { type: String, ref: 'User', required: true },
+    VendorID: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
+    UserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     Quantity: { type: Number, required: true },
     Date: { type: Date },
     Description:{type: String},
@@ -11,7 +11,7 @@ const purchaseOrderSchema = new mongoose.Schema({
     StorageLocation:{type: String},
     Status: { type: String },
     MaterialIds: [
-        { type: String, ref: 'Material', required: true }
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Material', required: true }
     ],
 },{timestamps:true});
 

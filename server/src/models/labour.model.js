@@ -4,9 +4,9 @@ const labourSchema = new mongoose.Schema({
     Name: { type: String, required: true },
     Contact: { type: String },
     Type: { type: String },
-    ProjectID: { type: String, ref: 'Project', required: true },
+    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
     Rate: { type: Number },
-    TaskID: { type: String, ref: 'Task' },
+    TaskID: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     Attendance: [
       {
         date: { type: Date}, // The date of attendance

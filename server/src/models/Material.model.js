@@ -2,9 +2,9 @@ import mongoose from 'mongoose'
 
 const materialSchema = new mongoose.Schema({
     Name: { type: String, required: true },
-    UserId: { type: String, ref: 'User', required: true },
-    VendorID: { type: String, ref: 'Vendor', required: true },
-    ProjectId: { type: String, ref: 'Project', required: true },
+    UserId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    VendorID: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
+    ProjectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
     Quantity: {type: Number},
     Description: {type: String},
     unit:{type: String},
