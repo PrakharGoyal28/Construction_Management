@@ -44,4 +44,23 @@ export const checkRole = (req, res, next) => {
   };
   
 
-  
+export const restrictChatAccess = asyncHandler(async (req, res, next) => {
+    const { projectId } = req.params;
+    const userId = req.user.id; // Assuming `req.user` contains the authenticated user's info
+
+    const project = await Project.findById(projectId);
+
+    if (!project) {
+        res.status(404);
+        throw new Error("Project not found");
+    }
+
+    const isUserInTeam = project.team.includes(userId);
+
+    if (!isUserInTeam) {
+        res.status(403);
+        throw new Error("Access denied. You are not part of the project team.");
+    }
+
+    next();
+});
