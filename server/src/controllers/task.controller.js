@@ -1,62 +1,143 @@
-import { Task } from "../models/task.model.js";
+import { Task } from "../models/Task.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { deletCloudinary, uploadCloudinary } from "../utils/cloudinary.js";4
+import { deletCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 import { Notification } from "../models/Notification.model.js";
 
 const createTask = asyncHandler(async (req, res) => {
-    const { TaskName, AssignedTo, Deadline, Status, Description, ProjectID, LabourRequired } = req.body;
+    const { TaskName, AssignedTo, Starttime,Deadline, Status, Description, ProjectID, LabourRequired,Prerequisites } = req.body;
 
     // Check required fields
     if (!TaskName || !ProjectID) {
         throw new ApiError(400, "TaskName and ProjectID are required.");
     }
 
+    
+
     // Create a new task
     const newTask = await Task.create({
         TaskName,
         AssignedTo,
+        Starttime,
         Deadline,
         Status,
         Description,
         ProjectID,
         LabourRequired,
+        Prerequisites,
     });
 
-    res.status(201).json(new ApiResponse(201, newTask, "Task created successfully."));
+    res.status(201).json(new ApiResponse(201, { taskId: newTask._id, ...newTask._doc }, "Task created successfully."));
 });
+
+// const updateTask = asyncHandler(async (req, res) => {
+//     const { taskId } = req.params;
+//     const { TaskName, AssignedTo, Starttime,Deadline, Status, Description, ProjectID, LabourRequired,Prerequisites } = req.body;
+
+//     // Check if taskId is provided
+//     if (!taskId) {
+//         throw new ApiError(400, "Task ID is required.");
+//     }
+
+//     const existingTask = await Task.findById(taskId);
+//     if (!existingTask) {
+//         throw new ApiError(404, "Task not found.");
+//     }
+
+//     // Update the task
+//     const updatedTask = await Task.findByIdAndUpdate(
+//         taskId,
+//         {
+//             TaskName,
+//             AssignedTo,
+//             Starttime,
+//             Deadline,
+//             Status,
+//             Description,
+//             ProjectID,
+//             LabourRequired,
+//             Prerequisites,
+//         },
+//         { new: true, runValidators: true } // Return the updated document and run validation
+//     );
+
+//     if (!updatedTask) {
+//         throw new ApiError(404, "Task not found.");
+//     }
+
+//     res.status(200).json(new ApiResponse(200, updatedTask, "Task updated successfully."));
+// });
 
 const updateTask = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
-    const { TaskName, AssignedTo, Deadline, Status, Description, ProjectID, LabourRequired } = req.body;
+    const { TaskName, AssignedTo, Starttime, Deadline, Status, Description, ProjectID, LabourRequired, Prerequisites } = req.body;
 
-    // Check if taskId is provided
     if (!taskId) {
         throw new ApiError(400, "Task ID is required.");
     }
 
-    // Update the task
+    // Find the existing task
+    const existingTask = await Task.findById(taskId).populate('Prerequisites');
+    if (!existingTask) {
+        throw new ApiError(404, "Task not found.");
+    }
+
+    // Calculate the delay in the Deadline or Starttime
+    let delayInDays = 0;
+    if (Deadline && new Date(Deadline).getTime() !== existingTask.Deadline?.getTime()) {
+        const oldDeadline = existingTask.Deadline ? new Date(existingTask.Deadline) : new Date();
+        const newDeadline = new Date(Deadline);
+        delayInDays = Math.ceil((newDeadline - oldDeadline) / (1000 * 60 * 60 * 24)); // Convert ms to days
+    }
+
+    // Update the current task
     const updatedTask = await Task.findByIdAndUpdate(
         taskId,
-        {
-            TaskName,
-            AssignedTo,
-            Deadline,
-            Status,
-            Description,
-            ProjectID,
-            LabourRequired,
-        },
-        { new: true, runValidators: true } // Return the updated document and run validation
+        { TaskName, AssignedTo, Starttime, Deadline, Status, Description, ProjectID, LabourRequired, Prerequisites },
+        { new: true, runValidators: true }
     );
 
-    if (!updatedTask) {
-        throw new ApiError(404, "Task not found.");
+    // If there is a delay, propagate it to dependent tasks
+    if (delayInDays !== 0) {
+        await propagateDelay(taskId, delayInDays);
     }
 
     res.status(200).json(new ApiResponse(200, updatedTask, "Task updated successfully."));
 });
+
+// Function to propagate delay to dependent tasks
+const propagateDelay = async (taskId, delayInDays) => {
+    const queue = [taskId];
+    while (queue.length > 0) {
+        const currentTaskId = queue.shift();
+
+        // Find tasks dependent on the current task
+        const dependentTasks = await Task.find({ Prerequisites: currentTaskId });
+
+        for (const dependentTask of dependentTasks) {
+            // Calculate new Starttime and Deadline
+            const newStarttime = dependentTask.Starttime
+                ? new Date(new Date(dependentTask.Starttime).getTime() + delayInDays * 24 * 60 * 60 * 1000)
+                : null;
+
+            const newDeadline = dependentTask.Deadline
+                ? new Date(new Date(dependentTask.Deadline).getTime() + delayInDays * 24 * 60 * 60 * 1000)
+                : null;
+
+            // Update the dependent task
+            await Task.findByIdAndUpdate(
+                dependentTask._id,
+                { Starttime: newStarttime, Deadline: newDeadline },
+                { new: true, runValidators: true }
+            );
+
+            // Add the dependent task to the queue for further propagation
+            queue.push(dependentTask._id);
+        }
+    }
+};
+
 const deleteTask = asyncHandler(async (req, res) => {
     const { taskId } = req.params;
 
