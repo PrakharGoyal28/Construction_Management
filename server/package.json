@@ -19,9 +19,15 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
     "mongoose-aggregate-paginate-v2": "^1.1.2",
+<<<<<<< HEAD
     "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
+=======
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.9",
+    "stream-chat": "^8.49.0"
+>>>>>>> 9cf8a0710276a5c2210d760b31c7577926af9905
   }
 }

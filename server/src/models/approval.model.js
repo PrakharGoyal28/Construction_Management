@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const approvalSchema = new mongoose.Schema({
-    TaskID: { type: String, ref: 'Task' },
+    TaskID: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     Status: { type: String },
   },{timestamps:true});
   
