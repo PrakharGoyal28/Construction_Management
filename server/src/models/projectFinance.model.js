@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const projectFinanceSchema = new mongoose.Schema({
-    ProjectID: { type: String, ref: 'Project', required: true },
+    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
     TotalBudget: { type: Number, required: true },
     RemainingBudget: { type: Number },
     CostBreakdown: { type: String },

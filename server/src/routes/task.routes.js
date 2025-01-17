@@ -8,6 +8,7 @@ import {
 } from "../controllers/task.controller.js"
 
 
+
 const router = express.Router();
 
 router.post("/create", createTask);
@@ -20,5 +21,7 @@ router.delete("/delete/:taskId", deleteTask);
 
 // Route to get task details by ID
 router.get("/:taskId", getTaskDetails);
+
+
 
 export default router;

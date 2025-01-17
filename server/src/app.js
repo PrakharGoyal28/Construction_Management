@@ -25,6 +25,7 @@ import notificationRouter from "./routes/notification.routes.js"
 import reportRouter from "./routes/report.routes.js"
 import vendorRouter from "./routes/vendor.routes.js"
 import taskRouter from "./routes/task.routes.js"
+import scheduleRouter from "./routes/schedule.routes.js"
 
 
 
@@ -43,6 +44,7 @@ app.use("/api/v1/notification",notificationRouter)
 app.use("/api/v1/report",reportRouter)
 app.use("/api/v1/vendor",vendorRouter)
 app.use("/api/v1/task",taskRouter)
+app.use("/api/v1/schedule",scheduleRouter)
 
 
 
