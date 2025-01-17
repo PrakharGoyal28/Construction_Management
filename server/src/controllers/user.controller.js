@@ -65,13 +65,6 @@ const registerUser =asyncHandler( async (req,res)=>{
 })
 
 const loginUser=asyncHandler(async (req,res)=>{
-    //get user detail from frontend
-    //validate if entries are not empty
-    //find user in database 
-    //validate password
-    //generate access and refresh token
-    //send cookie
-    //login user
 
     const {email,password}=req.body
 
@@ -91,7 +84,8 @@ const loginUser=asyncHandler(async (req,res)=>{
     res.cookie("setmycookie","this is my cookie")
     const options={
         httpOnly:true,
-        secure:true
+        secure:true,
+        sameSite: 'None',
     }
     console.log("user logged in ");
     return res
