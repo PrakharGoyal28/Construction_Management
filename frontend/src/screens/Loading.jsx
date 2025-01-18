@@ -6,7 +6,7 @@ import logo from '../../assets/logo.png'
 const Loading = () => {
   return (
     <ImageBackground source={bg} style={styles.container}>
-      <Text style={styles.text}>Product X</Text>
+      <Text style={styles.text}>Construction Management</Text>
         <Image 
             source={logo}
             style={styles.image}
