@@ -1,15 +1,16 @@
+import React, { useState } from 'react';
 import {
     ImageBackground,
     StyleSheet,
     Text,
-    View,
+    SafeAreaView,
     TextInput,
-    TouchableOpacity,
     Alert,
-} from 'react-native'
-import React, { useState } from 'react'
-import bg from '../../assets/loadingbg.jpg';
+} from 'react-native';
 import Checkbox from 'expo-checkbox';
+
+import bg from '../../assets/loadingbg.jpg';
+import Button from '../components/button/button';
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -19,14 +20,14 @@ const Login = () => {
     const handleSubmit = () => {
         Alert.alert('Form Submitted', `Username: ${username}\nPassword: ${password}`);
     };
+
     return (
         <ImageBackground source={bg} style={styles.container}>
-            <View style={styles.box} >
+            <SafeAreaView style={styles.box}>
                 <Text style={styles.text}>Get Started</Text>
-                <View style={styles.container}>
-
+                <SafeAreaView style={styles.container}>
                     {/* Username Input */}
-                    <View style={styles.inputDiv}>
+                    <SafeAreaView style={styles.inputDiv}>
                         <Text style={styles.inputText}>User Name</Text>
                         <TextInput
                             style={styles.input}
@@ -34,9 +35,10 @@ const Login = () => {
                             value={username}
                             onChangeText={setUsername}
                         />
-                    </View>
+                    </SafeAreaView>
+
                     {/* Password Input */}
-                    <View style={styles.inputDiv}>
+                    <SafeAreaView style={styles.inputDiv}>
                         <Text style={styles.inputText}>Password</Text>
                         <TextInput
                             style={styles.input}
@@ -45,11 +47,10 @@ const Login = () => {
                             onChangeText={setPassword}
                             secureTextEntry
                         />
-                    </View>
-
+                    </SafeAreaView>
 
                     {/* Checkbox */}
-                    <View style={styles.checkboxContainer}>
+                    <SafeAreaView style={styles.checkboxContainer}>
                         <Checkbox
                             style={styles.checkbox}
                             value={isChecked}
@@ -59,33 +60,28 @@ const Login = () => {
                         <Text style={styles.checkboxText}>
                             Yes, I understand the T&C of the company
                         </Text>
-                    </View>
+                    </SafeAreaView>
 
                     {/* Submit Button */}
-                    <TouchableOpacity
-                        style={[
-                            styles.button,
-                            { backgroundColor: isChecked ? 'black' : '#aaa' }, // Disable button if checkbox is not checked
-                        ]}
-                        disabled={!isChecked} // Disable button functionality
-                        onPress={handleSubmit}
-                    >
-                        <Text style={styles.buttonText}>Enter</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
+                    <SafeAreaView style={{ width: '80%' }}>
+                        <Button
+                            title="Enter"
+                            onPress={handleSubmit}
+                            isDisabled={!isChecked}
+                        />
+                    </SafeAreaView>
+                </SafeAreaView>
+            </SafeAreaView>
         </ImageBackground>
-    )
-}
-
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%'
+        width: '100%',
     },
     box: {
         flex: 1,
@@ -99,20 +95,12 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 40,
     },
     text: {
-        fontFamily: 'Albert Sans',
         fontSize: 32,
         fontWeight: '700',
-        lineHeight: 38.4,
-        marginTop: 30
-    },
-
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+        marginTop: 30,
     },
     inputDiv: {
-        width: '80%'
+        width: '80%',
     },
     input: {
         width: '100%',
@@ -125,12 +113,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
     },
     inputText: {
-        // fontFamily: 'Alber',
         fontSize: 16,
         fontWeight: '600',
-        lineHeight: 19.2,
-        textAlign: 'left',
-        marginBottom: 15
+        marginBottom: 15,
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -140,25 +125,10 @@ const styles = StyleSheet.create({
     checkboxText: {
         fontSize: 13,
         fontWeight: '500',
-        lineHeight: 15.6,
-        textAlign: 'left',
-    },
-    button: {
-        width: '80%',
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 51,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
     },
     checkbox: {
         margin: 8,
     },
 });
 
-
-export default Login
+export default Login;
