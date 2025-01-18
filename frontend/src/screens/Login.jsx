@@ -8,7 +8,7 @@ import {
     Alert,
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
-
+import axios from 'axios'; // Import Axios for API requests
 import bg from '../../assets/loadingbg.jpg';
 import Button from '../components/button/button';
 
@@ -17,8 +17,37 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
 
-    const handleSubmit = () => {
-        Alert.alert('Form Submitted', `Username: ${username}\nPassword: ${password}`);
+    const handleSubmit = async () => {
+        if (!username || !password) {
+            Alert.alert('Error', 'Please fill in all fields.');
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://your-backend-url/api/login', {
+                email: username, // Assuming the backend uses 'email' as the field name
+                password,
+            });
+
+            if (response.status === 200) {
+                const { user, accessToken, refreshToken } = response.data;
+                Alert.alert('Login Successful', `Welcome, ${user.username || user.email}!`);
+                
+                // Example: Save token securely (use secure storage in production)
+                console.log('Access Token:', accessToken);
+                console.log('Refresh Token:', refreshToken);
+
+                // Navigate to another screen or handle as needed
+            } else {
+                Alert.alert('Login Failed', response.data.message || 'Unknown error occurred');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert(
+                'Login Failed',
+                error.response?.data?.message || 'Unable to connect to the server. Please try again.'
+            );
+        }
     };
 
     return (
