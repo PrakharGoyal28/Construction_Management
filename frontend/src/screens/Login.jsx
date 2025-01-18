@@ -10,6 +10,7 @@ import {
 import Checkbox from 'expo-checkbox';
 import axios from 'axios'; // Import Axios for API requests
 import bg from '../../assets/loadingbg.jpg';
+import {Login_URL} from '@env';
 import Button from '../components/button';
 
 const Login = () => {
@@ -24,7 +25,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3000/api/v1/users/login', {
+            const response = await axios.post(`${Login_URL}`, {
                 email: username, // Assuming the backend uses 'email' as the field name
                 password,
             });
