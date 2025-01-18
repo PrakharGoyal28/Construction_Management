@@ -10,7 +10,7 @@ import {
 import Checkbox from 'expo-checkbox';
 import axios from 'axios'; // Import Axios for API requests
 import bg from '../../assets/loadingbg.jpg';
-import Button from '../components/button/button';
+import Button from '../components/button';
 
 const Login = () => {
     const [username, setUsername] = useState('');
