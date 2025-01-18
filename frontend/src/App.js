@@ -6,7 +6,7 @@ import Loading from './screens/Loading';
 export default function App() {
   return (
     <>
-      <Login/>
+      <Loading/>
     </>
   );
 }
