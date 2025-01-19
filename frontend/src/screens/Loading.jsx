@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, ImageBackground, Image } from 'react-native';
 import React from 'react';
-import bg from '../../assets/loadingbg.jpg';
-import logo from '../../assets/logo.png'
+import bg from '../assets/loadingbg.jpg';
+import logo from '../assets/icons/logo.png'
 
 const Loading = () => {
   return (

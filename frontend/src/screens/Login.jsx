@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import axios from 'axios'; // Import Axios for API requests
-import bg from '../../assets/loadingbg.jpg';
-import {Login_URL} from '@env';
+import bg from '../assets/loadingbg.jpg';
+// import {Login_URL} from '@env';
 import Button from '../components/button';
 
 const Login = () => {
@@ -33,7 +33,7 @@ const Login = () => {
             if (response.status === 200) {
                 const { user, accessToken, refreshToken } = response.data;
                 Alert.alert('Login Successful', `Welcome, ${user.username || user.email}!`);
-                
+
                 // Example: Save token securely (use secure storage in production)
                 console.log('Access Token:', accessToken);
                 console.log('Refresh Token:', refreshToken);
