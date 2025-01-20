@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 50,
     backgroundColor: '#111111', // Default background color
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
