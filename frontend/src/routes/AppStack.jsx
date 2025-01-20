@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions,Image } from 'react-native';
+import { StyleSheet, View, Dimensions, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,6 +20,24 @@ const { height } = Dimensions.get('window');
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 
+const getDate = () => {
+  const date = new Date();
+  const options = { month: 'short', day: '2-digit', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+  return formattedDate.replace(/\s(\d{4})$/, ' $1');
+};
+
+const CustomHeader = () => {
+  return (
+    <View style={styles.headerContainer}>
+      <Text style={styles.dateText}>{getDate()}</Text>
+      <Text style={styles.titleText}>Dashboard</Text>
+    </View>
+  );
+};
+
+
+
 const MyTabs = () => {
   return (
     <Tab.Navigator
@@ -27,47 +45,9 @@ const MyTabs = () => {
         tabBarStyle: [styles.tabBarStyle],
       }}
     >
-<Tab.Screen
-        name="Home"
-        component={Dashboard}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={
-                focused
-                  ? require('../assets/icons/Group 93.png') // Focused icon
-                  : require('../assets/icons/Group 93 (1)copy.png') // Default icon
-              }
-              style={styles.tabIcon}
-            />
-          ),
-        }}
-      />   
-       <Tab.Screen name="LabourDashboard" component={LabourDashboard} 
-       options={{
-        tabBarIcon: ({ focused }) => (
-          <Image
-            source={
-              focused
-                ? require('../assets/icons/Group 89.png') // Focused icon
-                : require('../assets/icons/Group 89.png') // Default icon
-            }
-            style={styles.tabIcon}
-          />
-        ),
-      }}
-       
-       />
-      <Tab.Screen name="Profile" component={Profile}
-      options={{
-        tabBarIcon: () => (
-          <Image
-            source={require('../assets/icons/Group 91.png')} // Simple static image
-            style={styles.tabIcon}
-          />
-        ),
-      }}
-      />
+      <Tab.Screen name="Home" component={Dashboard} />
+      <Tab.Screen name="LabourDashboard" component={LabourDashboard} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };
@@ -102,7 +82,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: '#111111', // Default background color
     shadowOffset: { width: 0, height: 2 },
-    // shadowOpacity: 0.25,
+    shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5, // For Android shadow
   },

@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(
         `${BASE_URL}/users/logout`,
         { userId:user._id },
-        { withCredentials: true } // Required for cookies
+        { withCredentials: true } 
       );
       await AsyncStorage.removeItem('user');
       
