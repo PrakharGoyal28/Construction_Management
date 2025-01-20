@@ -203,10 +203,39 @@ const updateTaskId = asyncHandler(async (req, res) => {
     });
 });
 
+const getAttendanceSummary = asyncHandler(async (req, res) => {
+    const { projectId } = req.params; // Optional: Filter by project
+
+    const match = projectId ? { ProjectID: projectId } : {};
+
+    // Aggregate attendance by date
+    const attendanceSummary = await Labour.aggregate([
+        { $match: match },
+        { $unwind: "$Attendance" },
+        { $match: { "Attendance.status": "Present" } }, // Only count "Present" status
+        {
+            $group: {
+                _id: { date: "$Attendance.date" },
+                totalPresent: { $sum: 1 },
+            },
+        },
+        { $sort: { "_id.date": 1 } },
+    ]);
+
+    const formattedData = attendanceSummary.map((entry) => ({
+        date: entry._id.date.toISOString().split("T")[0],
+        totalPresent: entry.totalPresent,
+    }));
+
+    res.status(200).json(new ApiResponse(200, formattedData, "Attendance summary retrieved successfully"));
+});
+
+
 export {
     registerLabour,
     updateAttendance,
     getLabourDetails,
     getLaboursByProjectId,
-    updateTaskId
+    updateTaskId,
+    getAttendanceSummary
 };
