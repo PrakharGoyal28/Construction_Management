@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View, Dimensions, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,8 +9,13 @@ import Dashboard from '../screens/Dashboard';
 import LabourDashboard from '../screens/LabourDashboard';
 import LabourCalender from '../screens/LabourCalender';
 import LabourAttendence from '../screens/LabourAttendence';
-import LabourFaceVerification from '../components/LabourFaceVerification';
+import LabourFaceVerification from '../components/LabourFaceverification';
 import Profile from '../screens/Profile';
+
+// Get device width dynamically
+const { width } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
+
 
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -19,7 +24,7 @@ const getDate = () => {
   const date = new Date();
   const options = { month: 'short', day: '2-digit', year: 'numeric' };
   const formattedDate = date.toLocaleDateString('en-US', options);
-  return formattedDate.replace(/\s(\d{4})$/, ' $1'); 
+  return formattedDate.replace(/\s(\d{4})$/, ' $1');
 };
 
 const CustomHeader = () => {
@@ -35,17 +40,12 @@ const CustomHeader = () => {
 
 const MyTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={Dashboard}
-        options={{
-          headerTitle: () => <CustomHeader />,
-          headerStyle: {
-            borderBottomWidth: 0,  // Remove the bottom border
-            elevation: 0,  // Remove shadow on Android
-            shadowOpacity: 0,  // Remove shadow on iOS
-            height:200
-          },
-        }} />
+    <Tab.Navigator
+      screenOptions={{
+        tabBarStyle: [styles.tabBarStyle],
+      }}
+    >
+      <Tab.Screen name="Home" component={Dashboard} />
       <Tab.Screen name="LabourDashboard" component={LabourDashboard} />
       <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
@@ -57,7 +57,6 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
-
     <Stack.Navigator>
       <Stack.Screen
         name="MainTabs"
@@ -68,28 +67,9 @@ const AppStack = () => {
       <Stack.Screen name="LabourAttendence" component={LabourAttendence} />
       <Stack.Screen name="LabourFace" component={LabourFaceVerification} />
     </Stack.Navigator>
-
   );
 };
 
 export default AppStack;
 
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    marginTop:20,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    marginLeft:20
-  },
-  dateText: {
-    fontSize: 16,
-    color: 'gray',
-    marginBottom:20
-  },
-  titleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom:20
-  },
-});
+const styles = StyleSheet.create({});
