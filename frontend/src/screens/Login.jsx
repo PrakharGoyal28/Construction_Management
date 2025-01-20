@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
     ImageBackground,
     StyleSheet,
@@ -10,45 +10,19 @@ import {
 import Checkbox from 'expo-checkbox';
 import axios from 'axios'; // Import Axios for API requests
 import bg from '../assets/loadingbg.jpg';
-// import {Login_URL} from '@env';
 import Button from '../components/button';
+import { AuthContext } from '../auth/Auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isChecked, setIsChecked] = useState(false);
+    const { loginUser, user } = useContext(AuthContext)
 
     const handleSubmit = async () => {
-        if (!username || !password) {
-            Alert.alert('Error', 'Please fill in all fields.');
-            return;
-        }
-
-        try {
-            const response = await axios.post(`${Login_URL}`, {
-                email: username, // Assuming the backend uses 'email' as the field name
-                password,
-            });
-
-            if (response.status === 200) {
-                const { user, accessToken, refreshToken } = response.data;
-                Alert.alert('Login Successful', `Welcome, ${user.username || user.email}!`);
-
-                // Example: Save token securely (use secure storage in production)
-                console.log('Access Token:', accessToken);
-                console.log('Refresh Token:', refreshToken);
-
-                // Navigate to another screen or handle as needed
-            } else {
-                Alert.alert('Login Failed', response.data.message || 'Unknown error occurred');
-            }
-        } catch (error) {
-            console.error(error);
-            Alert.alert(
-                'Login Failed',
-                error.response?.data?.message || 'Unable to connect to the server. Please try again.'
-            );
-        }
+        const response = await loginUser(username, password);
     };
 
     return (
@@ -61,7 +35,7 @@ const Login = () => {
                         <Text style={styles.inputText}>User Name</Text>
                         <TextInput
                             style={styles.input}
-                            placeholder="Enter your User Name here"
+                            placeholder="Enter your email here"
                             value={username}
                             onChangeText={setUsername}
                         />

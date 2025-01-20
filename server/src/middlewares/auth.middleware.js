@@ -4,26 +4,32 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 
 export const verifyJWT=asyncHandler(async(req,res,next)=>{
-    try {
-        const token= req.cookies?.accessToken || req.header("Authoriztion")?.replace("Bearer ","")
-    
-        if(!token){
-            throw new ApiError(401,"Unautorized access")
-        }
-    
-        const decodedToken= jwt.verify(token,process.env.ACCESS_TOKEN_SECRECT)
-    
-        const user=await User.findById(decodedToken?._id).select("-password -refreshToken")
-        if(!user){
-            throw new ApiError(401,"invalid access token")
-        }
-        req.user=user;
-        next();
-    } catch (error) {
-        throw new ApiError(401,"some error in verifyjwt")
+  try {
+    // Get the user ID from the request header or body (depending on how you're passing it)
+    const { userId } = req.body || req.headers;
+
+    if (!userId) {
+      throw new ApiError(401, "Unauthorized access: user ID is missing");
     }
 
-})
+    // Fetch the user from the database
+    const user = await User.findById(userId).select("-password -refreshToken");
+
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    // Check if the user is logged in
+    if (!user.isLoggedIn) {
+      throw new ApiError(403, "User is not logged in");
+    }
+
+    req.user = user; // Attach the user to the request object for use in subsequent handlers
+    next(); // Proceed to the next middleware or route
+  } catch (error) {
+    throw new ApiError(401, "Unauthorized access");
+  }
+});
 export const checkRole = (req, res, next) => {
     try {
       const { role } = req.user; // Assume `req.user` is populated (e.g., from authentication middleware)

@@ -9,9 +9,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     email: { type: String, required: true },
     role: { type: String, enum: ['Supervisor', 'Admin'], required: true },
-    refreshToken: {
-        type: String
-    }
+    isLoggedIn:{type :Boolean ,default:false},
 },{timestamps:true});
 
 
@@ -33,18 +31,6 @@ userSchema.methods.generateAccessToken = function () {
         process.env.ACCESS_TOKEN_SECRECT,
         {
             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
-    )
-}
-userSchema.methods.generateRefreshToken = function () {
-    return jwt.sign(
-        {
-            _id: this._id,
-
-        },
-        process.env.REFRESH_TOKEN_SECRECT,
-        {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
         }
     )
 }

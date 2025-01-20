@@ -10,6 +10,7 @@ import LabourDashboard from '../screens/LabourDashboard';
 import LabourCalender from '../screens/LabourCalender';
 import LabourAttendence from '../screens/LabourAttendence';
 import LabourFaceVerification from '../components/LabourFaceVerification';
+import Profile from '../screens/Profile';
 
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -19,6 +20,7 @@ const MyTabs = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={Dashboard} />
       <Tab.Screen name="LabourDashboard" component={LabourDashboard} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };
