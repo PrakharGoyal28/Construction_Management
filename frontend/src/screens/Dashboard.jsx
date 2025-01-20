@@ -2,6 +2,9 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // for icons
 
+// const { widthS } = Dimensions.get('window');
+// const { heightS } = Dimensions.get('window');
+
 const DashboardButton = ({ icon, label, selected }) => {
   return (
     <View style={[styles.button, selected && styles.selectedButton]}>
@@ -35,6 +38,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: "white",
+    flex:1
   },
   grid: {
     flexDirection: 'row',
@@ -46,8 +50,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    width: 150,
-    height: 150,
+    width: '40%',
+    height: '40%',
     padding: 16,
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
