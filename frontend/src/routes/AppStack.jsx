@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions,Image } from 'react-native';
+import { StyleSheet, View, Dimensions, Image, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -20,6 +20,22 @@ const { height } = Dimensions.get('window');
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
 
+const getDate = () => {
+  const date = new Date();
+  const options = { month: 'short', day: '2-digit', year: 'numeric' };
+  const formattedDate = date.toLocaleDateString('en-US', options);
+  return formattedDate.replace(/\s(\d{4})$/, ' $1'); // Add comma between date and year
+};
+
+const CustomHeader = () => {
+  return (
+    <View style={styles.headerContainer}>
+      <Text style={styles.dateText}>{getDate()}</Text>
+      <Text style={styles.titleText}>Dashboard</Text>
+    </View>
+  );
+};
+
 const MyTabs = () => {
   return (
     <Tab.Navigator
@@ -27,7 +43,7 @@ const MyTabs = () => {
         tabBarStyle: [styles.tabBarStyle],
       }}
     >
-<Tab.Screen
+      <Tab.Screen
         name="Home"
         component={Dashboard}
         options={{
@@ -41,32 +57,39 @@ const MyTabs = () => {
               style={styles.tabIcon}
             />
           ),
+          headerTitle: () => <CustomHeader />,
+          headerStyle: {
+            height:150,
+            borderBottomWidth: 0,  // Remove the bottom border
+            elevation: 0,  // Remove shadow on Android
+            shadowOpacity: 0,  // Remove shadow on iOS
+          },
         }}
-      />   
-       <Tab.Screen name="LabourDashboard" component={LabourDashboard} 
-       options={{
-        tabBarIcon: ({ focused }) => (
-          <Image
-            source={
-              focused
-                ? require('../assets/icons/Group 89.png') // Focused icon
-                : require('../assets/icons/Group 89.png') // Default icon
-            }
-            style={styles.tabIcon}
-          />
-        ),
-      }}
-       
-       />
+      />
+      <Tab.Screen name="LabourDashboard" component={LabourDashboard}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/icons/Group 89.png') // Focused icon
+                  : require('../assets/icons/Group 89.png') // Default icon
+              }
+              style={styles.tabIcon}
+            />
+          ),
+        }}
+
+      />
       <Tab.Screen name="Profile" component={Profile}
-      options={{
-        tabBarIcon: () => (
-          <Image
-            source={require('../assets/icons/Group 91.png')} // Simple static image
-            style={styles.tabIcon}
-          />
-        ),
-      }}
+        options={{
+          tabBarIcon: () => (
+            <Image
+              source={require('../assets/icons/Group 91.png')} // Simple static image
+              style={styles.tabIcon}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
@@ -93,22 +116,43 @@ const AppStack = () => {
 export default AppStack;
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    marginLeft: 25,
+    marginTop: 80,
+    // marginBottom: 80,
+    height:100
+  },
+  dateText: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 15
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: 'AlbertSans', // Ensure the font is properly loaded and linked
+    fontSize: 32,
+    fontWeight: '700',
+    lineHeight: 38.4,
+  },
   tabBarStyle: {
     position: 'absolute',
-    width: width, 
-    height: 0.093*height, // Fixed height for the tab bar
-    bottom: 0, // Anchors the tab bar to the bottom of the screen
+    width: width,
+    height: 0.093 * height, // Fixed height for the tab bar
+    bottom: -10, // Anchors the tab bar to the bottom of the screen
     alignSelf: 'center',
-    borderRadius: 50,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
     backgroundColor: '#111111', // Default background color
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5, // For Android shadow
+    paddingTop:10
   },
-  tabIcon:{
-    width: 0.071*width, // Adjust the icon width as needed
-    height: 0.158*height, // Adjust the icon height as needed
+  tabIcon: {
+    width: 0.071 * width, // Adjust the icon width as needed
+    height: 0.158 * height, // Adjust the icon height as needed
     resizeMode: 'contain',
   },
 });
