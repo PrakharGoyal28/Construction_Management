@@ -1,10 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 
 const labourSchema = new mongoose.Schema({
-    Name: { type: String, required: true },
+    name: { type: String, required: true },
     Contact: { type: String },
     Type: { type: String },
-    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true },
+    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project'},//TODO:make this required
     Rate: { type: Number },
     TaskID: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     Attendance: [

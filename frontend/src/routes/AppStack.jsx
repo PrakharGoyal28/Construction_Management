@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Image, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet, View, Dimensions, Image, Text, TouchableOpacity } from 'react-native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // Importing Screens
 import Dashboard from '../screens/Dashboard';
@@ -59,7 +60,7 @@ const MyTabs = () => {
           ),
           headerTitle: () => <CustomHeader />,
           headerStyle: {
-            height:150,
+            height: 150,
             borderBottomWidth: 0,  // Remove the bottom border
             elevation: 0,  // Remove shadow on Android
             shadowOpacity: 0,  // Remove shadow on iOS
@@ -108,7 +109,48 @@ const AppStack = () => {
       />
       <Stack.Screen name="LabourCalender" component={LabourCalender} />
       <Stack.Screen name="LabourAttendence" component={LabourAttendence} />
-      <Stack.Screen name="LabourFace" component={LabourFaceVerification} />
+
+      <Stack.Screen
+        name="LabourFace"
+        component={LabourFaceVerification}
+        options={{
+          headerTitle: '', // No title
+          headerShadowVisible: false, // Remove shadow
+          headerBackVisible: false, // Disable default back button
+          headerLeft: () => {
+            const navigation = useNavigation(); // Get the navigation prop
+
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: 30, // Increase the padding to make the header taller
+                  paddingHorizontal: 16, // Ensure the button is not cramped
+                }}
+                onPress={() => navigation.goBack()} // Go back when button is pressed
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: 'black' }}>Back</Text>
+              </TouchableOpacity>
+            );
+          },
+          headerStyle: {
+            backgroundColor: 'white',
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -120,7 +162,7 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginTop: 80,
     // marginBottom: 80,
-    height:100
+    height: 100
   },
   dateText: {
     fontSize: 16,
@@ -148,7 +190,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5, // For Android shadow
-    paddingTop:10
+    paddingTop: 10
   },
   tabIcon: {
     width: 0.071 * width, // Adjust the icon width as needed
