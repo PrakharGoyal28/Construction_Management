@@ -11,7 +11,7 @@ const Profile = () => {
   return (
     <View style={styles.container}>
       <Button
-        title="Enter"
+        title="logout"
         onPress={handleSubmit}
       />
     </View>
