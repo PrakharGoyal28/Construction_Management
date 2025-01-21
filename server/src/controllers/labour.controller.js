@@ -6,16 +6,16 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 const registerLabour = asyncHandler(async (req, res) => {
-    const { Name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
+    const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
 
     // Validate required fields
-    if (!Name || !ProjectID) {
+    if (!name ) {
         throw new ApiError(400, "All fields are required");
     }
 
     // Create a new labour document
     const newLabour = new Labour({
-        Name,
+        name,
         Contact,
         Type,
         ProjectID,
@@ -105,7 +105,7 @@ const getLabourDetails = asyncHandler(async (req, res) => {
 
     // Fetch the labour document with all the necessary fields
     const labour = await Labour.findById(labourId)
-        .select("Name Contact Type ProjectID Rate TaskID Attendance") // Select specific fields to return
+        .select("name Contact Type ProjectID Rate TaskID Attendance") // Select specific fields to return
         .exec();
 
     if (!labour) {
@@ -144,7 +144,7 @@ const getLabourDetails = asyncHandler(async (req, res) => {
     return res.status(200).json(
         new ApiResponse(200, {
             labour: {
-                Name: labour.Name,
+                name: labour.name,
                 Contact: labour.Contact,
                 Type: labour.Type,
                 ProjectID: labour.ProjectID,
@@ -152,7 +152,7 @@ const getLabourDetails = asyncHandler(async (req, res) => {
                 TaskID: labour.TaskID,
                 Attendance: labour.Attendance, // All attendance details
             },
-        }, `Attendance history for ${labour.Name}`)
+        }, `Attendance history for ${labour.name}`)
     );
 });
 
@@ -203,10 +203,39 @@ const updateTaskId = asyncHandler(async (req, res) => {
     });
 });
 
+const getAttendanceSummary = asyncHandler(async (req, res) => {
+    const { projectId } = req.params; // Optional: Filter by project
+
+    const match = projectId ? { ProjectID: projectId } : {};
+
+    // Aggregate attendance by date
+    const attendanceSummary = await Labour.aggregate([
+        { $match: match },
+        { $unwind: "$Attendance" },
+        { $match: { "Attendance.status": "Present" } }, // Only count "Present" status
+        {
+            $group: {
+                _id: { date: "$Attendance.date" },
+                totalPresent: { $sum: 1 },
+            },
+        },
+        { $sort: { "_id.date": 1 } },
+    ]);
+
+    const formattedData = attendanceSummary.map((entry) => ({
+        date: entry._id.date.toISOString().split("T")[0],
+        totalPresent: entry.totalPresent,
+    }));
+
+    res.status(200).json(new ApiResponse(200, formattedData, "Attendance summary retrieved successfully"));
+});
+
+
 export {
     registerLabour,
     updateAttendance,
     getLabourDetails,
     getLaboursByProjectId,
-    updateTaskId
+    updateTaskId,
+    getAttendanceSummary
 };

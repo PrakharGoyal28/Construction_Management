@@ -3,6 +3,7 @@ import {
     registerLabour,
     updateAttendance,
     getLabourDetails,
+    getAttendanceSummary,
     getLaboursByProjectId
 } from "../controllers/labour.controller.js"
 import { checkRole } from "../middlewares/auth.middleware.js";
@@ -16,5 +17,6 @@ router.post("/updateAttendance", verifyJWT, checkRole, updateAttendance);
 // Route to get attendance history for a specific labour
 router.get("/labourDetails/:labourId", getLabourDetails);
 router.get("/labours/:projectId", getLaboursByProjectId);
+router.get("/attendanceSummary",getAttendanceSummary);
 
 export default router;

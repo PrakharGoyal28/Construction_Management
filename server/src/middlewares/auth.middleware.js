@@ -38,7 +38,7 @@ export const checkRole = (req, res, next) => {
         return res.status(403).json({ message: "Role is required to perform this action" });
       }
   
-      if (role !== "admin" && role !== "supervisor") {
+      if (role !== "Admin" && role !== "Supervisor") {
         return res.status(403).json({ message: "Access denied. Only admins or supervisors can perform this action" });
       }
   
