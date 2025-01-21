@@ -9,7 +9,7 @@ import Dashboard from '../screens/Dashboard';
 import LabourDashboard from '../screens/LabourDashboard';
 import LabourCalender from '../screens/LabourCalender';
 import LabourAttendence from '../screens/LabourAttendence';
-import LabourFaceVerification from '../components/LabourFaceVerification';
+import LabourFaceVerification from '../components/LabourFaceverification';
 import Profile from '../screens/Profile';
 
 // Create Bottom Tab Navigator
