@@ -1,13 +1,15 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // for icons
+import {useNavigation } from '@react-navigation/native';
 
 // const { widthS } = Dimensions.get('window');
 // const { heightS } = Dimensions.get('window');
 
-const DashboardButton = ({ icon, label, selected }) => {
+const DashboardButton = ({ icon, label, selected ,goTo}) => {
+  const navigation = useNavigation();
   return (
-    <View style={[styles.button, selected && styles.selectedButton]}>
+    <View style={[styles.button, selected && styles.selectedButton]} onTouchEnd={() => navigation.navigate(goTo)}>
       <MaterialCommunityIcons name={icon} size={24} color={selected ? 'white' : 'black'} />
       <Text style={[styles.buttonLabel, selected && styles.selectedLabel]}>{label}</Text>
     </View>
@@ -20,7 +22,7 @@ const Dashboard = () => {
     <View style={styles.container} >
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.grid}>
-          <DashboardButton icon="calendar" label="Attendance" selected />
+          <DashboardButton icon="calendar" label="Attendance" selected goTo="LabourDashboard"/>
           <DashboardButton icon="checkbox-marked-circle" label="Tasks" selected />
           <DashboardButton icon="account-group" label="Labor Calendar" />
           <DashboardButton icon="calendar-range" label="Task Calendar" />
