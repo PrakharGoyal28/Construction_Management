@@ -6,19 +6,20 @@ import axios from 'axios';
 import { BASE_URL } from '../auth/config';
 
 const LabourDashboard = () => {
+  const navigation = useNavigation();
+  const [cnt, setcnt] = useState(0)
   const[attendance,setAttendance]=useState({present:0,absent:0});
   const[loading,setloading]=useState(true);
   const handlepress=()=>{
-    console.log('button pressed');
-    
-
+    setcnt((prevCnt) => prevCnt + 1); 
+    navigation.navigate('LabourAttendence');
   };
   const fetchAttendanceData=async()=>{
+
     try{
       const today=new Date().toISOString().split('T')[0];
-      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary?date=${today}`);
-
-      const { totalPresent, totalAbsent } = response.data.data;
+      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary`);
+      const { totalPresent, totalAbsent } = response.data.data[0];
       setAttendance({ present: totalPresent || 0, absent: totalAbsent || 0 });
       setloading(false);
     } catch (error) {
@@ -28,8 +29,7 @@ const LabourDashboard = () => {
   };
   useEffect(() => {
     fetchAttendanceData(); // Fetch attendance data when the component mounts
-  }, []);
-  const navigation = useNavigation(); // Hook to access the navigation object
+  }, [cnt]);
 
   return (
     <SafeAreaView style={styles.container}>

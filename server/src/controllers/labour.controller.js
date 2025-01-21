@@ -236,7 +236,8 @@ const getAttendanceSummary = asyncHandler(async (req, res) => {
         totalPresent: entry.totalPresent,
         totalAbsent: entry.totalAbsent,
     }));
-
+    console.log("got the data");
+    
     res.status(200).json(new ApiResponse(200, formattedData, "Attendance summary retrieved successfully"));
 });
 
