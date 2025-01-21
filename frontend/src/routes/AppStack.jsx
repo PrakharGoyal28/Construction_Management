@@ -37,6 +37,33 @@ const CustomHeader = () => {
   );
 };
 
+const gettDate = () => {
+  const today = new Date();
+  const options = { month: 'long', day: 'numeric', weekday: 'long', year: 'numeric' };
+  const formattedDate = today.toLocaleDateString('en-US', options);
+
+  // Split "January 16, Thursday, 2025" into "January 16" and "Thursday, 2025"
+  const [monthDay, rest] = formattedDate.split(',', 2);
+  const year = today.getFullYear(); // 2025
+
+  return { monthDay, rest: rest.trim(),year };
+};
+
+const GeneralHeader = () => {
+  const { monthDay, rest,year } = gettDate();
+
+  return (
+    <View style={styles.headerContainer}>
+      <Text>
+      <Text style={styles.restText}> {rest}</Text> {/* Thursday, 2025 */}
+
+        <Text style={styles.monthDayText}> {monthDay}, {year}</Text> {/* January 16 */}
+      </Text>
+    </View>
+  );
+};
+
+
 const MyTabs = () => {
   return (
     <Tab.Navigator
@@ -79,6 +106,13 @@ const MyTabs = () => {
               style={styles.tabIcon}
             />
           ),
+          headerTitle:() => <GeneralHeader />,
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,  // Remove the bottom border
+            elevation: 0,  // Remove shadow on Android
+            shadowOpacity: 0,  // Remove shadow on iOS
+          },
         }}
 
       />
@@ -170,6 +204,19 @@ const styles = StyleSheet.create({
     marginBottom: 15
   },
   titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    fontFamily: 'AlbertSans', // Ensure the font is properly loaded and linked
+    fontSize: 32,
+    fontWeight: '700',
+    lineHeight: 38.4,
+  },
+  monthDayText: {
+    fontSize: 16,
+    color: 'gray',
+    marginBottom: 15
+  },
+  restText: {
     fontSize: 24,
     fontWeight: 'bold',
     fontFamily: 'AlbertSans', // Ensure the font is properly loaded and linked

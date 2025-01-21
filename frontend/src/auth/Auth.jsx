@@ -3,13 +3,23 @@ import React, { createContext, useState } from 'react'
 import { BASE_URL } from './config'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+// import bodyParser from 'body-parser';
 
 
 export const AuthContext = createContext()
 
+// var bodyParser = require('body-parser');
+
+// // For parsing application/json
+// app.use(bodyParser.json());
+
+// // For parsing application/x-www-form-urlencoded
+// app.use(bodyParser.urlencoded({ extended: true }));
+
+
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [user, setUser] = useState("")
+  const [user, setUser] = useState(null)
 
   const loginUser = async (email, password) => {
     try {
