@@ -135,13 +135,55 @@ const Stack = createNativeStackNavigator();
 
 const AppStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        animationDuration: 5,
+      }}
+    >
       <Stack.Screen
         name="MainTabs"
         component={MyTabs}
         options={{ headerShown: false }} // Hide header for bottom tabs
       />
-      <Stack.Screen name="LabourCalender" component={LabourCalender} />
+      <Stack.Screen name="LabourCalender" component={LabourCalender}
+        options={{
+          headerTitle: '', // No title
+          headerShadowVisible: false, // Remove shadow
+          headerBackVisible: false, // Disable default back button
+          headerLeft: () => {
+            const navigation = useNavigation(); // Get the navigation prop
+
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingVertical: 30, // Increase the padding to make the header taller
+                  paddingHorizontal: 16, // Ensure the button is not cramped
+                }}
+                onPress={() => navigation.goBack()} // Go back when button is pressed
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: 'black' }}>Back</Text>
+              </TouchableOpacity>
+            );
+          },
+          headerStyle: {
+            backgroundColor: 'white',
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
       <Stack.Screen name="LabourAttendence" component={LabourAttendence}
         options={{
           headerTitle: '', // No title

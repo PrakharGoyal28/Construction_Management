@@ -9,7 +9,7 @@ import {useNavigation } from '@react-navigation/native';
 const DashboardButton = ({ icon, label, selected ,goTo}) => {
   const navigation = useNavigation();
   return (
-    <View style={[styles.button, selected && styles.selectedButton]} onTouchEnd={() => navigation.navigate(goTo)}>
+    <View style={[styles.button, selected && styles.selectedButton]} onTouchEndCapture={() => navigation.navigate(goTo)}>
       <MaterialCommunityIcons name={icon} size={24} color={selected ? 'white' : 'black'} />
       <Text style={[styles.buttonLabel, selected && styles.selectedLabel]}>{label}</Text>
     </View>
