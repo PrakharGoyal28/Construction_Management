@@ -1,26 +1,31 @@
-import { StyleSheet, Text, View,TouchableOpacity,SafeAreaView } from 'react-native'
-import React, { useState,useEffect } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import Button from '../components/button';
 import axios from 'axios';
 import { BASE_URL } from '../auth/config';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const LabourDashboard = () => {
-  const[attendance,setAttendance]=useState({present:0,absent:0});
-  const[loading,setloading]=useState(true);
-  const handlepress=()=>{
-    console.log('button pressed');
-    
-
+  const navigation = useNavigation();
+  const [cnt, setcnt] = useState(0)
+  const [attendance, setAttendance] = useState({ present: 0, absent: 0 });
+  const [allAttend, setAllAttend] = useState({})
+  const [loading, setloading] = useState(true);
+  const handlepress = () => {
+    setcnt((prevCnt) => prevCnt + 1);
+    navigation.navigate('LabourAttendence');
   };
-  const fetchAttendanceData=async()=>{
-    try{
-      const today=new Date().toISOString().split('T')[0];
-      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary?date=${today}`);
+  const fetchAttendanceData = async () => {
 
-      const { totalPresent, totalAbsent } = response.data.data;
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary`);
+      const { totalPresent, totalAbsent } = response.data.data[0];
       setAttendance({ present: totalPresent || 0, absent: totalAbsent || 0 });
       setloading(false);
+      setAllAttend(response.data.data);
+
     } catch (error) {
       console.error('Error fetching attendance data:', error);
       setloading(false);
@@ -28,8 +33,7 @@ const LabourDashboard = () => {
   };
   useEffect(() => {
     fetchAttendanceData(); // Fetch attendance data when the component mounts
-  }, []);
-  const navigation = useNavigation(); // Hook to access the navigation object
+  }, [cnt]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,8 +57,11 @@ const LabourDashboard = () => {
           </View>
         )}
       </View>
-      <View style={styles.title}>
+      <View style={styles.future}>
         <Text style={styles.titles}>Future Demand</Text>
+        <View onTouchEndCapture={() => navigation.navigate("LabourCalender" , {allAttend})}>
+          <MaterialCommunityIcons name="calendar" size={35} color='black' />
+        </View>
       </View>
     </SafeAreaView>
   )
@@ -77,20 +84,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginVertical: 18,
     marginHorizontal: 19,
-    width:'auto',
-    marginLeft:30,
+    width: 'auto',
+    marginLeft: 30,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 17,
-    
+  },
+  future: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 17,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingRight: 20,
   },
   titles: {
     fontSize: 23,
     fontWeight: 'bold',
     marginBottom: 17,
-    marginLeft:30,
+    marginLeft: 30,
 
   },
   row: {
@@ -98,8 +113,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start', // Align items to the start
     alignItems: 'center', // Ensure vertical alignment
-    gap: 16, 
-    marginBottom:18,
+    gap: 16,
+    marginBottom: 18,
   },
   status: {
     flexDirection: 'row',
@@ -120,9 +135,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     borderRadius: 24, // Makes the button rounded
     alignItems: 'center',
-    marginTop:-15,
-    marginLeft:30,
-    marginRight:99,
+    marginTop: -15,
+    marginLeft: 30,
+    marginRight: 99,
   },
   buttonText: {
     color: '#fff', // White color

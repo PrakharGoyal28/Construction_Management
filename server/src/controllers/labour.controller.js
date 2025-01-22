@@ -9,7 +9,7 @@ const registerLabour = asyncHandler(async (req, res) => {
     const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
 
     // Validate required fields
-    if (!name ) {
+    if (!name) {
         throw new ApiError(400, "All fields are required");
     }
 
@@ -210,26 +210,36 @@ const getAttendanceSummary = asyncHandler(async (req, res) => {
 
     // Aggregate attendance by date
     const attendanceSummary = await Labour.aggregate([
-        { $match: match },
-        { $unwind: "$Attendance" },
-        { $match: { "Attendance.status": "Present" } }, // Only count "Present" status
+        { $match: match }, // Optional project filter
+        { $unwind: "$Attendance" }, // Flatten the Attendance array
         {
             $group: {
                 _id: { date: "$Attendance.date" },
-                totalPresent: { $sum: 1 },
+                totalPresent: {
+                    $sum: {
+                        $cond: [{ $eq: ["$Attendance.status", "Present"] }, 1, 0],
+                    },
+                },
+                totalAbsent: {
+                    $sum: {
+                        $cond: [{ $eq: ["$Attendance.status", "Absent"] }, 1, 0],
+                    },
+                },
             },
         },
-        { $sort: { "_id.date": 1 } },
+        { $sort: { "_id.date": 1 } }, // Sort by date in ascending order
     ]);
 
+    // Format the aggregated data
     const formattedData = attendanceSummary.map((entry) => ({
         date: entry._id.date.toISOString().split("T")[0],
         totalPresent: entry.totalPresent,
+        totalAbsent: entry.totalAbsent,
     }));
-
+    console.log("got the data");
+    
     res.status(200).json(new ApiResponse(200, formattedData, "Attendance summary retrieved successfully"));
 });
-
 
 export {
     registerLabour,
