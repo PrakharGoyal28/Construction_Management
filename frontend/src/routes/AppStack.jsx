@@ -12,6 +12,7 @@ import LabourCalender from '../screens/LabourCalender';
 import LabourAttendence from '../screens/LabourAttendence';
 import LabourFaceVerification from '../components/LabourFaceverification';
 import Profile from '../screens/Profile';
+import TaskList from "../screens/TaskList"
 
 // Get device width dynamically
 const { width } = Dimensions.get('window');
@@ -116,6 +117,31 @@ const MyTabs = () => {
         }}
 
       />
+
+<Tab.Screen
+        name="TaskDashboard"
+        component={TaskList}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={
+                focused
+                  ? require('../assets/icons/Group 93.png') // Focused icon
+                  : require('../assets/icons/Group 93 (1)copy.png') // Default icon
+              }
+              style={styles.tabIcon}
+            />
+          ),
+          // headerTitle: () => <CustomHeader />,
+          // headerStyle: {
+          //   height: 150,
+          //   borderBottomWidth: 0,  // Remove the bottom border
+          //   elevation: 0,  // Remove shadow on Android
+          //   shadowOpacity: 0,  // Remove shadow on iOS
+          // },
+        }}
+      />
+
       <Tab.Screen name="Profile" component={Profile}
         options={{
           tabBarIcon: () => (
