@@ -19,7 +19,6 @@ const LabourCalender = ({route}) => {
           {date.day}
         </Text>
   
-        {/* Display present and absent counts */}
         {(dayData.totalPresent > 0 || dayData.totalAbsent > 0) && (
           <View>
             <Text style={styles.presentText}> {dayData.totalPresent}</Text>
@@ -31,6 +30,7 @@ const LabourCalender = ({route}) => {
 
   return (
     <View style={styles.container}>
+      <Text>Labour Calander</Text>
       <Calendar
         dayComponent={renderDay} // Custom day rendering
         theme={{
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#f9f9f9", // Light background
+    backgroundColor: "white", // Light background
   },
   dayContainer: {
     alignItems: "center",

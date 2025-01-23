@@ -16,6 +16,7 @@ const LabourDashboard = () => {
     setcnt((prevCnt) => prevCnt + 1);
     navigation.navigate('LabourAttendence');
   };
+  
   const fetchAttendanceData = async () => {
 
     try {

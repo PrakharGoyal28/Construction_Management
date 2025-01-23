@@ -1,20 +1,24 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRoute } from '@react-navigation/native';
+
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'; 
 import { BASE_URL } from '../auth/config'
 import axios from 'axios'
 
 const LabourFaceVerification = () => {
+  const route=useRoute();
   const [labour, setLabour] = useState({})
+  const { labourid } = route.params; // Retrieve the labourId from the route parameters
+
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState('back')
   const [image, setImage] = useState(null)
   useEffect(() => {
-    const lId = "678e53f530f9a12016aeb5aa"
     async function getLabour() {
       try {
         const response = await axios.get(
-          `${BASE_URL}/labours/labourDetails/${lId}`,
+          `${BASE_URL}/labours/labourDetails/${labourid}`,
         )
         setLabour(response.data.data.labour)
       } catch (error) {
@@ -22,7 +26,7 @@ const LabourFaceVerification = () => {
       }
     }
     getLabour()
-  }, [])
+  }, [labourid])
 
   if (!permission) {
     return <View />;
