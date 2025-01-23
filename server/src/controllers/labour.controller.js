@@ -203,6 +203,21 @@ const updateTaskId = asyncHandler(async (req, res) => {
     });
 });
 
+const getAllLabours = asyncHandler(async (req, res) => {
+    // Fetch all labourers
+    const labours = await Labour.find({});
+
+    if (!labours || labours.length === 0) {
+        throw new ApiError(404, "No labours found");
+    }
+
+    // Return the labour data
+    return res.status(200).json(
+        new ApiResponse(200, labours, "All labours retrieved successfully")
+    );
+});
+
+
 const getAttendanceSummary = asyncHandler(async (req, res) => {
     const { projectId } = req.params; // Optional: Filter by project
 
@@ -247,5 +262,6 @@ export {
     getLabourDetails,
     getLaboursByProjectId,
     updateTaskId,
-    getAttendanceSummary
+    getAttendanceSummary,
+    getAllLabours
 };
