@@ -65,7 +65,7 @@ const TaskDetails = () => {
       </View>
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      {/* <View style={styles.bottomNav}>
         <TouchableOpacity>
           <Text>🏠</Text>
         </TouchableOpacity>
@@ -78,7 +78,7 @@ const TaskDetails = () => {
         <TouchableOpacity>
           <Text>👤</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

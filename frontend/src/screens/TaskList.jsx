@@ -59,7 +59,7 @@ const TaskList = () => {
       <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item.id} />
 
       {/* Bottom Navigation */}
-      <View style={styles.bottomNav}>
+      {/* <View style={styles.bottomNav}>
         <TouchableOpacity>
           <Text>🏠</Text>
         </TouchableOpacity>
@@ -72,7 +72,7 @@ const TaskList = () => {
         <TouchableOpacity>
           <Text>👤</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };
