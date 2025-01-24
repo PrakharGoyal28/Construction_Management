@@ -5,18 +5,21 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  ToastAndroid,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Button from "../components/button";
 import axios from "axios";
 import { BASE_URL } from "../auth/config";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { AuthContext } from "../auth/Auth";
 
-const LabourAttendence = () => {
+const LabourAttendence = ({ route }) => {
+  const { attendance } = route.params;
+  const { user } = useContext(AuthContext)
   const navigation = useNavigation();
   const [cnt, setcnt] = useState(0);
-  const [attendance, setAttendance] = useState({ present: 0, absent: 0 });
   const [allAttend, setAllAttend] = useState({});
   const [loading, setloading] = useState(true);
   const [labours, setlabours] = useState([]);
@@ -26,28 +29,13 @@ const LabourAttendence = () => {
     navigation.navigate("LabourFace", { labourId });
   };
 
-  const fetchAttendanceData = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary`);
-      const { totalPresent, totalAbsent } = response.data.data[0];
-      setAttendance({ present: totalPresent || 0, absent: totalAbsent || 0 });
-      setloading(false);
-      setAllAttend(response.data.data);
-    } catch (error) {
-      console.error("Error fetching attendance data:", error);
-      setloading(false);
-    }
-  };
+
 
   const fetchAllLabours = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/labours/allLabours`);
-
-      response.data.data.forEach((labour) => {
-        console.log("Labour Name:", labour.name);
-      });
-
       setlabours(response.data.data);
+      setloading(false)
     } catch (error) {
       console.error("Error fetching labours:", error);
     }
@@ -61,12 +49,13 @@ const LabourAttendence = () => {
           labourId,
           date,
           status,
+          remarks: `marked by ${user._id}`,
+          userId: user._id
         }
       );
 
       if (response.data) {
-        console.log(response.data.message); // Optional success message
-        setcnt((prevCnt) => prevCnt + 1); // Trigger useEffect to refresh attendance data
+        setcnt((prevCnt) => prevCnt + 1);
       }
     } catch (error) {
       console.error("Error updating attendance:", error);
@@ -74,17 +63,30 @@ const LabourAttendence = () => {
   };
 
   const handlePresentPress = (labourId) => {
+    const result = labours.find(labour => labour._id === labourId);
+    // console.log(result.Attendance.at(-1).remarks);
+    if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
+      
+      return;
+    }
+    ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
     markAttendance(labourId, "Present");
     navigation.navigate("LabourFace", { labourId });
+
 
   };
 
   const handleAbsentPress = (labourId) => {
+    const result = labours.find(labour => labour._id === labourId);
+    // console.log(result.Attendance.at(-1).remarks);
+    if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
+      return;
+    }
+    ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
     markAttendance(labourId, "Absent");
   };
 
   useEffect(() => {
-    fetchAttendanceData();
     fetchAllLabours(); // Fetch attendance data when the component mounts
   }, [cnt]);
 
@@ -109,38 +111,66 @@ const LabourAttendence = () => {
           </View>
         )}
       </View>
-      <ScrollView>
-        <View style={styles.labourList}>
-          {labours.map((labour, index) => (
-            <View key={index} style={styles.labourCard}>
-              <View style={styles.labourInfo}>
-                <View style={styles.imagePlaceholder}>
-                  <MaterialCommunityIcons
-                    name="account"
-                    size={40}
-                    color="black"
-                  />
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <ScrollView>
+          <View style={styles.labourList}>
+            {labours.map((labour, index) => (
+              <View key={index} style={styles.labourCard}>
+                <View style={styles.labourInfo}>
+                  <View style={styles.imagePlaceholder}>
+                    <MaterialCommunityIcons
+                      name="account"
+                      size={40}
+                      color="black"
+                    />
+                  </View>
                 </View>
-                <Text style={styles.labourName}>{labour.name}</Text>
+                <View style={styles.buttonContainer}>
+                  <Text style={styles.labourName}>{labour.name}</Text>
+                  <View style={styles.buttonRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.absentButton,
+                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                          labour.Attendance.at(-1).status === "Absent"
+                          ? { opacity: 1 }
+                          : { opacity: 0 }
+                      ]}
+                      disabled={
+                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                        labour.Attendance.at(-1).status === "Absent"
+                      }
+                      onPress={() => handleAbsentPress(labour._id)}
+                    >
+                      <Text style={styles.buttonText}>Absent</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                      style={[
+                        styles.presentButton,
+                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                          labour.Attendance.at(-1).status === "Present"
+                          ? { opacity: 1 }
+                          : { opacity: 0 }
+                      ]}
+                      disabled={
+                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                        labour.Attendance.at(-1).status === "Present"
+                      }
+                      onPress={() => handlePresentPress(labour._id)}
+                    >
+                      <Text style={[styles.buttonText, { color: "white" }]}>Present</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.presentButton}
-                  onPress={() => handlePresentPress(labour._id)} // Pass labour's ID
-                >
-                  <Text style={styles.buttonText}>Present</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.absentButton}
-                  onPress={() => handleAbsentPress(labour._id)} // Pass labour's ID
-                >
-                  <Text style={styles.buttonText}>Absent</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+            ))}
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -209,22 +239,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   labourCard: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
     marginVertical: 8,
     borderColor: "#ccc",
     borderRadius: 10,
-    backgroundColor: "#fff",
-  },
-  labourInfo: {
-    flexDirection: "row",
-    alignItems: "center",
+    height: 100,
   },
   imagePlaceholder: {
-    width: 50,
-    height: 50,
+    aspectRatio: 1,
+    height: 90,
     borderRadius: 25,
     backgroundColor: "#f0f0f0",
     alignItems: "center",
@@ -233,31 +258,36 @@ const styles = StyleSheet.create({
   },
   labourName: {
     fontSize: 16,
-    marginLeft: 25,
     fontWeight: "bold",
-    marginBottom: 33,
   },
   buttonContainer: {
-    flexDirection: "row",
-    marginTop: 63,
-    marginRight: 43,
+    flex: 1,
+    marginTop: 10,
+    flexDirection: "column",
+    justifyContent: "center",
   },
   absentButton: {
+    flex: 1,
     borderColor: "#000",
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 8,
     backgroundColor: "white",
     Color: "black",
-
     marginRight: 8,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
   presentButton: {
+    flex: 1,
     backgroundColor: "#000",
     borderRadius: 20,
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 5,
   },
 
   button: {
@@ -278,4 +308,10 @@ const styles = StyleSheet.create({
     color: "white", // White color
     fontSize: 16,
   },
+  buttonRow: {
+    flex: 1,
+    flexDirection: 'row',
+    bottom: 0,
+    marginTop: 15,
+  }
 });

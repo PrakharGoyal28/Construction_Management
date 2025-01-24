@@ -232,57 +232,59 @@ const AppStack = () => {
           },
         }}
       />
-      
+
       {/* <Stack.Navigator> */}
 
       <Stack.Screen
         name="LabourAttendence"
         component={LabourAttendence}
         options={{
-          
-          header: ({navigation}) => (
-            
-            <SafeAreaView
-            style={{
-              height: 150, // Total header height
-              backgroundColor: "white", // Header background color
-              paddingHorizontal: 16, // Horizontal padding
-                justifyContent: "center",
-                elevation: 0, // Remove shadow on Android
-                shadowOpacity: 0,
-              }}
-            >
-              {/* Back Button */}
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  position: "absolute",
-                  top: 55, // Position at the top
-                  left: 16, // Align to the left
-                  zIndex: 1, // Ensure it appears above other elements
-                }}
-                onPress={() => navigation.goBack()} // Go back when button is pressed
-                >
-                <Ionicons
-                  name="chevron-back-sharp"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 8 }}
-                  />
-                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
-              </TouchableOpacity>
 
-              {/* General Header */}
-              <View
+          header: () => {
+            const navigation = useNavigation();
+            return (
+              <SafeAreaView
                 style={{
-                  marginTop: 50, // Space below the back button
+                  height: 150, // Total header height
+                  backgroundColor: "white", // Header background color
+                  paddingHorizontal: 16, // Horizontal padding
+                  justifyContent: "center",
+                  elevation: 0, // Remove shadow on Android
+                  shadowOpacity: 0,
                 }}
+              >
+                {/* Back Button */}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 55, // Position at the top
+                    left: 16, // Align to the left
+                    zIndex: 1, // Ensure it appears above other elements
+                  }}
+                  onPress={() => navigation.goBack()} // Go back when button is pressed
                 >
-                <GeneralHeader />
-              </View>
-            </SafeAreaView>
-          ),
+                  <Ionicons
+                    name="chevron-back-sharp"
+                    size={24}
+                    color="black"
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+                </TouchableOpacity>
+
+                {/* General Header */}
+                <View
+                  style={{
+                    marginTop: 50, // Space below the back button
+                  }}
+                >
+                  <GeneralHeader />
+                </View>
+              </SafeAreaView>
+            )
+          },
           headerStyle: {
             height: 150, // Adjusted height
             borderBottomWidth: 0, // Remove bottom border
@@ -290,8 +292,8 @@ const AppStack = () => {
             shadowOpacity: 0, // Remove shadow on iOS
           },
         }}
-        />
-        {/* </Stack.Navigator> */}
+      />
+      {/* </Stack.Navigator> */}
 
       <Stack.Screen
         name="LabourFace"
@@ -323,12 +325,6 @@ const AppStack = () => {
                   <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>
                     Back
                   </Text>
-                  <MaterialCommunityIcons
-                    name="calendar"
-                    onTouchEndCapture={() => navigation.navigate("LabourAttendenceDetail")}
-                    size={35}
-                    color="black"
-                  />
                 </View>
               </TouchableOpacity>
             );
@@ -345,7 +341,7 @@ const AppStack = () => {
         }}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="LabourAttendenceDetail"
         component={LabourAttendenceDeatil}
         options={{

@@ -2,28 +2,27 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Calendar } from "react-native-calendars";
 
+const LabourAttendanceDeatil = ({ route }) => {
+  const { attendenceDetail } = route.params;
 
-const LabourAttendanceDeatil = ({route}) => {
-  const { labourId } = route.params
-
-  
   const renderDay = ({ date, state }) => {
     const formattedDate = date.dateString;
-    const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
-  
-    // Find data for the specific date
-    const dayData = labourId.find((item) => item.date === formattedDate) || { totalPresent: 0 };
-  
+
+    // Find the attendance data for the current date
+    const dayData = attendenceDetail.find(
+      (item) => item.date.split("T")[0] === formattedDate
+    );
+
     // Determine background color
-    let backgroundColor = "#ffffff";
-    if (formattedDate < today) {
-      backgroundColor = "#111111";
-    } else if (formattedDate === today) {
-      backgroundColor = "#111111"; 
-    } else if (formattedDate > today) {
-      backgroundColor = "#eeeeee"; 
+    let backgroundColor = "#ffffff"; // Default color
+    if (dayData) {
+      if (dayData.status === "Present") {
+        backgroundColor = "green"; // Green for Present
+      } else if (dayData.status === "Absent") {
+        backgroundColor = "brown"; // Brown for Absent
+      }
     }
-  
+
     return (
       <View
         style={[
@@ -35,42 +34,36 @@ const LabourAttendanceDeatil = ({route}) => {
         <Text style={[styles.dateText, state === "disabled" && styles.disabledText]}>
           {date.day}
         </Text>
-        {/* {(dayData.totalPresent >= 0 || dayData.totalAbsent > 0) && (
-          <View>
-            <Text style={styles.presentText}> {dayData.totalPresent}</Text>
-          </View>
-        )} */}
       </View>
     );
   };
-  
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titleText}>Labour Calander</Text>
+      <Text style={styles.titleText}>Labour Calendar</Text>
       <Calendar
-  dayComponent={renderDay}
-  theme={{
-    arrowColor: "black",
-    todayTextColor: "#00adf5",
-    textDayFontWeight: "500",
-    textMonthFontWeight: "bold",
-    calendarBackground: "#f9f9f9",
-    textDayStyle: styles.defaultDayText,
-    textDisabledColor: "#DE824D", // Light gray for disabled days
-  }}
-  style={{
-    borderRadius: 10, // Rounded corners for the calendar
-    elevation: 3, // Shadow for a floating effect
-    backgroundColor: "white", // White background
-  }}
-/>
-
+        dayComponent={renderDay}
+        theme={{
+          arrowColor: "black",
+          todayTextColor: "#00adf5",
+          textDayFontWeight: "500",
+          textMonthFontWeight: "bold",
+          calendarBackground: "#f9f9f9",
+          textDayStyle: styles.defaultDayText,
+          textDisabledColor: "#DE824D",
+        }}
+        style={{
+          borderRadius: 10,
+          elevation: 3,
+          backgroundColor: "white",
+        }}
+      />
     </View>
   );
 };
 
 export default LabourAttendanceDeatil;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -88,9 +81,9 @@ const styles = StyleSheet.create({
   dayContainer: {
     alignItems: "center",
     justifyContent: "center",
-    height: 60,
+    height: 37,
     width: 37, // Rounded cells
-    borderRadius: 23, // Fully rounded
+    borderRadius: 30, // Fully rounded
     borderWidth: 1,
     borderColor: "#e0e0e0",
     backgroundColor: "#111100", // White background

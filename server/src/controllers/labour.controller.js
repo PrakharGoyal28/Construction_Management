@@ -216,8 +216,6 @@ const getAllLabours = asyncHandler(async (req, res) => {
         new ApiResponse(200, labours, "All labours retrieved successfully")
     );
 });
-
-
 const getAttendanceSummary = asyncHandler(async (req, res) => {
     const { projectId } = req.params; // Optional: Filter by project
 
@@ -228,33 +226,47 @@ const getAttendanceSummary = asyncHandler(async (req, res) => {
         { $match: match }, // Optional project filter
         { $unwind: "$Attendance" }, // Flatten the Attendance array
         {
+            $match: {
+                "Attendance.date": { $exists: true, $ne: null }, // Ensure date exists
+            },
+        },
+        {
             $group: {
-                _id: { date: "$Attendance.date" },
+                _id: {
+                    labourId: "$_id", // Group by labour ID to avoid duplicate attendance
+                    date: "$Attendance.date", // Also group by date
+                },
+                status: { $first: "$Attendance.status" }, // Capture the status
+            },
+        },
+        {
+            $group: {
+                _id: "$_id.date", // Group by date for final aggregation
                 totalPresent: {
-                    $sum: {
-                        $cond: [{ $eq: ["$Attendance.status", "Present"] }, 1, 0],
-                    },
+                    $sum: { $cond: [{ $eq: ["$status", "Present"] }, 1, 0] },
                 },
                 totalAbsent: {
-                    $sum: {
-                        $cond: [{ $eq: ["$Attendance.status", "Absent"] }, 1, 0],
-                    },
+                    $sum: { $cond: [{ $eq: ["$status", "Absent"] }, 1, 0] },
                 },
             },
         },
-        { $sort: { "_id.date": 1 } }, // Sort by date in ascending order
+        { $sort: { _id: 1 } }, // Sort by date in ascending order
     ]);
 
     // Format the aggregated data
     const formattedData = attendanceSummary.map((entry) => ({
-        date: entry._id.date.toISOString().split("T")[0],
+        date: entry._id.toISOString().split("T")[0],
         totalPresent: entry.totalPresent,
         totalAbsent: entry.totalAbsent,
     }));
-    console.log("got the data");
-    
-    res.status(200).json(new ApiResponse(200, formattedData, "Attendance summary retrieved successfully"));
+
+    res.status(200).json(
+        new ApiResponse(200, formattedData, "Attendance summary retrieved successfully")
+    );
 });
+
+
+
 
 export {
     registerLabour,

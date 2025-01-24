@@ -14,14 +14,14 @@ const LabourDashboard = () => {
   const [loading, setloading] = useState(true);
   const handlepress = () => {
     setcnt((prevCnt) => prevCnt + 1);
-    navigation.navigate('LabourAttendence');
+    navigation.navigate('LabourAttendence',{attendance});
   };
   
   const fetchAttendanceData = async () => {
 
     try {
       const response = await axios.get(`${BASE_URL}/labours/attendanceSummary`);
-      const { totalPresent, totalAbsent } = response.data.data[0];
+      const { totalPresent, totalAbsent } = response.data.data.at(-1);
       setAttendance({ present: totalPresent || 0, absent: totalAbsent || 0 });
       setloading(false);
       setAllAttend(response.data.data);
