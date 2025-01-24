@@ -119,7 +119,9 @@ const LabourAttendence = ({ route }) => {
             {labours.map((labour, index) => (
               <View key={index} style={styles.labourCard}>
                 <View style={styles.labourInfo}>
-                  <View style={styles.imagePlaceholder}>
+                  <View style={styles.imagePlaceholder} 
+                    onTouchEndCapture={() => navigation.navigate("LabourAttendenceDetail",{attendenceDetail:labour.Attendance})}
+                  >
                     <MaterialCommunityIcons
                       name="account"
                       size={40}
