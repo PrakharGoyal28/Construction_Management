@@ -9,7 +9,7 @@ import axios from 'axios'
 const LabourFaceVerification = () => {
   const route=useRoute();
   const [labour, setLabour] = useState({})
-  const { labourid } = route.params; // Retrieve the labourId from the route parameters
+  const { labourId } = route.params; // Retrieve the labourId from the route parameters
 
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState('back')
@@ -18,7 +18,7 @@ const LabourFaceVerification = () => {
     async function getLabour() {
       try {
         const response = await axios.get(
-          `${BASE_URL}/labours/labourDetails/${labourid}`,
+          `${BASE_URL}/labours/labourDetails/${labourId}`,
         )
         setLabour(response.data.data.labour)
       } catch (error) {
@@ -26,7 +26,7 @@ const LabourFaceVerification = () => {
       }
     }
     getLabour()
-  }, [labourid])
+  }, [labourId])
 
   if (!permission) {
     return <View />;

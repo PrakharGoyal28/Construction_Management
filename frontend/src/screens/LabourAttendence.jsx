@@ -21,9 +21,9 @@ const LabourAttendence = () => {
   const [loading, setloading] = useState(true);
   const [labours, setlabours] = useState([]);
 
-  const handlepress = (labourid) => {
+  const handlepress = (labourId) => {
     setcnt((prevCnt) => prevCnt + 1);
-    navigation.navigate("LabourFace", { labourid });
+    navigation.navigate("LabourFace", { labourId });
   };
 
   const fetchAttendanceData = async () => {
@@ -51,6 +51,36 @@ const LabourAttendence = () => {
     } catch (error) {
       console.error("Error fetching labours:", error);
     }
+  };
+  const markAttendance = async (labourId, status) => {
+    try {
+      const date = new Date().toISOString().split("T")[0]; // Get current date
+      const response = await axios.post(
+        `${BASE_URL}/labours/updateAttendance`,
+        {
+          labourId,
+          date,
+          status,
+        }
+      );
+
+      if (response.data) {
+        console.log(response.data.message); // Optional success message
+        setcnt((prevCnt) => prevCnt + 1); // Trigger useEffect to refresh attendance data
+      }
+    } catch (error) {
+      console.error("Error updating attendance:", error);
+    }
+  };
+
+  const handlePresentPress = (labourId) => {
+    markAttendance(labourId, "Present");
+    navigation.navigate("LabourFace", { labourId });
+
+  };
+
+  const handleAbsentPress = (labourId) => {
+    markAttendance(labourId, "Absent");
   };
 
   useEffect(() => {
@@ -80,35 +110,37 @@ const LabourAttendence = () => {
         )}
       </View>
       <ScrollView>
-
-      <View style={styles.labourList}>
-        {labours.map((labour, index) => (
-          <View key={index} style={styles.labourCard}>
-            <View style={styles.labourInfo}>
-              <View style={styles.imagePlaceholder}>
-                <MaterialCommunityIcons
-                  name="account"
-                  size={40}
-                  color="black"
-                />
+        <View style={styles.labourList}>
+          {labours.map((labour, index) => (
+            <View key={index} style={styles.labourCard}>
+              <View style={styles.labourInfo}>
+                <View style={styles.imagePlaceholder}>
+                  <MaterialCommunityIcons
+                    name="account"
+                    size={40}
+                    color="black"
+                  />
+                </View>
+                <Text style={styles.labourName}>{labour.name}</Text>
               </View>
-              <Text style={styles.labourName}>{labour.name}</Text>
-            </View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.absentButton}>
-                <Text style={styles.buttonText}>Absent</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.presentButton}
-                onPress={() => handlepress(labour._id)} // Pass the labour's ID
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.presentButton}
+                  onPress={() => handlePresentPress(labour._id)} // Pass labour's ID
                 >
-                <Text style={styles.buttonTexxt}>Present</Text>
-              </TouchableOpacity>
+                  <Text style={styles.buttonText}>Present</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.absentButton}
+                  onPress={() => handleAbsentPress(labour._id)} // Pass labour's ID
+                >
+                  <Text style={styles.buttonText}>Absent</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        ))}
-      </View>
-        </ScrollView>
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
