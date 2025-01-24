@@ -15,27 +15,27 @@ const LabourCalender = ({route}) => {
     const dayData = allAttend.find((item) => item.date === formattedDate) || { totalPresent: 0 };
   
     // Determine background color
-    let backgroundColor = "#ffffff"; // Default background color
+    let backgroundColor = "#ffffff";
     if (formattedDate < today) {
-      backgroundColor = "#111111"; // Gray for past dates
+      backgroundColor = "#111111";
     } else if (formattedDate === today) {
-      backgroundColor = "#111111"; // Black for today
+      backgroundColor = "#111111"; 
     } else if (formattedDate > today) {
-      backgroundColor = "#eeeeee"; // Light background for future dates
+      backgroundColor = "#eeeeee"; 
     }
   
     return (
       <View
         style={[
           styles.dayContainer,
-          { backgroundColor }, // Dynamically set background color
+          { backgroundColor },
           state === "disabled" && styles.disabled,
         ]}
       >
         <Text style={[styles.dateText, state === "disabled" && styles.disabledText]}>
           {date.day}
         </Text>
-        {(dayData.totalPresent >= 0 || dayData.totalAbsent > 0) && (
+        {(dayData.totalPresent > 0 || dayData.totalAbsent > 0) && (
           <View>
             <Text style={styles.presentText}> {dayData.totalPresent}</Text>
           </View>
@@ -55,7 +55,7 @@ const LabourCalender = ({route}) => {
     todayTextColor: "#00adf5",
     textDayFontWeight: "500",
     textMonthFontWeight: "bold",
-    calendarBackground: "#f9f9f9", // Light background
+    calendarBackground: "#f9f9f9",
     textDayStyle: styles.defaultDayText,
     textDisabledColor: "#DE824D", // Light gray for disabled days
   }}

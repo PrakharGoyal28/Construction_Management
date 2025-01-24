@@ -12,19 +12,22 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 // Importing Screens
-import Dashboard from '../screens/Dashboard';
-import LabourDashboard from '../screens/LabourDashboard';
-import LabourCalender from '../screens/LabourCalender';
-import LabourAttendence from '../screens/LabourAttendence';
-import LabourFaceVerification from '../components/LabourFaceverification';
-import Profile from '../screens/Profile';
-import TaskList from "../screens/TaskList"
+import Dashboard from "../screens/Dashboard";
+import LabourDashboard from "../screens/LabourDashboard";
+import LabourCalender from "../screens/LabourCalender";
+import LabourAttendence from "../screens/LabourAttendence";
+import LabourFaceVerification from "../components/LabourFaceverification";
+import Profile from "../screens/Profile";
+import TaskList from "../screens/TaskList";
+import LabourAttendenceDeatil from "../components/LabourAttendenceDetail";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
 const { height } = Dimensions.get("window");
+
 
 // Create Bottom Tab Navigator
 const Tab = createBottomTabNavigator();
@@ -133,7 +136,7 @@ const MyTabs = () => {
         }}
       />
 
-<Tab.Screen
+      <Tab.Screen
         name="TaskDashboard"
         component={TaskList}
         options={{
@@ -141,8 +144,8 @@ const MyTabs = () => {
             <Image
               source={
                 focused
-                  ? require('../assets/icons/Group 93.png') // Focused icon
-                  : require('../assets/icons/Group 93 (1)copy.png') // Default icon
+                  ? require("../assets/icons/Group 93.png") // Focused icon
+                  : require("../assets/icons/Group 93 (1)copy.png") // Default icon
               }
               style={styles.tabIcon}
             />
@@ -157,7 +160,9 @@ const MyTabs = () => {
         }}
       />
 
-      <Tab.Screen name="Profile" component={Profile}
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
         options={{
           tabBarIcon: () => (
             <Image
@@ -227,19 +232,24 @@ const AppStack = () => {
           },
         }}
       />
+      
+      {/* <Stack.Navigator> */}
+
       <Stack.Screen
         name="LabourAttendence"
         component={LabourAttendence}
         options={{
-          header: () => (
+          
+          header: ({navigation}) => (
+            
             <SafeAreaView
-              style={{
-                height: 150, // Total header height
-                backgroundColor: "white", // Header background color
-                paddingHorizontal: 16, // Horizontal padding
+            style={{
+              height: 150, // Total header height
+              backgroundColor: "white", // Header background color
+              paddingHorizontal: 16, // Horizontal padding
                 justifyContent: "center",
                 elevation: 0, // Remove shadow on Android
-                shadowOpacity: 0, 
+                shadowOpacity: 0,
               }}
             >
               {/* Back Button */}
@@ -252,14 +262,14 @@ const AppStack = () => {
                   left: 16, // Align to the left
                   zIndex: 1, // Ensure it appears above other elements
                 }}
-                onPress={() => navigation.goBack()}
-              >
+                onPress={() => navigation.goBack()} // Go back when button is pressed
+                >
                 <Ionicons
                   name="chevron-back-sharp"
                   size={24}
                   color="black"
                   style={{ marginRight: 8 }}
-                />
+                  />
                 <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
               </TouchableOpacity>
 
@@ -268,7 +278,7 @@ const AppStack = () => {
                 style={{
                   marginTop: 50, // Space below the back button
                 }}
-              >
+                >
                 <GeneralHeader />
               </View>
             </SafeAreaView>
@@ -280,11 +290,64 @@ const AppStack = () => {
             shadowOpacity: 0, // Remove shadow on iOS
           },
         }}
-      />
+        />
+        {/* </Stack.Navigator> */}
 
       <Stack.Screen
         name="LabourFace"
         component={LabourFaceVerification}
+        options={{
+          headerTitle: "", // No title
+          headerShadowVisible: false, // Remove shadow
+          headerBackVisible: false, // Disable default back button
+          headerLeft: () => {
+            const navigation = useNavigation(); // Get the navigation prop
+
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 30, // Increase the padding to make the header taller
+                  paddingHorizontal: 16, // Ensure the button is not cramped
+                }}
+                onPress={() => navigation.goBack()} // Go back when button is pressed
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <View style={{ flexDirection: "row", gap: 195 }}>
+                  <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>
+                    Back
+                  </Text>
+                  <MaterialCommunityIcons
+                    name="calendar"
+                    onTouchEndCapture={() => navigation.navigate("LabourAttendenceDetail")}
+                    size={35}
+                    color="black"
+                  />
+                </View>
+              </TouchableOpacity>
+            );
+          },
+          headerStyle: {
+            backgroundColor: "white",
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
+<Stack.Screen
+        name="LabourAttendenceDetail"
+        component={LabourAttendenceDeatil}
         options={{
           headerTitle: "", // No title
           headerShadowVisible: false, // Remove shadow
@@ -323,6 +386,8 @@ const AppStack = () => {
           },
         }}
       />
+
+
     </Stack.Navigator>
   );
 };

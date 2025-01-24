@@ -44,6 +44,8 @@ const LabourFaceVerification = () => {
     setCameraType(current => (current === 'back' ? 'front' : 'back'));
   }
   return (
+
+    
     <View style={styles.container}>
       <View style={styles.card}>
         <Image
