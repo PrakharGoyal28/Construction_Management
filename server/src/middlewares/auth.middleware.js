@@ -54,7 +54,7 @@ export const restrictChatAccess = asyncHandler(async (req, res, next) => {
     const { projectId } = req.params;
     const userId = req.user.id; // Assuming `req.user` contains the authenticated user's info
 
-    const project = await Project.findById(projectId);
+    const project = await project.findById(projectId);
 
     if (!project) {
         res.status(404);
