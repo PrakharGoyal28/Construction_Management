@@ -8,7 +8,7 @@ import { uploadCloudinary } from "../utils/cloudinary.js";
 
 
 const registerLabour = asyncHandler(async function (req, res) {
-    const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body.formdata;
+    const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
     const image_embed = req.file.path;
     const upload = await uploadCloudinary(image_embed);
     const upload_url = upload.url;
@@ -19,51 +19,6 @@ const registerLabour = asyncHandler(async function (req, res) {
     if (!name) {
         throw new ApiError(400, "All fields are required");
     }
-    const base64Image = image.replace(/^data:image\/\w+;base64,/, '');
-    const imageBuffer = Buffer.from(base64Image, 'base64');
-    const resizedImageBuffer = await sharp(imageBuffer)
-        .resize(224, 224)
-        .toFormat('jpeg')
-        .toBuffer();
-    const resizedBase64Image = resizedImageBuffer.toString('base64');
-
-    // Call Python script to generate embeddings
-    exec(`python generate_embeddings.py "${resizedBase64Image}"`, async (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error generating embedding: ${stderr}`);
-            return res.status(500).json({ message: 'Failed to generate embedding' });
-        }
-
-        // Clean the output from Python (remove any unexpected newlines or spaces)
-        let embeddingString = stdout.trim(); // Remove leading/trailing whitespace
-
-
-        // Check if the output is a stringified array or just a comma-separated string
-        let embedding;
-        try {
-            // If the Python output is a valid JSON string (array format)
-            embedding = JSON.parse(embeddingString);
-
-            // Check if the parsed embedding is an array of numbers
-            if (!Array.isArray(embedding) || embedding.some(val => isNaN(val))) {
-                throw new Error('Embedding contains invalid data');
-            }
-        } catch (err) {
-            // Handle case where the output is not a valid JSON array
-            // For example, if it's a comma-separated string
-            embedding = embeddingString.split(',').map(val => {
-                const num = parseFloat(val.trim());
-                return isNaN(num) ? null : num; // Return null for invalid numbers
-            }).filter(val => val !== null); // Remove any invalid numbers (NaN)
-
-            if (embedding.length === 0) {
-                return res.status(400).json({ message: 'Embedding is invalid or empty' });
-            }
-        }
-
-        // Now the embedding is a clean array of numbers
-        console.log('Embedding:', embedding); // Optional: Log to verify
-
 
         // Create a new labour document
         const newLabour = new Labour({
@@ -348,4 +303,4 @@ const updateAttendance = asyncHandler(async (req, res) => {
         getAttendanceSummary,
         getAllLabours,
     };
-}
+
