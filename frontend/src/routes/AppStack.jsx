@@ -6,11 +6,14 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  SafeAreaView,
+
 } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { MaterialCommunityIcons, Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
 // Importing Screens
 import Dashboard from "../screens/Dashboard";
@@ -19,10 +22,8 @@ import LabourCalender from "../screens/LabourCalender";
 import LabourAttendence from "../screens/LabourAttendence";
 import LabourFaceVerification from "../components/LabourFaceverification";
 import Profile from "../screens/Profile";
-import TaskDashboard from "../screens/TaskDashboard";
 import TaskList from "../screens/TaskList";
-import TaskDetails from "../screens/TaskDetails";
-import TaskCalendar from "../screens/TaskCalendar";
+import LabourAttendenceDeatil from "../components/LabourAttendenceDetail";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
@@ -92,15 +93,21 @@ const MyTabs = () => {
         name="Home"
         component={Dashboard}
         options={{
+          tabBarLabel: "",
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/icons/Group 93.png") // Focused icon
-                  : require("../assets/icons/Group 93 (1)copy.png") // Default icon
-              }
-              style={styles.tabIcon}
-            />
+            <View style={{
+              backgroundColor: focused ? 'white' : '#111111', borderRadius: 50, height: 40, width: 40, justifyContent: 'center', alignItems: 'center'
+            }}>
+              <Entypo
+                name="home"
+                color={
+                  focused
+                    ? 'black' // Focused icon
+                    : 'white' // Default icon
+                }
+                size={24}
+              />
+            </View>
           ),
           headerTitle: () => <CustomHeader />,
           headerStyle: {
@@ -115,15 +122,21 @@ const MyTabs = () => {
         name="LabourDashboard"
         component={LabourDashboard}
         options={{
+          tabBarLabel: "",
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/icons/Group 89.png") // Focused icon
-                  : require("../assets/icons/Group 89.png") // Default icon
-              }
-              style={styles.tabIcon}
-            />
+            <View style={{
+              backgroundColor: focused ? 'white' : '#111111', borderRadius: 50, height: 40, width: 40, justifyContent: 'center', alignItems: 'center'
+            }}>
+              <FontAwesome
+                name="calendar"
+                color={
+                  focused
+                    ? 'black' // Focused icon
+                    : 'white' // Default icon
+                }
+                size={24}
+              />
+            </View>
           ),
           headerTitle: () => <GeneralHeader />,
           headerStyle: {
@@ -139,15 +152,21 @@ const MyTabs = () => {
         name="TaskDashboard"
         component={TaskDashboard}
         options={{
+          tabBarLabel: "",
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={
-                focused
-                  ? require("../assets/icons/Group 93.png") // Focused icon
-                  : require("../assets/icons/Group 93 (1)copy.png") // Default icon
-              }
-              style={styles.tabIcon}
-            />
+            <View style={{
+              backgroundColor: focused ? 'white' : '#111111', borderRadius: 50, height: 40, width: 40, justifyContent: 'center', alignItems: 'center'
+            }}>
+              <FontAwesome5
+                name="tasks"
+                color={
+                  focused
+                    ? 'black' // Focused icon
+                    : 'white' // Default icon
+                }
+                size={24}
+              />
+            </View>
           ),
           // headerTitle: () => <CustomHeader />,
           // headerStyle: {
@@ -163,11 +182,21 @@ const MyTabs = () => {
         name="Profile"
         component={Profile}
         options={{
-          tabBarIcon: () => (
-            <Image
-              source={require("../assets/icons/Group 91.png")} // Simple static image
-              style={styles.tabIcon}
-            />
+          tabBarLabel: "",
+          tabBarIcon: ({ focused }) => (
+            <View style={{
+              backgroundColor: focused ? 'white' : '#111111', borderRadius: 50, height: 40, width: 40, justifyContent: 'center', alignItems: 'center'
+            }}>
+              <FontAwesome5
+                name="user"
+                color={
+                  focused
+                    ? 'black' // Focused icon
+                    : 'white' // Default icon
+                }
+                size={24}
+              />
+            </View>
           ),
         }}
       />
@@ -231,69 +260,68 @@ const AppStack = () => {
           },
         }}
       />
-      <Stack.Screen
-        name="TaskDashboard"
-        component={TaskDashboard}
-        options={{ title: "Task Dashbord", headerShown: false }}
-      />
-      <Stack.Screen
-        name="TaskList"
-        component={TaskList}
-        options={{ title: "Task List", headerShown: false }}
-      />
-      <Stack.Screen
-        name="TaskDetails"
-        component={TaskDetails}
-        options={{ title: "Task Details" }}
-      />
-      <Stack.Screen
-        name="TaskCalendar"
-        component={TaskCalendar}
-        options={{headerTitle: "", // No title
-          headerShadowVisible: false, // Remove shadow
-          headerBackVisible: false,}}
-      />
+
+      {/* <Stack.Navigator> */}
+
       <Stack.Screen
         name="LabourAttendence"
         component={LabourAttendence}
         options={{
-          headerTitle: "", // No title
-          headerShadowVisible: false, // Remove shadow
-          headerBackVisible: false, // Disable default back button
-          headerLeft: () => {
-            const navigation = useNavigation(); // Get the navigation prop
 
+          header: () => {
+            const navigation = useNavigation();
             return (
-              <TouchableOpacity
+              <SafeAreaView
                 style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingVertical: 30, // Increase the padding to make the header taller
-                  paddingHorizontal: 16, // Ensure the button is not cramped
+                  height: 150, // Total header height
+                  backgroundColor: "white", // Header background color
+                  paddingHorizontal: 16, // Horizontal padding
+                  justifyContent: "center",
+                  elevation: 0, // Remove shadow on Android
+                  shadowOpacity: 0,
                 }}
-                onPress={() => navigation.goBack()} // Go back when button is pressed
               >
-                <Ionicons
-                  name="chevron-back-sharp"
-                  size={24}
-                  color="black"
-                  style={{ marginRight: 8 }}
-                />
-                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
-              </TouchableOpacity>
-            );
+                {/* Back Button */}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 55, // Position at the top
+                    left: 16, // Align to the left
+                    zIndex: 1, // Ensure it appears above other elements
+                  }}
+                  onPress={() => navigation.goBack()} // Go back when button is pressed
+                >
+                  <Ionicons
+                    name="chevron-back-sharp"
+                    size={24}
+                    color="black"
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+                </TouchableOpacity>
+
+                {/* General Header */}
+                <View
+                  style={{
+                    marginTop: 50, // Space below the back button
+                  }}
+                >
+                  <GeneralHeader />
+                </View>
+              </SafeAreaView>
+            )
           },
           headerStyle: {
-            backgroundColor: "white",
-            borderBottomWidth: 0,
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerTitleStyle: {
-            fontWeight: "bold",
+            height: 150, // Adjusted height
+            borderBottomWidth: 0, // Remove bottom border
+            elevation: 0, // Remove shadow on Android
+            shadowOpacity: 0, // Remove shadow on iOS
           },
         }}
       />
+      {/* </Stack.Navigator> */}
 
       <Stack.Screen
         name="LabourFace"
@@ -321,6 +349,52 @@ const AppStack = () => {
                   color="black"
                   style={{ marginRight: 8 }}
                 />
+                <View style={{ flexDirection: "row", gap: 195 }}>
+                  <Text style={{ fontSize: 16, color: "black", marginTop: 5 }}>
+                    Back
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          },
+          headerStyle: {
+            backgroundColor: "white",
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+
+      <Stack.Screen
+        name="LabourAttendenceDetail"
+        component={LabourAttendenceDeatil}
+        options={{
+          headerTitle: "", // No title
+          headerShadowVisible: false, // Remove shadow
+          headerBackVisible: false, // Disable default back button
+          headerLeft: () => {
+            const navigation = useNavigation(); // Get the navigation prop
+
+            return (
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 30, // Increase the padding to make the header taller
+                  paddingHorizontal: 16, // Ensure the button is not cramped
+                }}
+                onPress={() => navigation.goBack()} // Go back when button is pressed
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
                 <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
               </TouchableOpacity>
             );
@@ -336,6 +410,8 @@ const AppStack = () => {
           },
         }}
       />
+
+
     </Stack.Navigator>
   );
 };
@@ -390,9 +466,9 @@ const styles = StyleSheet.create({
     elevation: 5, // For Android shadow
     paddingTop: 10,
   },
-  tabIcon: {
-    width: 0.071 * width, // Adjust the icon width as needed
-    height: 0.158 * height, // Adjust the icon height as needed
-    resizeMode: "contain",
-  },
+  // tabIcon: {
+  //   width: 0.071 * width, // Adjust the icon width as needed
+  //   height: 0.158 * height, // Adjust the icon height as needed
+  //   resizeMode: "contain",
+  // },
 });

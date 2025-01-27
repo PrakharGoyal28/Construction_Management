@@ -17,7 +17,8 @@ const labourSchema = new mongoose.Schema({
         },
         remarks: { type: String } // Optional remarks
       }
-    ]
+    ],
+    Embeddings:{type:String}
   });
   
 export const Labour = mongoose.model("Labour", labourSchema)

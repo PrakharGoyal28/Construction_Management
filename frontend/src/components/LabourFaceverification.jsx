@@ -1,28 +1,33 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState, useRef } from 'react'
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera'; 
+import React, { useEffect, useState } from 'react'
+
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { BASE_URL } from '../auth/config'
 import axios from 'axios'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-const LabourFaceVerification = () => {
+const LabourFaceVerification = ({ route }) => {
   const [labour, setLabour] = useState({})
+  const navigation = useNavigation()
+  const { labourId } = route.params;
   const [permission, requestPermission] = useCameraPermissions();
   const [cameraType, setCameraType] = useState('back')
   const [image, setImage] = useState(null)
   useEffect(() => {
-    const lId = "678e53f530f9a12016aeb5aa"
     async function getLabour() {
       try {
         const response = await axios.get(
-          `${BASE_URL}/labours/labourDetails/${lId}`,
+          `${BASE_URL}/labours/labourDetails/${labourId}`,
         )
         setLabour(response.data.data.labour)
+        
       } catch (error) {
         console.error('Failed to find labour:', error.message)
       }
     }
     getLabour()
-  }, [])
+  }, [labourId])
 
   if (!permission) {
     return <View />;
@@ -40,7 +45,17 @@ const LabourFaceVerification = () => {
     setCameraType(current => (current === 'back' ? 'front' : 'back'));
   }
   return (
+
+
     <View style={styles.container}>
+      <View style={styles.cal}>
+        <MaterialCommunityIcons
+          name="calendar"
+          onTouchEndCapture={() => navigation.navigate("LabourAttendenceDetail",{attendenceDetail:labour.Attendance})}
+          size={35}
+          color="black"
+        />
+      </View>
       <View style={styles.card}>
         <Image
           source={require('../assets/icon.png')}
@@ -115,6 +130,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  cal:{
+    position: 'absolute',
+    top: 0,
+    right: 50,
+  }
 })
 
 export default LabourFaceVerification
