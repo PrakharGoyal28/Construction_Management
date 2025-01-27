@@ -174,6 +174,40 @@ const getTaskDetails = asyncHandler(async (req, res) => {
 
     res.status(200).json(new ApiResponse(200, task, "Task details retrieved successfully."));
 });
+
+const getAllTasks=async(req,res)=>{
+    try {
+        const tasks = await Task.find();
+
+    // Send tasks as the response
+    res.status(200).json(tasks);
+    } catch (error) {
+        console.error("Error fetching tasks:", error);
+    res.status(500).json({ message: "Failed to fetch tasks." });
+    }
+}
+
+const getTaskByDate=async(req,res)=>{
+    try {
+        console.log("hello");
+        
+        const { date } = req.params;
+    
+        // Parse the date parameter into a Date object
+        const targetDate = new Date(date);
+    
+        // Find tasks where the target date is between Starttime and Deadline
+        const tasks = await Task.find({
+          Starttime: { $lte: targetDate }, // Starttime is less than or equal to the target date
+          Deadline: { $gte: targetDate }, // Deadline is greater than or equal to the target date
+        }).populate('AssignedTo').populate('ProjectID').populate('Prerequisites');
+    
+        res.status(200).json(tasks);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: 'Failed to fetch tasks', error });
+      }
+}
 const createNotification = asyncHandler(async (req, res) => {
     const { taskId, Message, Type, Status } = req.body;
     const ImageLocalPath = req.files?.image[0]?.path;
@@ -206,5 +240,7 @@ export {
     updateTask,
     deleteTask,
     getTaskDetails,
-    createNotification
+    createNotification,
+    getTaskByDate,
+    getAllTasks,
 }

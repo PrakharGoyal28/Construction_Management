@@ -4,7 +4,8 @@ import {
     updateAttendance,
     getLabourDetails,
     getAttendanceSummary,
-    getLaboursByProjectId
+    getLaboursByProjectId,
+    getAllLabors
 } from "../controllers/labour.controller.js"
 import { checkRole } from "../middlewares/auth.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -18,5 +19,6 @@ router.post("/updateAttendance", verifyJWT, checkRole, updateAttendance);
 router.get("/labourDetails/:labourId", getLabourDetails);
 router.get("/labours/:projectId", getLaboursByProjectId);
 router.get("/attendanceSummary",getAttendanceSummary);
+router.get("/labours/all/abc", getAllLabors);
 
 export default router;

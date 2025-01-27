@@ -1,84 +1,219 @@
-import React from "react";
-import { View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Modal,
+  FlatList,
+  ScrollView,
+  Image,
+} from "react-native";
+import { BASE_URL } from "../auth/config";
 
-const TaskDetails = () => {
+const TaskDetails = ({ route, navigation }) => {
+  const { task } = route.params;
+
+  // State for modal visibility
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // State for assigned labors
+  const [assignedLabors, setAssignedLabors] = useState([]);
+
+  // Example labor data
+  const [labors, setLabour] = useState([]);
+  const fetchLabors = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/labours/labours/all/abc`
+      );
+      // console.log(response.data);
+      
+      // Assume tasks have Starttime and Deadline fields
+      const temp = response.data;
+      const temp1 = temp.map((item) => ({
+        id: item._id,
+        name: item.name,
+        
+        
+      }));
+      setLabour(temp1);
+      console.log(labors);
+      
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLabors(); // Fetch tasks when the component mounts
+    
+  }, []);
+
+  // Function to assign a labor
+  const handleAssignLabor = (labor) => {
+    setAssignedLabors((prev) => [...prev, labor]);
+  };
+
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-          <Text style={styles.backText}>◀ Back</Text>
-        </TouchableOpacity>
-        <Text style={styles.dateText}>Jan 16, 2025</Text>
-      </View>
-
-      {/* Task Name */}
-      <Text style={styles.taskTitle}>
-        Task name in full length for better understanding and use case of three lines
-      </Text>
-
-      {/* Assign Labors */}
-      <TouchableOpacity style={styles.assignButton}>
-        <Text style={styles.assignText}>+ Assign labors</Text>
+      {/* Back Button */}
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.backButton}
+      >
+        <Text style={styles.backText}>Back</Text>
       </TouchableOpacity>
 
-      <View style={styles.divider} />
+      <ScrollView>
+        {/* Date and Task Name */}
+        <Text style={styles.date}>Jan 26, 2025</Text>
+        <Text style={styles.taskName}>
+          {task?.TaskName ||
+            "Task name in full length for better understanding and use case of three lines"}
+        </Text>
+        <TouchableOpacity
+    style={styles.assignButton}
+    onPress={() => setModalVisible(true)} // Open the modal
+  >
+    <Text style={styles.assignText}>
+      {assignedLabors.length > 0 ? "Reassign Labors" : "+ Assign Labors"}
+    </Text>
+  </TouchableOpacity>
+        {/* Conditional Header */}
 
-      {/* Task Descriptions */}
-      <Text style={styles.sectionTitle}>Task Descriptions</Text>
+        {assignedLabors.length > 0 && (
+    <View>
+      <View style={styles.statusRow}>
+        <Text style={styles.statusText}>● Task Assigned</Text>
+      </View>
+      <View style={styles.statusRow}>
+        <Text style={styles.statusText}>✔ Assigned Labors</Text>
+      </View>
+    </View>
+  )}
 
-      <View style={styles.descriptionRow}>
-        <Text style={styles.label}>🛠 Task Type</Text>
-        <Text style={styles.value}>Empty</Text>
-      </View>
-      <View style={styles.descriptionRow}>
-        <Text style={styles.label}>📍 Location</Text>
-        <Text style={styles.value}>Empty</Text>
-      </View>
-      <View style={styles.descriptionRow}>
-        <Text style={styles.label}>⏱ Duration</Text>
-        <Text style={styles.value}>Empty</Text>
-      </View>
+        {/* Divider */}
+        <View style={styles.divider}></View>
 
-      {/* Drawings */}
-      <Text style={styles.sectionTitle}>📄 Drawings</Text>
-      <View style={styles.inputRow}>
-        <TextInput style={styles.input} placeholder="Drawing File name" />
-        <TouchableOpacity style={styles.downloadButton}>
-          <Text style={styles.downloadText}>⬇</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.inputRow}>
-        <TextInput style={styles.input} placeholder="Drawing File name" />
-        <TouchableOpacity style={styles.downloadButton}>
-          <Text style={styles.downloadText}>⬇</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Task Descriptions */}
+        <Text style={styles.sectionTitle}>Task Descriptions</Text>
+        <View style={styles.descriptionRow}>
+          <Text style={styles.descriptionLabel}>📁 Task Type</Text>
+          <Text style={styles.descriptionValue}>Empty</Text>
+        </View>
+        <View style={styles.descriptionRow}>
+          <Text style={styles.descriptionLabel}>📍 Location</Text>
+          <Text style={styles.descriptionValue}>Empty</Text>
+        </View>
+        <View style={styles.descriptionRow}>
+          <Text style={styles.descriptionLabel}>⏱️ Duration</Text>
+          <Text style={styles.descriptionValue}>
+            {task.Starttime.split("T")[0]}------{task.Deadline.split("T")[0]}
+          </Text>
+        </View>
 
-      {/* Associated Engineer */}
-      <Text style={styles.sectionTitle}>📞 Associated Engineer</Text>
-      <View style={styles.inputRow}>
-        <TextInput style={styles.input} value="+91 98675 76453" editable={false} />
-        <TouchableOpacity style={styles.downloadButton}>
-          <Text style={styles.downloadText}>📞</Text>
-        </TouchableOpacity>
-      </View>
+        {/* Drawings */}
+        <Text style={styles.sectionTitle}>Drawings</Text>
+        <View style={styles.drawingRow}>
+          <TextInput
+            style={styles.drawingInput}
+            placeholder="Drawing File Name"
+          />
+          <TouchableOpacity style={styles.downloadButton}>
+            <Text style={styles.downloadText}>⬇️</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Bottom Navigation */}
-      {/* <View style={styles.bottomNav}>
-        <TouchableOpacity>
-          <Text>🏠</Text>
+        {/* Associated Engineer */}
+        <Text style={styles.sectionTitle}>Associated Engineer</Text>
+        <TouchableOpacity style={styles.engineerRow}>
+          <Text style={styles.engineerText}>+91 98675 76453</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>📅</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>🔍</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>👤</Text>
-        </TouchableOpacity>
-      </View> */}
+
+        {/* Assigned Labors */}
+        {assignedLabors.length > 0 && (
+          <View>
+            <Text style={styles.sectionTitle}>Assigned Labors List</Text>
+            {assignedLabors.map((labor) => (
+              <View key={labor.id} style={styles.laborRow}>
+                <Image
+                  source={{ uri: labor.image }}
+                  style={styles.laborImage}
+                />
+                <Text style={styles.laborName}>{labor.name}</Text>
+                <TouchableOpacity style={styles.assignedButton}>
+                  <Text style={styles.assignedText}>Assigned</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
+      {/* Modal for Assign Labors */}
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.bottomSheet}>
+            <Text style={styles.modalTitle}>Assign Labors</Text>
+            <Text style={styles.modalDate}>January 26, 2025</Text>
+
+            <FlatList
+              data={labors}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => {
+                const isAssigned = assignedLabors.some((labor) => labor.id === item.id); // Check if labor is assigned
+                return (
+                  <View style={styles.laborRow}>
+                    
+                    <Text style={styles.laborName}>{item.name}</Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.assignLaborButton,
+                        isAssigned && { backgroundColor: "#ccc" }, // Change color if assigned
+                      ]}
+                      onPress={() => {
+                        if (isAssigned) {
+                          // Unassign labor
+                          setAssignedLabors((prev) =>
+                            prev.filter((labor) => labor.id !== item.id)
+                          );
+                        } else {
+                          // Assign labor
+                          setAssignedLabors((prev) => [...prev, item]);
+                        }
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.assignLaborText,
+                          isAssigned && { color: "#000" }, // Change text color if assigned
+                        ]}
+                      >
+                        {isAssigned ? "Unassign" : "Assign"}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                );
+              }}
+            />
+
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.confirmButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -89,88 +224,170 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 16,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
   backButton: {
-    paddingVertical: 5,
+    marginBottom: 16,
   },
   backText: {
     fontSize: 16,
-    color: "#000",
+    color: "#007AFF",
   },
-  dateText: {
+  date: {
     fontSize: 14,
-    color: "#666",
+    color: "#888",
+    marginBottom: 8,
   },
-  taskTitle: {
+  taskName: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 16,
+    lineHeight: 24,
   },
   assignButton: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
     paddingVertical: 10,
+    borderRadius: 8,
+    marginBottom: 16,
   },
   assignText: {
-    fontSize: 16,
-    color: "#000",
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  bottomSheet: {
+    backgroundColor: "#fff",
+    height: "40%", // Cover 40% of the screen
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 5, // Add shadow for Android
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
-    marginVertical: 10,
+    marginVertical: 16,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginVertical: 10,
+    marginBottom: 8,
   },
   descriptionRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginVertical: 5,
+    marginBottom: 8,
   },
-  label: {
+  descriptionLabel: {
     fontSize: 14,
-    color: "#666",
+    color: "#333",
   },
-  value: {
+  descriptionValue: {
     fontSize: 14,
     color: "#999",
   },
-  inputRow: {
+  drawingRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 5,
+    marginBottom: 8,
   },
-  input: {
+  drawingInput: {
     flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
+    backgroundColor: "#f8f8f8",
     padding: 10,
-    marginRight: 10,
+    borderRadius: 8,
+    marginRight: 8,
   },
   downloadButton: {
-    padding: 10,
     backgroundColor: "#000",
+    padding: 10,
     borderRadius: 8,
   },
   downloadText: {
     color: "#fff",
     fontWeight: "bold",
   },
-  bottomNav: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
+  engineerRow: {
+    padding: 12,
     backgroundColor: "#f8f8f8",
-    marginTop: 20,
+    borderRadius: 8,
+  },
+  engineerText: {
+    fontSize: 14,
+    color: "#007AFF",
+  },
+  laborRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  laborImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 8,
+  },
+  laborName: {
+    fontSize: 16,
+    flex: 1,
+    color: "#333",
+  },
+  assignLaborButton: {
+    backgroundColor: "#000",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  assignLaborText: {
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  assignedButton: {
+    backgroundColor: "#eee",
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+  assignedText: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+    // alignItems: "center",
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    width: "90%",
+    borderRadius: 16,
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  modalDate: {
+    fontSize: 14,
+    color: "#888",
+    marginBottom: 16,
+  },
+  confirmButton: {
+    backgroundColor: "#000",
+    paddingVertical: 10,
+    borderRadius: 8,
+    marginTop: 16,
+    alignItems: "center",
+  },
+  confirmButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

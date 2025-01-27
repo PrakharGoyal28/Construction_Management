@@ -3,7 +3,9 @@ import {
     createTask,
     updateTask,
     deleteTask,
-    getTaskDetails
+    getTaskDetails,
+    getTaskByDate,
+    getAllTasks,
 
 } from "../controllers/task.controller.js"
 
@@ -21,6 +23,10 @@ router.delete("/delete/:taskId", deleteTask);
 
 // Route to get task details by ID
 router.get("/:taskId", getTaskDetails);
+
+router.get("/info/:date",getTaskByDate);
+
+router.get("/all/abc",getAllTasks)
 
 
 

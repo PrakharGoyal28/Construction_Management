@@ -1,29 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import axios from 'axios';
 
+import { BASE_URL } from '../auth/config';
+import { useNavigation } from "@react-navigation/native";
 const TaskList = () => {
+  const navigation=useNavigation()
   const [activeTab, setActiveTab] = useState("Assigned");
+  const [tasks, setTasks] = useState([]);
+  
 
-  const tasks = [
-    { id: "1", name: "Task Name in a full length for better understanding", number: 6 },
-    { id: "2", name: "Task Name in a full length for better understanding", number: 6 },
-    { id: "3", name: "Task Name in a full length for better understanding", number: 6 },
-    { id: "4", name: "Task Name in a full length for better understanding", number: 6 },
-  ];
+  const fetchTasks=async ()=>{
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      console.log(`${today}`);
+      console.log(`${BASE_URL}/task/info/2025-01-25`);
+      
+      const response = await axios.get(`${BASE_URL}/task/info/${today}`,{
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      });
+      console.log("hello",response.status);
+      console.log("hello",response.data);
+      
+      setTasks(response.data);
+      console.log("hello          ",tasks);
+      
+      
+    } catch (error) {
+      console.error('Error fetching task data:', error);
+    }
+  }
+  // const tasks = [
+  //   { id: "1", name: "Task Name in a full length for better understanding", number: 6 },
+  //   { id: "2", name: "Task Name in a full length for better understanding", number: 6 },
+  //   { id: "3", name: "Task Name in a full length for better understanding", number: 6 },
+  //   { id: "4", name: "Task Name in a full length for better understanding", number: 6 },
+  // ];
+  useEffect(() => {
+    fetchTasks(); // Fetch tasks when the component mounts
+  }, []);
+
+  const navigateToDetails = (task) => {
+    console.log(task.TaskName);
+    
+    navigation.navigate("TaskDetails", { task });
+  };
 
   const renderTask = ({ item }) => (
-    <View style={styles.taskCard}>
+    <TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
       <View style={styles.radioCircle}></View>
-      <Text style={styles.taskName}>{item.name}</Text>
+      <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
-        <Text style={styles.numberText}>{item.number}</Text>
+        <Text style={styles.numberText}>{item.LabourRequired}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
+  
   );
 
   return (
     <View style={styles.container}>
-      {/* Header */}
+      {/* Header
       <View style={styles.header}>
         <Text style={styles.headerText}>Task List</Text>
         <View style={styles.buttonGroup}>
@@ -37,7 +76,7 @@ const TaskList = () => {
       </View>
 
       {/* Tabs */}
-      <View style={styles.tabs}>
+      {/* <View style={styles.tabs}>
         <TouchableOpacity onPress={() => setActiveTab("Assigned")}>
           <Text style={activeTab === "Assigned" ? styles.activeTab : styles.inactiveTab}>
             Assigned
@@ -53,10 +92,16 @@ const TaskList = () => {
             Field
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */} 
 
       {/* Task List */}
-      <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item.id} />
+      {tasks.length === 0 ? (
+        <View style={styles.noTasksContainer}>
+          <Text style={styles.noTasksText}>No tasks today</Text>
+        </View>
+      ) : (
+        <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item._id} />
+      )}
 
       {/* Bottom Navigation */}
       {/* <View style={styles.bottomNav}>

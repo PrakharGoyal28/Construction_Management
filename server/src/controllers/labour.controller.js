@@ -175,6 +175,20 @@ const getLaboursByProjectId = asyncHandler(async (req, res) => {
     );
 });
 
+const getAllLabors= async (req,res)=>{
+    try {
+        const labours=await Labour.find();
+
+        if(labours.length===0){
+            throw Error("no labor");
+        }
+
+        return res.status(200).json(labours)
+    } catch (error) {
+        return res.status(400).json(error)
+    }
+}
+
 
 const updateTaskId = asyncHandler(async (req, res) => {
     const { labourId, newTaskId } = req.body;
@@ -247,5 +261,6 @@ export {
     getLabourDetails,
     getLaboursByProjectId,
     updateTaskId,
-    getAttendanceSummary
+    getAttendanceSummary,
+    getAllLabors
 };

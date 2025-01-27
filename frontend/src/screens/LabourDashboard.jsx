@@ -20,7 +20,7 @@ const LabourDashboard = () => {
 
     try {
       const today = new Date().toISOString().split('T')[0];
-      const response = await axios.get(`${BASE_URL}/labours/attendanceSummary`);
+      const response = await axios.get(`http://localhost:3000/labours/attendanceSummary`, { withCredentials: true });
       const { totalPresent, totalAbsent } = response.data.data[0];
       setAttendance({ present: totalPresent || 0, absent: totalAbsent || 0 });
       setloading(false);

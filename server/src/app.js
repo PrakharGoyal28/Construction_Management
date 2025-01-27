@@ -6,9 +6,9 @@ import { Router } from "express";
 const app=express()
 
 app.use(cors({
-    origin:'*',
-    credentials:true
-}))
+    origin: "*", // Replace with your frontend's URL
+    credentials: true, // Enable cookies or credentials
+}));
 
 app.use(express.json({limit:"100kb"}))
 app.use(express.urlencoded({extended:true,limit:"100kb"}))

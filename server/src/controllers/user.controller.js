@@ -44,7 +44,8 @@ const registerUser =asyncHandler( async (req,res)=>{
 })
 
 const loginUser=asyncHandler(async (req,res)=>{
-
+    console.log("login endpoint hit");
+    
     const {email,password}=req.body
 
     if(!email) throw new ApiError(400,"email or username is required")
