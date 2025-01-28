@@ -18,7 +18,8 @@ const labourSchema = new mongoose.Schema({
         remarks: { type: String } // Optional remarks
       }
     ],
-    Embeddings:{type:String}
+    ImageUrl:{type:String},
+    Embeddings: { type: [Number], required: true }, // Array for storing face embeddings
   });
   
 export const Labour = mongoose.model("Labour", labourSchema)
