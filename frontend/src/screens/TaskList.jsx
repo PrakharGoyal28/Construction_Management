@@ -4,12 +4,13 @@ import axios from 'axios';
 
 import { BASE_URL } from '../auth/config';
 import { useNavigation } from "@react-navigation/native";
+import { FontAwesome5 } from "@expo/vector-icons";
 const TaskList = () => {
   const navigation=useNavigation()
   const [activeTab, setActiveTab] = useState("Assigned");
   const [tasks, setTasks] = useState([]);
   
-  const inte=[{_id:1,TaskName:"Task1",LabourRequired:1}]
+  
   const fetchTasks=async ()=>{
     try {
       const today = new Date().toISOString().split('T')[0];
@@ -42,15 +43,20 @@ const TaskList = () => {
     navigation.navigate("TaskDetails", { task });
   };
 
-  const renderTask = ({ item }) => {console.log("Item",item._id);
-      return (item.AssignedLabour.length>0?(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
-      <View style={styles.radioCircle}></View>
+  const renderTask = ({ item }) => {
+    console.log("Item",item.AssignedTo);
+      return (item.AssignedTo.length>0?(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
+      <View style={styles.radioCircleGreen}>
+        <FontAwesome5 name="check" color="green" size={14}/>
+      </View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
         <Text style={styles.numberText}>{item.LabourRequired}</Text>
       </View>
     </TouchableOpacity>):(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
-      <View style={styles.radioCircle}></View>
+      <View style={styles.radioCircleGreen}>
+      
+        </View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
         <Text style={styles.numberText}>{item.LabourRequired}</Text>
@@ -132,6 +138,15 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 8,
     
+  },
+  radioCircleGreen: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: "#000",
+    marginRight: 16,
+    color:"green"
   },
   radioCircle: {
     width: 20,
