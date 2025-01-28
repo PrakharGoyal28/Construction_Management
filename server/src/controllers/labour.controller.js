@@ -294,6 +294,8 @@ const updateAttendance = asyncHandler(async (req, res) => {
             );
     });
 
+    
+
     export {
         registerLabour,
         updateAttendance,

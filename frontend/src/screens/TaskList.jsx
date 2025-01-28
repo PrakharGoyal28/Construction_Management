@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet,ScrollView } from "react-native";
 import axios from 'axios';
 
 import { BASE_URL } from '../auth/config';
@@ -9,47 +9,41 @@ const TaskList = () => {
   const [activeTab, setActiveTab] = useState("Assigned");
   const [tasks, setTasks] = useState([]);
   
-
+  const inte=[{_id:1,TaskName:"Task1",LabourRequired:1}]
   const fetchTasks=async ()=>{
     try {
       const today = new Date().toISOString().split('T')[0];
       console.log(`${today}`);
       console.log(`${BASE_URL}/task/info/2025-01-25`);
       
-      const response = await axios.get(`${BASE_URL}/task/info/${today}`,{
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        }
-      });
-      console.log("hello",response.status);
-      console.log("hello",response.data);
+      const response = await axios.get(`${BASE_URL}/task/info/${today}`);
+      console.log("response",response.data);
+      
+      
       
       setTasks(response.data);
-      console.log("hello          ",tasks);
+      
       
       
     } catch (error) {
       console.error('Error fetching task data:', error);
     }
   }
-  // const tasks = [
-  //   { id: "1", name: "Task Name in a full length for better understanding", number: 6 },
-  //   { id: "2", name: "Task Name in a full length for better understanding", number: 6 },
-  //   { id: "3", name: "Task Name in a full length for better understanding", number: 6 },
-  //   { id: "4", name: "Task Name in a full length for better understanding", number: 6 },
-  // ];
+  
   useEffect(() => {
     fetchTasks(); // Fetch tasks when the component mounts
   }, []);
+  console.log("hello->>>>>",tasks);
+  console.log("hello->>>>>",tasks);
 
   const navigateToDetails = (task) => {
-    console.log(task.TaskName);
+    console.log("yo yo",task.TaskName);
     
     navigation.navigate("TaskDetails", { task });
   };
 
-  const renderTask = ({ item }) => (
+  const renderTask = ({ item }) => {console.log("Item",item._id);
+      return (
     <TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
       <View style={styles.radioCircle}></View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
@@ -58,73 +52,28 @@ const TaskList = () => {
       </View>
     </TouchableOpacity>
   
-  );
+  )};
 
   return (
     <View style={styles.container}>
-      {/* Header
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Task List</Text>
-        <View style={styles.buttonGroup}>
-          <TouchableOpacity style={styles.activeButton}>
-            <Text style={styles.buttonText}>Today</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.inactiveButton}>
-            <Text style={styles.buttonText}>Calendar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Tabs */}
-      {/* <View style={styles.tabs}>
-        <TouchableOpacity onPress={() => setActiveTab("Assigned")}>
-          <Text style={activeTab === "Assigned" ? styles.activeTab : styles.inactiveTab}>
-            Assigned
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveTab("Critical")}>
-          <Text style={activeTab === "Critical" ? styles.activeTab : styles.inactiveTab}>
-            Critical
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveTab("Field")}>
-          <Text style={activeTab === "Field" ? styles.activeTab : styles.inactiveTab}>
-            Field
-          </Text>
-        </TouchableOpacity>
-      </View> */} 
-
+      
       {/* Task List */}
       {tasks.length === 0 ? (
         <View style={styles.noTasksContainer}>
           <Text style={styles.noTasksText}>No tasks today</Text>
         </View>
       ) : (
-        <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item._id} />
+        <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item._id} contentContainerStyle={styles.flatListContent} />
       )}
 
-      {/* Bottom Navigation */}
-      {/* <View style={styles.bottomNav}>
-        <TouchableOpacity>
-          <Text>🏠</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>📅</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>🔍</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>👤</Text>
-        </TouchableOpacity>
-      </View> */}
+      
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    
     backgroundColor: "#fff",
     paddingHorizontal: 16,
   },
@@ -176,6 +125,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
     borderRadius: 8,
     marginVertical: 8,
+    
   },
   radioCircle: {
     width: 20,
@@ -204,6 +154,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingVertical: 10,
     backgroundColor: "#f8f8f8",
+  },
+  flatListContent: {
+    paddingBottom: 180, // Adjust this value to the height of your bottom navigation bar
   },
 });
 

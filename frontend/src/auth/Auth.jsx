@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(
         `${BASE_URL}/users/login`,
         { email, password },
-        { withCredentials: true } // Required for cookies
+        // { withCredentials: true } // Required for cookies
       );
       const data =await response.data; // Access user from response
       setUser(data.data)

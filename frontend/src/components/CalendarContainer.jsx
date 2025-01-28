@@ -8,34 +8,46 @@ const CalendarContainer = ({ tasks, calendarDays }) => {
   
   return (
     <ScrollView 
-      horizontal 
-      style={styles.container} 
-      contentContainerStyle={styles.contentContainer}
+      style={styles.outerContainer} // Vertical scrolling container
+      contentContainerStyle={styles.verticalContentContainer}
     >
-      {calendarDays.map((day, index) => (
-        <DayColumn key={index} date={day} />
-      ))}
+      <ScrollView 
+        horizontal 
+        style={styles.innerContainer} // Horizontal scrolling container
+        contentContainerStyle={styles.horizontalContentContainer}
+      >
+        {/* Render calendar columns */}
+        {calendarDays.map((day, index) => (
+          <DayColumn key={index} date={day} />
+        ))}
 
-      {/* We can position tasks absolutely on top of columns */}
-      {tasks.map(task => (
-        <TaskBar
-          key={task.id}
-          task={task}
-          calendarDays={calendarDays}
-          // pass any needed styling or dimension info
-        />
-      ))}
+        {/* Render task bars */}
+        {tasks.map((task) => (
+          <TaskBar
+            key={task.id}
+            task={task}
+            calendarDays={calendarDays}
+          />
+        ))}
+      </ScrollView>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
+  outerContainer: {
+    flex: 1,
   },
-  contentContainer: {
-    flexDirection: 'row'
-  }
+  verticalContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 80, // Prevent tasks from getting hidden behind bottom navigation
+  },
+  innerContainer: {
+    flex: 1,
+  },
+  horizontalContentContainer: {
+    flexDirection: 'row',
+  },
 });
 
 export default CalendarContainer;
