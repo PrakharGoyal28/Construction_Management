@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "Construction Mangement",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
+      "image": "./src/assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,20 +18,16 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.abhy1234.frontend"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow frontend to access your camera",
-          "microphonePermission": "Allow frontend to access your microphone",
-          "recordAudioAndroid": true
-        }
-      ]
-    ]
+    "extra": {
+      "eas": {
+        "projectId": "84b29407-c3c7-4ccf-9252-02f46cd9f49c"
+      }
+    }
   }
 }

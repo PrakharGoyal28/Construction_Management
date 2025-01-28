@@ -24,6 +24,7 @@ import LabourFaceVerification from "../components/LabourFaceverification";
 import Profile from "../screens/Profile";
 import TaskList from "../screens/TaskList";
 import LabourAttendenceDeatil from "../components/LabourAttendenceDetail";
+import TaskDashboard from "../screens/TaskDashboard";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
