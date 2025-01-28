@@ -24,9 +24,19 @@
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow frontend to access your camera",
+          "microphonePermission": "Allow frontend to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ],
     "extra": {
       "eas": {
-        "projectId": "84b29407-c3c7-4ccf-9252-02f46cd9f49c"
+        "projectId": "4c2c2227-286b-4fd4-80f4-85ae213ba313"
       }
     }
   }

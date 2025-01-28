@@ -37,37 +37,51 @@ const LabourFaceVerification = ({ route }) => {
     try {
       const photo = await camera.takePictureAsync({
         quality: 0.5,
-        base64: true,
       });
-      setImage(photo.uri);
-      await sendImageToBackend(photo.base64);
+      setImage(photo.uri); // Show the preview of the image
+      await sendImageToBackend(photo.uri); // Send the image URI to the backend
     } catch (error) {
-      console.error('Failed to take picture:', error);
-      alert('Failed to capture image. Please try again.');
+      console.error("Failed to take picture:", error);
+      alert("Failed to capture image. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+  
 
-  const sendImageToBackend = async (base64Image) => {
+  const sendImageToBackend = async (imageUri) => {
     try {
-      const response = await axios.post(`http://:8000/extract`, {
-        labourId,
-        image: base64Image,
+      // Create FormData to send the image file
+      const formData = new FormData();
+      formData.append("file", {
+        uri: imageUri,
+        type: "image/jpeg", // Adjust based on your image type
+        name: "photo.jpg", // Provide a file name
       });
-      console.log(response.data);
-      
-      if (response.data.success) {
-        alert('Face verification successful!');
-        navigation.goBack();
+      formData.append("labourId", labourId); // Add labourId to the form data
+  
+      // Send the image to the backend for embedding generation and verification
+      const similarityResponse = await axios.post(`${BASE_URL}/labours/verifyembedding`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      if (similarityResponse.data.matched) {
+        alert("Face verified successfully! Attendance marked.");
+        navigation.navigate("LabourAttendenceDetail", {
+          attendenceDetail: labour.Attendance,
+        });
       } else {
-        alert('Face verification failed. Please try again.');
+        alert("Face verification failed. Please try again.");
       }
     } catch (error) {
-      console.error('Failed to verify face:', error);
-      alert('Failed to verify face. Please try again.');
+      console.error("Error during face verification:", error.message);
+      alert("An error occurred during face verification.");
     }
   };
+  
+  
 
   if (!permission) {
     return <View />;

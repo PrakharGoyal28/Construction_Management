@@ -9,12 +9,7 @@ import axios from "axios";
 
 
 
-function calculateCosineSimilarity(vec1, vec2) {
-    const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
-    const magnitude1 = Math.sqrt(vec1.reduce((sum, val) => sum + val ** 2, 0));
-    const magnitude2 = Math.sqrt(vec2.reduce((sum, val) => sum + val ** 2, 0));
-    return dotProduct / (magnitude1 * magnitude2);
-  }
+
 
 
 const registerLabour = asyncHandler(async function (req, res) {
@@ -373,32 +368,68 @@ const updateAttendance = asyncHandler(async (req, res) => {
                 )
             );
     });
-
-const verifyembedding = async (req, res) => {
-        const { labourId, embedding } = req.body;
+    const verifyembedding = async (req, res) => {
+        const { labourId } = req.body;
+      
+        if (!labourId || !req.file) {
+          return res.status(400).json({ matched: false, message: "Labour ID and image file are required." });
+        }
+      
+        const imagePath = req.file.path;
       
         try {
+          // Step 1: Upload the image to Cloudinary
+          const upload = await uploadCloudinary(imagePath);
+          const upload_url = upload.url;
+      
+          if (!upload) {
+            throw new Error("Failed to upload photo to Cloudinary.");
+          }
+      
+          // Step 2: Send the Cloudinary URL to the Python backend for embedding generation
+          const response = await axios.post(`${BASE_URLL}/extract`, {
+            image: upload_url,
+          });
+      
+          if (!response.data || !response.data.embedding) {
+            return res.status(400).json({ matched: false, message: "Failed to generate face embeddings." });
+          }
+      
+          const embedding = response.data.embedding;
+      
+          // Step 3: Fetch the labour details from the database
           const labour = await Labour.findById(labourId);
       
           if (!labour) {
-            return res.status(404).json({ matched: false, message: 'Labour not found' });
+            return res.status(404).json({ matched: false, message: "Labour not found." });
           }
       
+          // Step 4: Compare the embeddings
           const storedEmbedding = labour.Embeddings;
-      
           const similarity = calculateCosineSimilarity(storedEmbedding, embedding);
       
           if (similarity > 0.7) {
+            // Step 5: Mark attendance
             labour.Attendance.push(new Date());
             await labour.save();
-            return res.json({ matched: true, message: 'Face verified successfully!' });
+            return res.json({ matched: true, message: "Face verified successfully! Attendance marked." });
           } else {
-            return res.json({ matched: false, message: 'Face verification failed.' });
+            return res.json({ matched: false, message: "Face verification failed." });
           }
         } catch (error) {
-          res.status(500).json({ matched: false, message: error.message });
+          console.error("Error during face verification:", error.message);
+          res.status(500).json({ matched: false, message: "Internal server error during face verification." });
         }
       };
+      
+      // Utility Function: Cosine Similarity
+      function calculateCosineSimilarity(vec1, vec2) {
+        const dotProduct = vec1.reduce((sum, val, idx) => sum + val * vec2[idx], 0);
+        const magnitude1 = Math.sqrt(vec1.reduce((sum, val) => sum + val ** 2, 0));
+        const magnitude2 = Math.sqrt(vec2.reduce((sum, val) => sum + val ** 2, 0));
+        return dotProduct / (magnitude1 * magnitude2);
+      }
+      
 
     export {
         registerLabour,
