@@ -28,7 +28,7 @@ const TaskDetails = ({ route, navigation }) => {
   const fetchLabors = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/labours/labours/all/abc`);
-      console.log(response.data.data);
+      // console.log(response.data.data);
 
       // Assume tasks have Starttime and Deadline fields
       const temp = response.data.data;
@@ -50,10 +50,10 @@ const TaskDetails = ({ route, navigation }) => {
       } else {
         console.error("Unexpected data format:", temp);
       }
-      console.log("temp1", temp1);
+      // console.log("temp1", temp1);
 
       setLabour(temp1);
-      console.log(labors);
+      // console.log(labors);
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }

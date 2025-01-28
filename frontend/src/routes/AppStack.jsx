@@ -14,7 +14,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons, Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import TaskDashboard from "../screens/TaskDashboard";
 
 // Importing Screens
 import Dashboard from "../screens/Dashboard";

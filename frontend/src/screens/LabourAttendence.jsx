@@ -36,6 +36,8 @@ const LabourAttendence = ({ route }) => {
       const response = await axios.get(`${BASE_URL}/labours/allLabours`);
       setlabours(response.data.data);
       setloading(false)
+      // console.log(response.data.data);
+      
     } catch (error) {
       console.error("Error fetching labours:", error);
     }
@@ -67,7 +69,7 @@ const LabourAttendence = ({ route }) => {
     // console.log(result.Attendance.at(-1).remarks);
     if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
       
-      return;
+      // return;
     }
     ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
     markAttendance(labourId, "Present");
@@ -136,9 +138,9 @@ const LabourAttendence = ({ route }) => {
                       style={[
                         styles.absentButton,
                         labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                          labour.Attendance.at(-1).status === "Absent"
-                          ? { opacity: 1 }
-                          : { opacity: 0 }
+                          labour.Attendance.at(-1).status === "Present"
+                          ? { opacity: 0 }
+                          : { opacity: 1 }
                       ]}
                       disabled={
                         labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
@@ -154,14 +156,14 @@ const LabourAttendence = ({ route }) => {
                       style={[
                         styles.presentButton,
                         labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                          labour.Attendance.at(-1).status === "Present"
-                          ? { opacity: 1 }
-                          : { opacity: 0 }
+                          labour.Attendance.at(-1).status === "Absent"
+                          ? { opacity: 0 }
+                          : { opacity: 1 }
                       ]}
-                      disabled={
-                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                        labour.Attendance.at(-1).status === "Present"
-                      }
+                      // disabled={
+                      //   labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                      //   labour.Attendance.at(-1).status === "Present"
+                      // }
                       onPress={() => handlePresentPress(labour._id)}
                     >
                       <Text style={[styles.buttonText, { color: "white" }]}>Present</Text>

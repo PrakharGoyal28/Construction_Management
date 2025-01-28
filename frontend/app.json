@@ -19,38 +19,14 @@
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-<<<<<<< Updated upstream
       "package": "com.abhy1234.frontend"
-=======
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
-      ],
-      "package": "com.prakhargoyal28.frontend"
->>>>>>> Stashed changes
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
-<<<<<<< Updated upstream
     "extra": {
       "eas": {
         "projectId": "84b29407-c3c7-4ccf-9252-02f46cd9f49c"
-=======
-    "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow frontend to access your camera",
-          "microphonePermission": "Allow frontend to access your microphone",
-          "recordAudioAndroid": true
-        }
-      ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "4c2c2227-286b-4fd4-80f4-85ae213ba313"
->>>>>>> Stashed changes
       }
     }
   }

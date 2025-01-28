@@ -4,7 +4,7 @@ import DayColumn from './DayColumn';
 import TaskBar from './TaskBar';
 
 const CalendarContainer = ({ tasks, calendarDays }) => {
-  console.log("Tasks in CC", tasks);
+  // console.log("Tasks in CC", tasks);
   
   return (
     <ScrollView 

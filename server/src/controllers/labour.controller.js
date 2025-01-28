@@ -255,19 +255,70 @@ const updateAttendance = asyncHandler(async (req, res) => {
         });
     });
 
+    // const getAllLabours = asyncHandler(async (req, res) => {
+    //     // Fetch all labourers
+    //     const labours = await Labour.find({});
+
+    //     if (!labours || labours.length === 0) {
+    //         throw new ApiError(404, "No labours found");
+    //     }
+
+    //     // Return the labour data
+    //     return res
+    //         .status(200)
+    //         .json(new ApiResponse(200, labours, "All labours retrieved successfully"));
+    // });
     const getAllLabours = asyncHandler(async (req, res) => {
         // Fetch all labourers
         const labours = await Labour.find({});
-
+    
         if (!labours || labours.length === 0) {
             throw new ApiError(404, "No labours found");
         }
-
+    
+        // Get today's date for attendance checking
+        const today = new Date();
+        const currentDate = today.toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    
+        // Set the date range to check attendance for the last 7 days (or modify as needed)
+        const start = new Date();
+        start.setDate(today.getDate() - 7); // 7 days before today
+        const end = today;
+    
+        const dateRange = [];
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+            dateRange.push(new Date(d).toISOString().split("T")[0]);
+        }
+    
+        // Loop through each labourer and check if their attendance includes the dates in the range
+        for (const labour of labours) {
+            const recordedDates = labour.Attendance.map(
+                (entry) => entry.date.toISOString().split("T")[0]
+            );
+    
+            // Check for missing dates and add absent entries
+            const missingDates = dateRange.filter(
+                (date) => !recordedDates.includes(date)
+            );
+    
+            missingDates.forEach((date) => {
+                labour.Attendance.push({
+                    date: new Date(date),
+                    status: "Absent",
+                    remarks: "Automatically marked as absent",
+                });
+            });
+    
+            // Save the updated labour document with attendance added
+            await labour.save();
+        }
+    
         // Return the labour data
-        return res
-            .status(200)
-            .json(new ApiResponse(200, labours, "All labours retrieved successfully"));
+        return res.status(200).json(
+            new ApiResponse(200, labours, "All labours retrieved successfully")
+        );
     });
+    
     const getAttendanceSummary = asyncHandler(async (req, res) => {
         const { projectId } = req.params; // Optional: Filter by project
 
