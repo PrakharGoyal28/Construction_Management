@@ -14,11 +14,11 @@ const TaskList = () => {
   const fetchTasks=async ()=>{
     try {
       const today = new Date().toISOString().split('T')[0];
-      console.log(`${today}`);
-      console.log(`${BASE_URL}/task/info/2025-01-25`);
+      // console.log(`${today}`);
+      // console.log(`${BASE_URL}/task/info/2025-01-25`);
       
       const response = await axios.get(`${BASE_URL}/task/info/${today}`);
-      console.log("response",response.data);
+      // console.log("response",response.data);
       
       
       
@@ -34,11 +34,11 @@ const TaskList = () => {
   useEffect(() => {
     fetchTasks(); // Fetch tasks when the component mounts
   }, []);
-  console.log("hello->>>>>",tasks);
-  console.log("hello->>>>>",tasks);
+  // console.log("hello->>>>>",tasks);
+  // console.log("hello->>>>>",tasks);
 
   const navigateToDetails = (task) => {
-    console.log("yo yo",task.TaskName);
+    // console.log("yo yo",task.TaskName);
     
     navigation.navigate("TaskDetails", { task });
   };

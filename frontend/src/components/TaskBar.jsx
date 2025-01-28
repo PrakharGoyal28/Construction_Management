@@ -4,11 +4,11 @@ import { differenceInDays, parseISO } from "date-fns";
 
 const TaskBar = ({ task, calendarDays }) => {
   // Convert task.start and task.end to Date objects.
-  console.log(task.start);
+  // console.log(task.start);
 
   const startDate = new Date(task.start);
   const endDate = new Date(task.end);
-  console.log("dates", startDate, endDate);
+  // console.log("dates", startDate, endDate);
 
   // Find the index of the start date in calendarDays
   const startIndex = calendarDays.findIndex(

@@ -171,7 +171,7 @@ export default function TaskCalendar() {
         
       }));
       setTasks(temp1);
-      console.log(tasks);
+      // console.log(tasks);
       
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -182,15 +182,15 @@ export default function TaskCalendar() {
     fetchTasks(); // Fetch tasks when the component mounts
     
   }, []);
-  console.log(tasks);
+  // console.log(tasks);
   
 
   const tasksWithRows =assignRowsToTasks(tasks);
-  console.log("*******");
+  // console.log("*******");
   
-  console.log("Task With rows",tasksWithRows);
+  // console.log("Task With rows",tasksWithRows);
 
-  console.log("*******");
+  // console.log("*******");
 
   const calendarDays = useMemo(() => {
     const startDate = new Date();

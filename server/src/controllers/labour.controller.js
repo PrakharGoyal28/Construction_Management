@@ -9,12 +9,7 @@ import axios from "axios";
 
 
 
-function calculateCosineSimilarity(vec1, vec2) {
-    const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
-    const magnitude1 = Math.sqrt(vec1.reduce((sum, val) => sum + val ** 2, 0));
-    const magnitude2 = Math.sqrt(vec2.reduce((sum, val) => sum + val ** 2, 0));
-    return dotProduct / (magnitude1 * magnitude2);
-  }
+
 
 
 const registerLabour = asyncHandler(async function (req, res) {
@@ -30,20 +25,20 @@ const registerLabour = asyncHandler(async function (req, res) {
         throw new ApiError(500, "Failed to upload photo to Cloudinary");
     }
 
-    if (!name || !Contact || !Type || !ProjectID || !Rate || !TaskID) {
-        throw new ApiError(400, "All fields are required");
-    }
+    // if (!name || !Contact || !Type || !ProjectID || !Rate || !TaskID) {
+    //     throw new ApiError(400, "All fields are required");
+    // }
 
     try {
-        const response = await axios.post(`${BASE_URLL}/extract`, {
-            image: upload_url, // Send the Cloudinary URL to the Python backend
-        });
+        // const response = await axios.post(`${BASE_URLL}/extract`, {
+        //     image: upload_url, // Send the Cloudinary URL to the Python backend
+        // });
 
-        if (!response.data || !response.data.embedding) {
-            throw new ApiError(400, "Failed to generate face embeddings");
-        }
+        // if (!response.data || !response.data.embedding) {
+        //     throw new ApiError(400, "Failed to generate face embeddings");
+        // }
 
-        const embedding = response.data.embedding; // Extract the face embedding array
+        // const embedding = response.data.embedding; // Extract the face embedding array
 
         // Step 4: Create a new Labour document
         const newLabour = new Labour({
@@ -55,7 +50,7 @@ const registerLabour = asyncHandler(async function (req, res) {
             TaskID,
             Attendance: [], // Initialize with an empty attendance array
             ImageUrl: upload_url, // Store the uploaded image URL
-            Embeddings: embedding, // Store the face embeddings
+            // Embeddings: embedding, // Store the face embeddings
         });
 
         // Step 5: Save the labourer to the database
@@ -73,58 +68,88 @@ const registerLabour = asyncHandler(async function (req, res) {
     }
 });
 
-
-
 const updateAttendance = asyncHandler(async (req, res) => {
-        const { labourId, date, status, remarks } = req.body;
+    const { labourId, date, status, remarks } = req.body;
 
-        if (!labourId || !date || !status) {
-            throw new ApiError(400, "Labour ID, Date, and Status are required");
-        }
+    if (!labourId || !date || !status) {
+        throw new ApiError(400, "Labour ID, Date, and Status are required");
+    }
 
-        const attendanceDate = new Date(date);
+    const attendanceDate = new Date(date);
 
-        // Validate the status
-        if (!["Present", "Absent"].includes(status)) {
-            throw new ApiError(400, "Status must be either 'Present' or 'Absent'");
-        }
+    // Validate the status
+    if (!["Present", "Absent"].includes(status)) {
+        throw new ApiError(400, "Status must be either 'Present' or 'Absent'");
+    }
 
-        // Check if the labour exists
-        const labour = await Labour.findById(labourId);
-        if (!labour) {
-            throw new ApiError(404, "Labour not found");
-        }
+    // Check if the labour exists
+    const labour = await Labour.findById(labourId);
+    if (!labour) {
+        throw new ApiError(404, "Labour not found");
+    }
 
-        // Check if an attendance entry for the given date already exists
-        const existingAttendance = labour.Attendance.find(
-            (entry) => entry.date.toISOString().split("T")[0] ===
-                attendanceDate.toISOString().split("T")[0]
-        );
+    // Get the registration date (createdAt)
+    const registrationDate = new Date(labour.createdAt);
 
-        if (existingAttendance) {
-            // Update the existing attendance entry
-            existingAttendance.status = status;
-            if (remarks) {
-                existingAttendance.remarks = remarks;
-            }
-        } else {
-            // Add a new attendance entry
-            labour.Attendance.push({
-                date: attendanceDate,
-                status,
-                remarks,
-            });
-        }
+    // Generate all dates from registration date to today
+    const today = new Date();
+    const dateRange = [];
+    for (let d = new Date(registrationDate); d <= today; d.setDate(d.getDate() + 1)) {
+        dateRange.push(new Date(d).toISOString().split("T")[0]);
+    }
 
-        // Save the updated labour document
-        const updatedLabour = await labour.save();
+    // Check existing attendance dates
+    const recordedDates = labour.Attendance.map(
+        (entry) => entry.date.toISOString().split("T")[0]
+    );
 
-        return res
-            .status(200)
-            .json(
-                new ApiResponse(200, updatedLabour, "Attendance updated successfully")
-            );
+    // Find missing dates and add absent entries for them
+    const missingDates = dateRange.filter(
+        (date) => !recordedDates.includes(date)
+    );
+
+    missingDates.forEach((date) => {
+        labour.Attendance.push({
+            date: new Date(date),
+            status: "Absent",
+            remarks: "Automatically marked as absent",
+        });
     });
+
+    // Check if an attendance entry for the given date already exists
+    const existingAttendance = labour.Attendance.find(
+        (entry) => entry.date.toISOString().split("T")[0] ===
+            attendanceDate.toISOString().split("T")[0]
+    );
+
+    if (existingAttendance) {
+        // Update the existing attendance entry
+        existingAttendance.status = status;
+        if (remarks) {
+            existingAttendance.remarks = remarks;
+        }
+    } else {
+        // Add a new attendance entry for the specified date
+        labour.Attendance.push({
+            date: attendanceDate,
+            status,
+            remarks,
+        });
+    }
+
+    // Sort the attendance array by date (ascending order)
+    labour.Attendance.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    // Save the updated labour document
+    const updatedLabour = await labour.save();
+
+    return res
+        .status(200)
+        .json(
+            new ApiResponse(200, updatedLabour, "Attendance updated successfully")
+        );
+});
+
     const getLabourDetails = asyncHandler(async (req, res) => {
         const { labourId } = req.params;
         let { startDate, endDate } = req.query; // Optional filters for attendance range
@@ -137,7 +162,7 @@ const updateAttendance = asyncHandler(async (req, res) => {
         const today = new Date();
         if (!startDate) {
             const oneWeekBefore = new Date();
-            oneWeekBefore.setDate(today.getDate() - 7);
+            oneWeekBefore.setDate(today.getDate() - 0);
             startDate = oneWeekBefore.toISOString().split("T")[0];
         }
         if (!endDate) {
@@ -254,22 +279,60 @@ const updateAttendance = asyncHandler(async (req, res) => {
             updatedLabour,
         });
     });
-
-    
-
     const getAllLabours = asyncHandler(async (req, res) => {
         // Fetch all labourers
         const labours = await Labour.find({});
-
+    
         if (!labours || labours.length === 0) {
             throw new ApiError(404, "No labours found");
         }
-
+    
+        // Get today's date for attendance checking
+        const today = new Date();
+        const currentDate = today.toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+    
+        // Loop through each labourer and check attendance starting from their registration date
+        for (const labour of labours) {
+            // Get the registration date (createdAt) and format it
+            const registrationDate = new Date(labour.createdAt);
+            const start = new Date(registrationDate); // Attendance starts from the registration date
+            const end = today;
+    
+            // Generate the date range from the registration date to today
+            const dateRange = [];
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                dateRange.push(new Date(d).toISOString().split("T")[0]);
+            }
+    
+            // Check the recorded attendance dates
+            const recordedDates = labour.Attendance.map(
+                (entry) => entry.date.toISOString().split("T")[0]
+            );
+    
+            // Find missing dates and add absent entries for them
+            const missingDates = dateRange.filter(
+                (date) => !recordedDates.includes(date)
+            );
+    
+            missingDates.forEach((date) => {
+                labour.Attendance.push({
+                    date: new Date(date),
+                    status: "Absent",
+                    remarks: "Automatically marked as absent",
+                });
+            });
+    
+            // Save the updated labour document with attendance added
+            await labour.save();
+        }
+    
         // Return the labour data
-        return res
-            .status(200)
-            .json(new ApiResponse(200, labours, "All labours retrieved successfully"));
+        return res.status(200).json(
+            new ApiResponse(200, labours, "All labours retrieved successfully")
+        );
     });
+    
+    
     const getAttendanceSummary = asyncHandler(async (req, res) => {
         const { projectId } = req.params; // Optional: Filter by project
 
@@ -324,32 +387,68 @@ const updateAttendance = asyncHandler(async (req, res) => {
                 )
             );
     });
-
-const verifyembedding = async (req, res) => {
-        const { labourId, embedding } = req.body;
+    const verifyembedding = async (req, res) => {
+        const { labourId } = req.body;
+      
+        if (!labourId || !req.file) {
+          return res.status(400).json({ matched: false, message: "Labour ID and image file are required." });
+        }
+      
+        const imagePath = req.file.path;
       
         try {
+          // Step 1: Upload the image to Cloudinary
+          const upload = await uploadCloudinary(imagePath);
+          const upload_url = upload.url;
+      
+          if (!upload) {
+            throw new Error("Failed to upload photo to Cloudinary.");
+          }
+      
+          // Step 2: Send the Cloudinary URL to the Python backend for embedding generation
+          const response = await axios.post(`${BASE_URLL}/extract`, {
+            image: upload_url,
+          });
+      
+          if (!response.data || !response.data.embedding) {
+            return res.status(400).json({ matched: false, message: "Failed to generate face embeddings." });
+          }
+      
+          const embedding = response.data.embedding;
+      
+          // Step 3: Fetch the labour details from the database
           const labour = await Labour.findById(labourId);
       
           if (!labour) {
-            return res.status(404).json({ matched: false, message: 'Labour not found' });
+            return res.status(404).json({ matched: false, message: "Labour not found." });
           }
       
+          // Step 4: Compare the embeddings
           const storedEmbedding = labour.Embeddings;
-      
           const similarity = calculateCosineSimilarity(storedEmbedding, embedding);
       
           if (similarity > 0.7) {
+            // Step 5: Mark attendance
             labour.Attendance.push(new Date());
             await labour.save();
-            return res.json({ matched: true, message: 'Face verified successfully!' });
+            return res.json({ matched: true, message: "Face verified successfully! Attendance marked." });
           } else {
-            return res.json({ matched: false, message: 'Face verification failed.' });
+            return res.json({ matched: false, message: "Face verification failed." });
           }
         } catch (error) {
-          res.status(500).json({ matched: false, message: error.message });
+          console.error("Error during face verification:", error.message);
+          res.status(500).json({ matched: false, message: "Internal server error during face verification." });
         }
       };
+      
+      // Utility Function: Cosine Similarity
+      function calculateCosineSimilarity(vec1, vec2) {
+        const dotProduct = vec1.reduce((sum, val, idx) => sum + val * vec2[idx], 0);
+        const magnitude1 = Math.sqrt(vec1.reduce((sum, val) => sum + val ** 2, 0));
+        const magnitude2 = Math.sqrt(vec2.reduce((sum, val) => sum + val ** 2, 0));
+        return dotProduct / (magnitude1 * magnitude2);
+      }
+      
 
     export {
         registerLabour,

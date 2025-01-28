@@ -42,6 +42,9 @@ const TaskDetails = ({ route, navigation }) => {
   };
 
   // Load assigned labors from AsyncStorage or fallback to backend
+  
+
+  // Load assigned labors from AsyncStorage or fallback to backend
   const loadAssignedLabors = async () => {
     try {
       const savedLabors = await AsyncStorage.getItem(`task_${task._id}_assignedLabors`);
@@ -86,6 +89,9 @@ const TaskDetails = ({ route, navigation }) => {
       });
 
       setModalVisible(false);
+      // console.log("temp1", temp1);
+
+      
     } catch (error) {
       console.error("Error assigning labors:", error);
     }

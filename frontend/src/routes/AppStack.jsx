@@ -15,7 +15,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons, Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
-
 // Importing Screens
 import Dashboard from "../screens/Dashboard";
 import LabourDashboard from "../screens/LabourDashboard";

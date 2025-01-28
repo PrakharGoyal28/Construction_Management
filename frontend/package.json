@@ -20,7 +20,7 @@
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "expo": "^52.0.26",
-    "expo-camera": "~16.0.14",
+    "expo-camera": "^16.0.14",
     "expo-checkbox": "~4.0.1",
     "expo-dev-client": "~5.0.10",
     "expo-status-bar": "~2.0.1",
