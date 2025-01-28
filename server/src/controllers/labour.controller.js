@@ -8,6 +8,15 @@ import { uploadCloudinary } from "../utils/cloudinary.js";
 import axios from "axios";
 
 
+
+function calculateCosineSimilarity(vec1, vec2) {
+    const dotProduct = vec1.reduce((sum, val, i) => sum + val * vec2[i], 0);
+    const magnitude1 = Math.sqrt(vec1.reduce((sum, val) => sum + val ** 2, 0));
+    const magnitude2 = Math.sqrt(vec2.reduce((sum, val) => sum + val ** 2, 0));
+    return dotProduct / (magnitude1 * magnitude2);
+  }
+
+
 const registerLabour = asyncHandler(async function (req, res) {
     const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
     const imagePath = req.file.path;
@@ -26,7 +35,7 @@ const registerLabour = asyncHandler(async function (req, res) {
     }
 
     try {
-        const response = await axios.post("http://127.0.0.1:8000/extract", {
+        const response = await axios.post(`${BASE_URLL}/extract`, {
             image: upload_url, // Send the Cloudinary URL to the Python backend
         });
 
@@ -316,7 +325,31 @@ const updateAttendance = asyncHandler(async (req, res) => {
             );
     });
 
-    
+const verifyembedding = async (req, res) => {
+        const { labourId, embedding } = req.body;
+      
+        try {
+          const labour = await Labour.findById(labourId);
+      
+          if (!labour) {
+            return res.status(404).json({ matched: false, message: 'Labour not found' });
+          }
+      
+          const storedEmbedding = labour.Embeddings;
+      
+          const similarity = calculateCosineSimilarity(storedEmbedding, embedding);
+      
+          if (similarity > 0.7) {
+            labour.Attendance.push(new Date());
+            await labour.save();
+            return res.json({ matched: true, message: 'Face verified successfully!' });
+          } else {
+            return res.json({ matched: false, message: 'Face verification failed.' });
+          }
+        } catch (error) {
+          res.status(500).json({ matched: false, message: error.message });
+        }
+      };
 
     export {
         registerLabour,
@@ -325,6 +358,7 @@ const updateAttendance = asyncHandler(async (req, res) => {
         getLaboursByProjectId,
         updateTaskId,
         getAttendanceSummary,
+        verifyembedding,
         getAllLabours,
     };
 

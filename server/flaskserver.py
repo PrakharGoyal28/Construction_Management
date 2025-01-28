@@ -13,7 +13,6 @@ def extract_embedding():
         data = request.json
         image_url = data["image"]
 
-        # Step 1: Download the image
         response = requests.get(image_url, timeout=10)
         if response.status_code != 200:
             return jsonify({"error": "Unable to download image"}), 400
