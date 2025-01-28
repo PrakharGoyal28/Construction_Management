@@ -27,6 +27,7 @@ import TaskList from "../screens/TaskList";
 import LabourAttendenceDeatil from "../components/LabourAttendenceDetail";
 import TaskDetails from "../screens/TaskDetails";
 import TaskCalendar from "../screens/TaskCalendar";
+import TaskDashboard from "../screens/TaskDashboard";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");

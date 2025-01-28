@@ -5,22 +5,38 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { uploadCloudinary } from "../utils/cloudinary.js";
+import axios from "axios";
 
 
 const registerLabour = asyncHandler(async function (req, res) {
     const { name, Contact, Type, ProjectID, Rate, TaskID } = req.body;
-    const image_embed = req.file.path;
-    const upload = await uploadCloudinary(image_embed);
+    const imagePath = req.file.path;
+
+    const upload = await uploadCloudinary(imagePath);
     const upload_url = upload.url;
+    // console.log(upload_url);
+    
+
     if (!upload) {
         throw new ApiError(500, "Failed to upload photo to Cloudinary");
     }
-    // Validate required fields
-    if (!name) {
+
+    if (!name || !Contact || !Type || !ProjectID || !Rate || !TaskID) {
         throw new ApiError(400, "All fields are required");
     }
 
-        // Create a new labour document
+    try {
+        const response = await axios.post("http://127.0.0.1:8000/extract", {
+            image: upload_url, // Send the Cloudinary URL to the Python backend
+        });
+
+        if (!response.data || !response.data.embedding) {
+            throw new ApiError(400, "Failed to generate face embeddings");
+        }
+
+        const embedding = response.data.embedding; // Extract the face embedding array
+
+        // Step 4: Create a new Labour document
         const newLabour = new Labour({
             name,
             Contact,
@@ -29,22 +45,26 @@ const registerLabour = asyncHandler(async function (req, res) {
             Rate,
             TaskID,
             Attendance: [], // Initialize with an empty attendance array
-            Embeddings: embedding
+            ImageUrl: upload_url, // Store the uploaded image URL
+            Embeddings: embedding, // Store the face embeddings
         });
 
-        // Save the labourer to the database
+        // Step 5: Save the labourer to the database
         const savedLabour = await newLabour.save();
 
         if (savedLabour) {
-            return res
-                .status(201)
-                .json(
-                    new ApiResponse(201, savedLabour, "Labour registered successfully")
-                );
+            return res.status(201).json(
+                new ApiResponse(201, savedLabour, "Labour registered successfully")
+            );
         } else {
             throw new ApiError(500, "Something went wrong while creating the labour");
         }
-    });
+    } catch (error) {
+        throw new ApiError(500, `Error generating embeddings: ${error.message}`);
+    }
+});
+
+
 
 const updateAttendance = asyncHandler(async (req, res) => {
         const { labourId, date, status, remarks } = req.body;

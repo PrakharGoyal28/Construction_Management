@@ -72,6 +72,7 @@ const LabourFaceVerification = ({ route }) => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
+            
           </TouchableOpacity>
         </View>
       </CameraView>

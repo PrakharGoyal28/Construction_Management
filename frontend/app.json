@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "Construction Mangement",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,6 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
+      "image": "./src/assets/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,11 +18,25 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
-      }
+      },
+<<<<<<< Updated upstream
+      "package": "com.abhy1234.frontend"
+=======
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.prakhargoyal28.frontend"
+>>>>>>> Stashed changes
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
     },
+<<<<<<< Updated upstream
+    "extra": {
+      "eas": {
+        "projectId": "84b29407-c3c7-4ccf-9252-02f46cd9f49c"
+=======
     "plugins": [
       [
         "expo-camera",
@@ -31,6 +46,12 @@
           "recordAudioAndroid": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4c2c2227-286b-4fd4-80f4-85ae213ba313"
+>>>>>>> Stashed changes
+      }
+    }
   }
 }

@@ -34,7 +34,9 @@ import scheduleRouter from "./routes/schedule.routes.js"
 
 
 
-
+app.get("/",(req,res)=>{
+    res.send("Welcome to the construction management system")
+})
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/labours",labourRouter)
 app.use("/api/v1/projects",projectRouter)
