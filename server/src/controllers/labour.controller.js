@@ -331,6 +331,19 @@ const updateAttendance = asyncHandler(async (req, res) => {
             new ApiResponse(200, labours, "All labours retrieved successfully")
         );
     });
+
+    const getAllLaborsForTaskDetails=async (req,res)=>{
+        
+            const response=await Labour.find({})
+            if(!response || response.length === 0){
+                throw new ApiError(404, "No labours found");
+            }
+            return res.status(200).json(
+                new ApiResponse(200, response, "All labours retrieved successfully")
+            );
+            
+        
+    }
     
     
     const getAttendanceSummary = asyncHandler(async (req, res) => {
@@ -459,5 +472,6 @@ const updateAttendance = asyncHandler(async (req, res) => {
         getAttendanceSummary,
         verifyembedding,
         getAllLabours,
+        getAllLaborsForTaskDetails,
     };
 

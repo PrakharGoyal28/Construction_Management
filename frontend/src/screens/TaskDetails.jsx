@@ -35,6 +35,8 @@ const TaskDetails = ({ route, navigation }) => {
         name: item.name,
         image: item.ImageUrl,
       }));
+      console.log("L",laborData);
+      
       setLabour(laborData);
     } catch (error) {
       console.error("Error fetching labors:", error);

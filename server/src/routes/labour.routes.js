@@ -6,7 +6,8 @@ import {
     getAttendanceSummary,
     getLaboursByProjectId,
     getAllLabours,
-    verifyembedding
+    verifyembedding,
+    getAllLaborsForTaskDetails
 } from "../controllers/labour.controller.js"
 import { checkRole } from "../middlewares/auth.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -21,9 +22,9 @@ router.post("/verifyembedding",upload.single("image"),verifyembedding);
 router.post("/updateAttendance", verifyJWT, checkRole, updateAttendance);
 // Route to get attendance history for a specific labour
 router.get("/labourDetails/:labourId", getLabourDetails);
-// router.get("/alllabours",getAllLabours);
+router.get("/alllabours",getAllLabours);
 router.get("/labours/:projectId", getLaboursByProjectId);
 router.get("/attendanceSummary",getAttendanceSummary);
-router.get("/labours/all/abc", getAllLabours);
+router.get("/labours/all/abc", getAllLaborsForTaskDetails);
 
 export default router;
