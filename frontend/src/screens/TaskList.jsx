@@ -43,14 +43,20 @@ const TaskList = () => {
   };
 
   const renderTask = ({ item }) => {console.log("Item",item._id);
-      return (
-    <TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
+      return (item.AssignedLabour.length>0?(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
       <View style={styles.radioCircle}></View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
         <Text style={styles.numberText}>{item.LabourRequired}</Text>
       </View>
-    </TouchableOpacity>
+    </TouchableOpacity>):(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
+      <View style={styles.radioCircle}></View>
+      <Text style={styles.taskName}>{item.TaskName}</Text>
+      <View style={styles.taskNumber}>
+        <Text style={styles.numberText}>{item.LabourRequired}</Text>
+      </View>
+    </TouchableOpacity>)
+    
   
   )};
 

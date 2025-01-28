@@ -38,6 +38,7 @@ const TaskDetails = ({ route, navigation }) => {
         temp1 = temp.map((item) => ({
           id: item._id,
           name: item.name,
+          image:item.ImageUrl
         }));
       } else if (temp && typeof temp === "object") {
         // If it's a single object
@@ -45,6 +46,7 @@ const TaskDetails = ({ route, navigation }) => {
           {
             id: temp._id,
             name: temp.name,
+            image:temp.ImageUrl
           },
         ];
       } else {
@@ -67,6 +69,35 @@ const TaskDetails = ({ route, navigation }) => {
   const handleAssignLabor = (labor) => {
     setAssignedLabors((prev) => [...prev, labor]);
   };
+
+  const handleLaborAssigned= async()=>{
+    try {
+      const labourId=assignedLabors.map((item) => ({
+        id: item._id,
+        
+      }))
+      setModalVisible(false);
+      const res=await axios.put(`${BASE_URL}/update/${task._id}`,{
+        TaskName:task.TaskName,
+        AssignedTo:labourId,
+        Starttime:task.Starttime,
+        Deadline:task.Deadline,
+        Status:task.Status,
+        Description:task.Description,
+        ProjectID:task.ProjectID,
+        LabourRequired:task.LabourRequired,
+       Prerequisites:task.Prerequisites
+      })
+
+      console.log(res);
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+
+
+  }
 
   const date = new Date();
   const date1 = date.toISOString().split("T")[0];
@@ -172,7 +203,7 @@ const TaskDetails = ({ route, navigation }) => {
             {assignedLabors.map((labor) => (
               <View key={labor.id} style={styles.laborRow}>
                 <Image
-                  source={{ uri: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?cs=srgb&dl=pexels-simon-robben-55958-614810.jpg&fm=jpg" }}
+                  source={{ uri: labor.image }}
                   style={styles.laborImage}
                 />
                 <Text style={styles.laborName}>{labor.name}</Text>
@@ -250,7 +281,7 @@ const TaskDetails = ({ route, navigation }) => {
 
             <TouchableOpacity
               style={styles.confirmButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => handleLaborAssigned()}
             >
               <Text style={styles.confirmButtonText}>Done</Text>
             </TouchableOpacity>

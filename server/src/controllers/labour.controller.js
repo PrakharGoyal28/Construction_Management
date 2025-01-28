@@ -246,6 +246,8 @@ const updateAttendance = asyncHandler(async (req, res) => {
         });
     });
 
+    
+
     const getAllLabours = asyncHandler(async (req, res) => {
         // Fetch all labourers
         const labours = await Labour.find({});
