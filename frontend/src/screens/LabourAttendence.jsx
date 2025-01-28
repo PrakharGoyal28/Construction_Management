@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   ToastAndroid,
+  Image,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -17,7 +18,7 @@ import { AuthContext } from "../auth/Auth";
 
 const LabourAttendence = ({ route }) => {
   const { attendance } = route.params;
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const navigation = useNavigation();
   const [cnt, setcnt] = useState(0);
   const [allAttend, setAllAttend] = useState({});
@@ -29,15 +30,12 @@ const LabourAttendence = ({ route }) => {
     navigation.navigate("LabourFace", { labourId });
   };
 
-
-
   const fetchAllLabours = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/labours/allLabours`);
       setlabours(response.data.data);
-      setloading(false)
+      setloading(false);
       // console.log(response.data.data);
-      
     } catch (error) {
       console.error("Error fetching labours:", error);
     }
@@ -52,7 +50,7 @@ const LabourAttendence = ({ route }) => {
           date,
           status,
           remarks: `marked by ${user._id}`,
-          userId: user._id
+          userId: user._id,
         }
       );
 
@@ -64,22 +62,19 @@ const LabourAttendence = ({ route }) => {
     }
   };
 
-  const handlePresentPress = (labourId) => {
-    const result = labours.find(labour => labour._id === labourId);
-    // console.log(result.Attendance.at(-1).remarks);
+  const handlePresentPress =async (labourId) => {
+    const result = labours.find((labour) => labour._id === labourId);
+    // console.log(result.Attendance);
     if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
-      
       // return;
     }
-    ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
-    markAttendance(labourId, "Present");
+    
+    await markAttendance(labourId, "Present");
     navigation.navigate("LabourFace", { labourId });
-
-
   };
 
   const handleAbsentPress = (labourId) => {
-    const result = labours.find(labour => labour._id === labourId);
+    const result = labours.find((labour) => labour._id === labourId);
     // console.log(result.Attendance.at(-1).remarks);
     if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
       return;
@@ -121,13 +116,26 @@ const LabourAttendence = ({ route }) => {
             {labours.map((labour, index) => (
               <View key={index} style={styles.labourCard}>
                 <View style={styles.labourInfo}>
-                  <View style={styles.imagePlaceholder} 
-                    onTouchEndCapture={() => navigation.navigate("LabourAttendenceDetail",{attendenceDetail:labour.Attendance})}
+                  <View
+                    style={styles.imagePlaceholder}
+                    onTouchEndCapture={() =>
+                      navigation.navigate("LabourAttendenceDetail", {
+                        attendenceDetail: labour.Attendance,
+                      })
+                    }
                   >
-                    <MaterialCommunityIcons
+                    {/* <MaterialCommunityIcons
                       name="account"
                       size={40}
                       color="black"
+                    /> */}
+                    <Image
+                      source={{
+                        uri:
+                          labour.ImageUrl ||
+                          "https://th.bing.com/th/id/OIP.F7AAZ51YNslUUrejRKkDeQHaE1?rs=1&pid=ImgDetMain",
+                      }}
+                      style={{ width: 100, height: 100 }}
                     />
                   </View>
                 </View>
@@ -137,13 +145,15 @@ const LabourAttendence = ({ route }) => {
                     <TouchableOpacity
                       style={[
                         styles.absentButton,
-                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                          labour.Attendance.at(-1).status === "Present"
+                        labour.Attendance.at(-1).remarks !==
+                          "Automatically marked as absent" &&
+                        labour.Attendance.at(-1).status === "Present"
                           ? { opacity: 0 }
-                          : { opacity: 1 }
+                          : { opacity: 1 },
                       ]}
                       disabled={
-                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
+                        labour.Attendance.at(-1).remarks !==
+                          "Automatically marked as absent" &&
                         labour.Attendance.at(-1).status === "Absent"
                       }
                       onPress={() => handleAbsentPress(labour._id)}
@@ -151,14 +161,14 @@ const LabourAttendence = ({ route }) => {
                       <Text style={styles.buttonText}>Absent</Text>
                     </TouchableOpacity>
 
-
                     <TouchableOpacity
                       style={[
                         styles.presentButton,
-                        labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                          labour.Attendance.at(-1).status === "Absent"
+                        labour.Attendance.at(-1).remarks !==
+                          "Automatically marked as absent" &&
+                        labour.Attendance.at(-1).status === "Absent"
                           ? { opacity: 0 }
-                          : { opacity: 1 }
+                          : { opacity: 1 },
                       ]}
                       // disabled={
                       //   labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
@@ -166,7 +176,9 @@ const LabourAttendence = ({ route }) => {
                       // }
                       onPress={() => handlePresentPress(labour._id)}
                     >
-                      <Text style={[styles.buttonText, { color: "white" }]}>Present</Text>
+                      <Text style={[styles.buttonText, { color: "white" }]}>
+                        Present
+                      </Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -314,8 +326,8 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     bottom: 0,
     marginTop: 15,
-  }
+  },
 });

@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Button, Image, StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -32,20 +32,22 @@ const LabourFaceVerification = ({ route }) => {
   }, [labourId])
 
   const takePicture = async () => {
-    if (!camera) return;
-    setLoading(true);
-    try {
-      const photo = await camera.takePictureAsync({
-        quality: 0.5,
-      });
-      setImage(photo.uri); // Show the preview of the image
-      await sendImageToBackend(photo.uri); // Send the image URI to the backend
-    } catch (error) {
-      console.error("Failed to take picture:", error);
-      alert("Failed to capture image. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    // if (!camera) return;
+    // setLoading(true);
+    // try {
+    //   const photo = await camera.takePictureAsync({
+    //     quality: 0.5,
+    //   });
+    //   setImage(photo.uri); // Show the preview of the image
+    //   await sendImageToBackend(photo.uri); // Send the image URI to the backend
+    // } catch (error) {
+    //   console.error("Failed to take picture:", error);
+    //   alert("Failed to capture image. Please try again.");
+    // } finally {
+    //   setLoading(false);
+    // }
+    ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
+    navigation.goBack()
   };
   
 
