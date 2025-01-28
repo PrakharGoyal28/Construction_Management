@@ -1,7 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
-import { Material } from "../models/material.model.js";
+import { Material } from "../models/Material.model.js";
 
 const addMaterial = asyncHandler(async (req, res) => {
   const { Name, UserId, VendorID, ProjectId, Quantity, Description } = req.body;
