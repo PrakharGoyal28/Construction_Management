@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { MaterialCommunityIcons } from '@expo/vector-icons'; // for icons
 import {useNavigation } from '@react-navigation/native';
+import TaskCalendar from './TaskCalendar';
 
 // const { widthS } = Dimensions.get('window');
 // const { heightS } = Dimensions.get('window');
@@ -25,7 +26,7 @@ const Dashboard = () => {
           <DashboardButton icon="calendar" label="Attendance" selected goTo="LabourDashboard"/>
           <DashboardButton icon="checkbox-marked-circle" label="Tasks" selected />
           <DashboardButton icon="account-group" label="Labor Calendar" />
-          <DashboardButton icon="calendar-range" label="Task Calendar" />
+          <DashboardButton icon="calendar-range" label="Task Calendar" goTo="TaskCalendar" />
         </View>
         <Text style={styles.header}>Tasks Status</Text>
         </ScrollView>

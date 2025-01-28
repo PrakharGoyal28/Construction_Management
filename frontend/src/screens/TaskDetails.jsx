@@ -12,6 +12,7 @@ import {
   Image,
 } from "react-native";
 import { BASE_URL } from "../auth/config";
+import { FontAwesome, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const TaskDetails = ({ route, navigation }) => {
   const { task } = route.params;
@@ -26,22 +27,33 @@ const TaskDetails = ({ route, navigation }) => {
   const [labors, setLabour] = useState([]);
   const fetchLabors = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/labours/labours/all/abc`
-      );
-      // console.log(response.data);
-      
+      const response = await axios.get(`${BASE_URL}/labours/labours/all/abc`);
+      console.log(response.data.data);
+
       // Assume tasks have Starttime and Deadline fields
-      const temp = response.data;
-      const temp1 = temp.map((item) => ({
-        id: item._id,
-        name: item.name,
-        
-        
-      }));
+      const temp = response.data.data;
+      let temp1 = [];
+      if (Array.isArray(temp)) {
+        // Map if it's an array
+        temp1 = temp.map((item) => ({
+          id: item._id,
+          name: item.name,
+        }));
+      } else if (temp && typeof temp === "object") {
+        // If it's a single object
+        temp1 = [
+          {
+            id: temp._id,
+            name: temp.name,
+          },
+        ];
+      } else {
+        console.error("Unexpected data format:", temp);
+      }
+      console.log("temp1", temp1);
+
       setLabour(temp1);
       console.log(labors);
-      
     } catch (error) {
       console.error("Error fetching tasks:", error);
     }
@@ -49,13 +61,15 @@ const TaskDetails = ({ route, navigation }) => {
 
   useEffect(() => {
     fetchLabors(); // Fetch tasks when the component mounts
-    
   }, []);
 
   // Function to assign a labor
   const handleAssignLabor = (labor) => {
     setAssignedLabors((prev) => [...prev, labor]);
   };
+
+  const date = new Date();
+  const date1 = date.toISOString().split("T")[0];
 
   return (
     <View style={styles.container}>
@@ -69,31 +83,32 @@ const TaskDetails = ({ route, navigation }) => {
 
       <ScrollView>
         {/* Date and Task Name */}
-        <Text style={styles.date}>Jan 26, 2025</Text>
+        <Text style={styles.date}>{date1}</Text>
         <Text style={styles.taskName}>
           {task?.TaskName ||
             "Task name in full length for better understanding and use case of three lines"}
         </Text>
         <TouchableOpacity
-    style={styles.assignButton}
-    onPress={() => setModalVisible(true)} // Open the modal
-  >
-    <Text style={styles.assignText}>
-      {assignedLabors.length > 0 ? "Reassign Labors" : "+ Assign Labors"}
-    </Text>
-  </TouchableOpacity>
+          style={styles.assignButton}
+          onPress={() => setModalVisible(true)} // Open the modal
+        >
+          <Text style={styles.assignText}>
+            {assignedLabors.length > 0 ? "Reassign Labors" : "+ Assign Labors"}
+          </Text>
+        </TouchableOpacity>
         {/* Conditional Header */}
 
         {assignedLabors.length > 0 && (
-    <View>
-      <View style={styles.statusRow}>
-        <Text style={styles.statusText}>● Task Assigned</Text>
-      </View>
-      <View style={styles.statusRow}>
-        <Text style={styles.statusText}>✔ Assigned Labors</Text>
-      </View>
-    </View>
-  )}
+          <View>
+            <View style={[styles.statusRow,{ flexDirection: "row", alignItems: "center" }]}>
+              <FontAwesome name="circle" color="orange" size={14} />
+              <Text style={styles.statusText}> Task Assigned</Text>
+            </View>
+            <View style={styles.statusRow}>
+              <Text style={styles.statusText}>✔ Assigned Labors</Text>
+            </View>
+          </View>
+        )}
 
         {/* Divider */}
         <View style={styles.divider}></View>
@@ -101,15 +116,30 @@ const TaskDetails = ({ route, navigation }) => {
         {/* Task Descriptions */}
         <Text style={styles.sectionTitle}>Task Descriptions</Text>
         <View style={styles.descriptionRow}>
-          <Text style={styles.descriptionLabel}>📁 Task Type</Text>
-          <Text style={styles.descriptionValue}>Empty</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FontAwesome5 name="tasks" color="black" size={14} />
+            <Text style={[styles.descriptionLabel, { marginLeft: 8 }]}>
+              Task Type
+            </Text>
+          </View>
+          <Text style={styles.descriptionValue}>Manual</Text>
         </View>
         <View style={styles.descriptionRow}>
-          <Text style={styles.descriptionLabel}>📍 Location</Text>
-          <Text style={styles.descriptionValue}>Empty</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FontAwesome6 name="location-dot" color="black" size={14} />
+            <Text style={[styles.descriptionLabel, { marginLeft: 8 }]}>
+              Location
+            </Text>
+          </View>
+          <Text style={styles.descriptionValue}>On-Site</Text>
         </View>
         <View style={styles.descriptionRow}>
-          <Text style={styles.descriptionLabel}>⏱️ Duration</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <MaterialCommunityIcons name="timer" color="black" size={14} />
+            <Text style={[styles.descriptionLabel, { marginLeft: 8 }]}>
+              Duration
+            </Text>
+          </View>
           <Text style={styles.descriptionValue}>
             {task.Starttime.split("T")[0]}------{task.Deadline.split("T")[0]}
           </Text>
@@ -123,7 +153,9 @@ const TaskDetails = ({ route, navigation }) => {
             placeholder="Drawing File Name"
           />
           <TouchableOpacity style={styles.downloadButton}>
-            <Text style={styles.downloadText}>⬇️</Text>
+            <Text style={styles.downloadText}>
+            <FontAwesome5 name="download" color="white" size={14} />
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -140,11 +172,21 @@ const TaskDetails = ({ route, navigation }) => {
             {assignedLabors.map((labor) => (
               <View key={labor.id} style={styles.laborRow}>
                 <Image
-                  source={{ uri: labor.image }}
+                  source={{ uri: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?cs=srgb&dl=pexels-simon-robben-55958-614810.jpg&fm=jpg" }}
                   style={styles.laborImage}
                 />
                 <Text style={styles.laborName}>{labor.name}</Text>
-                <TouchableOpacity style={styles.assignedButton}>
+                <TouchableOpacity onPress={() => {
+                        if (isAssigned) {
+                          // Unassign labor
+                          setAssignedLabors((prev) =>
+                            prev.filter((labor) => labor.id !== item.id)
+                          );
+                        } else {
+                          // Assign labor
+                          setAssignedLabors((prev) => [...prev, item]);
+                        }
+                      }} style={styles.assignedButton}>
                   <Text style={styles.assignedText}>Assigned</Text>
                 </TouchableOpacity>
               </View>
@@ -169,10 +211,11 @@ const TaskDetails = ({ route, navigation }) => {
               data={labors}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => {
-                const isAssigned = assignedLabors.some((labor) => labor.id === item.id); // Check if labor is assigned
+                const isAssigned = assignedLabors.some(
+                  (labor) => labor.id === item.id
+                ); // Check if labor is assigned
                 return (
                   <View style={styles.laborRow}>
-                    
                     <Text style={styles.laborName}>{item.name}</Text>
                     <TouchableOpacity
                       style={[

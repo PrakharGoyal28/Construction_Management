@@ -14,6 +14,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { MaterialCommunityIcons, Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
+import TaskDashboard from "../screens/TaskDashboard";
 
 // Importing Screens
 import Dashboard from "../screens/Dashboard";
@@ -24,6 +25,8 @@ import LabourFaceVerification from "../components/LabourFaceverification";
 import Profile from "../screens/Profile";
 import TaskList from "../screens/TaskList";
 import LabourAttendenceDeatil from "../components/LabourAttendenceDetail";
+import TaskDetails from "../screens/TaskDetails";
+import TaskCalendar from "../screens/TaskCalendar";
 import TaskDashboard from "../screens/TaskDashboard";
 
 // Get device width dynamically
@@ -410,6 +413,18 @@ const AppStack = () => {
             fontWeight: "bold",
           },
         }}
+      />
+      <Stack.Screen
+      name="TaskDetails"
+      component={TaskDetails}
+      />
+      <Stack.Screen
+      name="TaskList"
+      component={TaskList}
+      />
+      <Stack.Screen
+      name="TaskCalendar"
+      component={TaskCalendar}
       />
 
 

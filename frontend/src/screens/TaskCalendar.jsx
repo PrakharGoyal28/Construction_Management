@@ -145,21 +145,10 @@ import assignRowsToTasks from "../utils/assignRowsToTasks";
 import axios from "axios";
 import { BASE_URL } from "../auth/config";
 
-// const tasks = [
-//   { id: 1, name: 'Task 1', start: '2025-01-01', end: '2025-01-02' },
-//   { id: 2, name: 'Task 2', start: '2025-01-02', end: '2025-01-04' },
-//   // ...
-// ];
 
 
-const getRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-};
+
+
 
 
 export default function TaskCalendar() {
@@ -215,8 +204,7 @@ export default function TaskCalendar() {
     return arr;
   }, []);
 
-  // if needed, assign row indexes (overlap logic)
-  // tasks = assignRowsToTasks(tasks);
+  
 
   return (
     <View style={{ flex: 1 }}>
