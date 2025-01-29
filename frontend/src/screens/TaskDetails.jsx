@@ -13,6 +13,8 @@ import {
 } from "react-native";
 import { BASE_URL } from "../auth/config";
 import { FontAwesome, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const TaskDetails = ({ route, navigation }) => {
   const { task } = route.params;
@@ -20,53 +22,93 @@ const TaskDetails = ({ route, navigation }) => {
   // State for modal visibility
   const [modalVisible, setModalVisible] = useState(false);
 
-  // State for assigned labors
+  // State for labors and assigned labors
+  const [labors, setLabour] = useState([]);
   const [assignedLabors, setAssignedLabors] = useState([]);
 
-  // Example labor data
-  const [labors, setLabour] = useState([]);
+  // Fetch all labors
   const fetchLabors = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/labours/labours/all/abc`);
-      // console.log(response.data.data);
-
-      // Assume tasks have Starttime and Deadline fields
-      const temp = response.data.data;
-      let temp1 = [];
-      if (Array.isArray(temp)) {
-        // Map if it's an array
-        temp1 = temp.map((item) => ({
-          id: item._id,
-          name: item.name,
-        }));
-      } else if (temp && typeof temp === "object") {
-        // If it's a single object
-        temp1 = [
-          {
-            id: temp._id,
-            name: temp.name,
-          },
-        ];
-      } else {
-        console.error("Unexpected data format:", temp);
-      }
-      // console.log("temp1", temp1);
-
-      setLabour(temp1);
-      // console.log(labors);
+      const laborData = response.data.data.map((item) => ({
+        id: item._id,
+        name: item.name,
+        image: item.ImageUrl,
+      }));
+      console.log("L",laborData);
+      
+      setLabour(laborData);
     } catch (error) {
-      console.error("Error fetching tasks:", error);
+      console.error("Error fetching labors:", error);
     }
   };
 
+  // Load assigned labors from AsyncStorage or fallback to backend
+  
+
+  // Load assigned labors from AsyncStorage or fallback to backend
+  const loadAssignedLabors = async () => {
+    try {
+      const savedLabors = await AsyncStorage.getItem(`task_${task._id}_assignedLabors`);
+      if (savedLabors) {
+        // Load assigned labors from AsyncStorage
+        setAssignedLabors(JSON.parse(savedLabors));
+      } else {
+        // Fallback: Fetch assigned labors from backend
+        const response = await axios.get(`${BASE_URL}/task/assigned/${task._id}`);
+        const backendAssignedLabors = response.data.AssignedTo.map((id) => 
+          labors.find((labor) => labor.id === id)
+        ).filter(Boolean);
+        setAssignedLabors(backendAssignedLabors);
+
+        // Save to AsyncStorage for future use
+        await AsyncStorage.setItem(`task_${task._id}_assignedLabors`, JSON.stringify(backendAssignedLabors));
+      }
+    } catch (error) {
+      console.error("Error loading assigned labors:", error);
+    }
+  };
+
+  // Handle assigning labors
+  const handleLaborAssigned = async () => {
+    try {
+      const laborIds = assignedLabors.map((labor) => labor.id);
+
+      // Save assigned labors in AsyncStorage
+      await AsyncStorage.setItem(`task_${task._id}_assignedLabors`, JSON.stringify(assignedLabors));
+
+      // Update backend with labor IDs
+      await axios.put(`${BASE_URL}/task/update/${task._id}`, {
+        TaskName: task.TaskName,
+        AssignedTo: laborIds,
+        Starttime: task.Starttime,
+        Deadline: task.Deadline,
+        Status: task.Status,
+        Description: task.Description,
+        ProjectID: task.ProjectID,
+        LabourRequired: task.LabourRequired,
+        Prerequisites: task.Prerequisites,
+      });
+
+      setModalVisible(false);
+      // console.log("temp1", temp1);
+
+      
+    } catch (error) {
+      console.error("Error assigning labors:", error);
+    }
+  };
+
+  // Initialize labors and assigned labors
   useEffect(() => {
-    fetchLabors(); // Fetch tasks when the component mounts
+    fetchLabors();
   }, []);
 
-  // Function to assign a labor
-  const handleAssignLabor = (labor) => {
-    setAssignedLabors((prev) => [...prev, labor]);
-  };
+  useEffect(() => {
+    if (labors.length > 0) {
+      loadAssignedLabors();
+    }
+  }, [labors]);
 
   const date = new Date();
   const date1 = date.toISOString().split("T")[0];
@@ -93,12 +135,12 @@ const TaskDetails = ({ route, navigation }) => {
           onPress={() => setModalVisible(true)} // Open the modal
         >
           <Text style={styles.assignText}>
-            {assignedLabors.length > 0 ? "Reassign Labors" : "+ Assign Labors"}
+            {assignedLabors?.length > 0 ? "Reassign Labors" : "+ Assign Labors"}
           </Text>
         </TouchableOpacity>
         {/* Conditional Header */}
 
-        {assignedLabors.length > 0 && (
+        {assignedLabors?.length > 0 && (
           <View>
             <View style={[styles.statusRow,{ flexDirection: "row", alignItems: "center" }]}>
               <FontAwesome name="circle" color="orange" size={14} />
@@ -166,13 +208,13 @@ const TaskDetails = ({ route, navigation }) => {
         </TouchableOpacity>
 
         {/* Assigned Labors */}
-        {assignedLabors.length > 0 && (
+        {assignedLabors?.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Assigned Labors List</Text>
             {assignedLabors.map((labor) => (
               <View key={labor.id} style={styles.laborRow}>
                 <Image
-                  source={{ uri: "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?cs=srgb&dl=pexels-simon-robben-55958-614810.jpg&fm=jpg" }}
+                  source={{ uri: labor.image }}
                   style={styles.laborImage}
                 />
                 <Text style={styles.laborName}>{labor.name}</Text>
@@ -250,7 +292,7 @@ const TaskDetails = ({ route, navigation }) => {
 
             <TouchableOpacity
               style={styles.confirmButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => handleLaborAssigned()}
             >
               <Text style={styles.confirmButtonText}>Done</Text>
             </TouchableOpacity>

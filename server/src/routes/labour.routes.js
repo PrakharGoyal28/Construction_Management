@@ -6,7 +6,8 @@ import {
     getAttendanceSummary,
     getLaboursByProjectId,
     getAllLabours,
-    verifyembedding
+    verifyembedding,
+    getAllLaborsForTaskDetails
 } from "../controllers/labour.controller.js"
 import { checkRole } from "../middlewares/auth.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -24,6 +25,6 @@ router.get("/labourDetails/:labourId", getLabourDetails);
 router.get("/alllabours",getAllLabours);
 router.get("/labours/:projectId", getLaboursByProjectId);
 router.get("/attendanceSummary",getAttendanceSummary);
-router.get("/labours/all/abc", getAllLabours);
+router.get("/labours/all/abc", getAllLaborsForTaskDetails);
 
 export default router;

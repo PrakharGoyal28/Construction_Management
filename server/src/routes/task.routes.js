@@ -6,6 +6,7 @@ import {
     getTaskDetails,
     getTaskByDate,
     getAllTasks,
+    getTaskDetailsNew,
 
 } from "../controllers/task.controller.js"
 
@@ -27,6 +28,8 @@ router.get("/:taskId", getTaskDetails);
 router.get("/info/:date",getTaskByDate);
 
 router.get("/all/abc",getAllTasks)
+
+router.get("/assigned/:taskId",getTaskDetailsNew)
 
 
 

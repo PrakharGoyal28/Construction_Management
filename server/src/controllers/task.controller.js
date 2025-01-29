@@ -234,6 +234,16 @@ const createNotification = asyncHandler(async (req, res) => {
     );
 });
 
+const getTaskDetailsNew = async (req, res) => {
+    try {
+      const task = await Task.findById(req.params.id).populate('AssignedTo', 'name'); // Fetch only name and image
+      res.status(200).json(task);
+    } catch (error) {
+      res.status(500).json({ error: 'Error fetching task details' });
+    }
+  };
+  
+
 
 export {
     createTask,
@@ -243,4 +253,5 @@ export {
     createNotification,
     getTaskByDate,
     getAllTasks,
+    getTaskDetailsNew,
 }

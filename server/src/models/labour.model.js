@@ -4,7 +4,7 @@ const labourSchema = new mongoose.Schema({
     name: { type: String, required: true },
     Contact: { type: String },
     Type: { type: String },
-    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project'},//TODO:make this required
+    ProjectID: { type: mongoose.Schema.Types.ObjectId, ref: 'Project',default: null},//TODO:make this required
     Rate: { type: Number },
     TaskID: { type: mongoose.Schema.Types.ObjectId, ref: 'Task' },
     Attendance: [
