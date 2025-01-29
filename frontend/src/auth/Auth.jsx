@@ -45,6 +45,8 @@ export const AuthProvider = ({ children }) => {
         { userId:user._id },
         { withCredentials: true } 
       );
+      // console.log(user);
+      
       await AsyncStorage.removeItem('user');
       
       setUser(null);

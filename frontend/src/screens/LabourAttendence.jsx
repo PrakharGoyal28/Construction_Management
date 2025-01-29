@@ -135,7 +135,7 @@ const LabourAttendence = ({ route }) => {
                           labour.ImageUrl ||
                           "https://th.bing.com/th/id/OIP.F7AAZ51YNslUUrejRKkDeQHaE1?rs=1&pid=ImgDetMain",
                       }}
-                      style={{ width: 100, height: 100 }}
+                      style={{ width: 80, height: 80 ,borderRadius: 50}}
                     />
                   </View>
                 </View>
@@ -267,7 +267,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     height: 90,
     borderRadius: 25,
-    backgroundColor: "#f0f0f0",
     alignItems: "center",
     justifyContent: "center",
     marginRight: 16,

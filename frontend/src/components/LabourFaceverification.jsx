@@ -49,7 +49,7 @@ const LabourFaceVerification = ({ route }) => {
     ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
     navigation.goBack()
   };
-  
+
 
   const sendImageToBackend = async (imageUri) => {
     try {
@@ -61,14 +61,14 @@ const LabourFaceVerification = ({ route }) => {
         name: "photo.jpg", // Provide a file name
       });
       formData.append("labourId", labourId); // Add labourId to the form data
-  
+
       // Send the image to the backend for embedding generation and verification
       const similarityResponse = await axios.post(`${BASE_URL}/labours/verifyembedding`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-  
+
       if (similarityResponse.data.matched) {
         alert("Face verified successfully! Attendance marked.");
         navigation.navigate("LabourAttendenceDetail", {
@@ -82,8 +82,8 @@ const LabourFaceVerification = ({ route }) => {
       alert("An error occurred during face verification.");
     }
   };
-  
-  
+
+
 
   if (!permission) {
     return <View />;
@@ -114,8 +114,12 @@ const LabourFaceVerification = ({ route }) => {
       </View>
       <View style={styles.card}>
         <Image
-          source={require('../assets/icon.png')}
-          style={styles.image}
+          source={{
+            uri:
+              labour.ImageUrl ||
+              "https://th.bing.com/th/id/OIP.F7AAZ51YNslUUrejRKkDeQHaE1?rs=1&pid=ImgDetMain",
+          }}
+          style={{ width: 80, height: 80 ,borderRadius: 50}}
         />
         <View style={styles.textContainer}>
           <Text style={styles.name}>{labour.name}</Text>
@@ -124,8 +128,8 @@ const LabourFaceVerification = ({ route }) => {
         </View>
       </View>
 
-      <CameraView 
-        style={styles.camera} 
+      <CameraView
+        style={styles.camera}
         facing={cameraType}
         ref={(ref) => setCamera(ref)}
       >
@@ -133,8 +137,8 @@ const LabourFaceVerification = ({ route }) => {
           <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
             <Text style={styles.text}>Flip Camera</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.button, loading && styles.buttonDisabled]} 
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
             onPress={takePicture}
             disabled={loading}
           >
@@ -204,7 +208,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
-  cal:{
+  cal: {
     position: 'absolute',
     top: 0,
     right: 50,

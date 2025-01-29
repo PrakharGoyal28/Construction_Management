@@ -158,53 +158,17 @@ const updateAttendance = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Labour ID is required");
         }
 
-        // Set default dates if not provided
-        const today = new Date();
-        if (!startDate) {
-            const oneWeekBefore = new Date();
-            oneWeekBefore.setDate(today.getDate() - 0);
-            startDate = oneWeekBefore.toISOString().split("T")[0];
-        }
-        if (!endDate) {
-            endDate = today.toISOString().split("T")[0];
-        }
-
+        
         // Fetch the labour document with all the necessary fields
         const labour = await Labour.findById(labourId)
-            .select("name Contact Type ProjectID Rate TaskID Attendance") // Select specific fields to return
+            .select("name Contact Type ProjectID Rate TaskID Attendance ImageUrl") // Select specific fields to return
             .exec();
 
         if (!labour) {
             throw new ApiError(404, "Labour not found");
         }
 
-        // Get attendance history and build a date range
-        const recordedDates = labour.Attendance.map(
-            (entry) => entry.date.toISOString().split("T")[0]
-        );
-
-        // Build an array of all dates in the range
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-
-        const dateRange = [];
-        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-            dateRange.push(new Date(d).toISOString().split("T")[0]);
-        }
-
-        // Check for missing dates and add absent entries
-        const missingDates = dateRange.filter(
-            (date) => !recordedDates.includes(date)
-        );
-
-        missingDates.forEach((date) => {
-            labour.Attendance.push({
-                date: new Date(date),
-                status: "Absent",
-                remarks: "Automatically marked as absent",
-            });
-        });
-
+        
         // Save the updated labour document with attendance added
         await labour.save();
 
@@ -220,7 +184,8 @@ const updateAttendance = asyncHandler(async (req, res) => {
                         ProjectID: labour.ProjectID,
                         Rate: labour.Rate,
                         TaskID: labour.TaskID,
-                        Attendance: labour.Attendance, // All attendance details
+                        Attendance: labour.Attendance,
+                        ImageUrl:labour.ImageUrl
                     },
                 },
                 `Attendance history for ${labour.name}`
