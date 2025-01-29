@@ -252,50 +252,62 @@ const updateAttendance = asyncHandler(async (req, res) => {
             throw new ApiError(404, "No labours found");
         }
     
-        // Get today's date for attendance checking
+        // Get today's date in YYYY-MM-DD format
         const today = new Date();
-        const currentDate = today.toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
+        const currentDate = today.toISOString().split("T")[0];
     
-        // Loop through each labourer and check attendance starting from their registration date
-        for (const labour of labours) {
-            // Get the registration date (createdAt) and format it
-            const registrationDate = new Date(labour.createdAt);
-            const start = new Date(registrationDate); // Attendance starts from the registration date
-            const end = today;
+        // Process each labour's attendance
+        await Promise.all(
+            labours.map(async (labour) => {
+                // Get the registration date (createdAt) and format it
+                const registrationDate = new Date(labour.createdAt);
+                const start = new Date(registrationDate);
+                const end = new Date(); // Ensure end is a new Date instance
     
-            // Generate the date range from the registration date to today
-            const dateRange = [];
-            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                dateRange.push(new Date(d).toISOString().split("T")[0]);
-            }
+                // Generate the date range from the registration date to today
+                const dateRange = [];
+                let d = new Date(start);
+                while (d <= end) {
+                    dateRange.push(d.toISOString().split("T")[0]);
+                    d = new Date(d); // Create a new Date object to avoid mutation issues
+                    d.setDate(d.getDate() + 1);
+                }
     
-            // Check the recorded attendance dates
-            const recordedDates = labour.Attendance.map(
-                (entry) => entry.date.toISOString().split("T")[0]
-            );
+                // Get recorded attendance dates in YYYY-MM-DD format
+                const recordedDates = labour.Attendance.map((entry) =>
+                    entry.date.toISOString().split("T")[0]
+                );
     
-            // Find missing dates and add absent entries for them
-            const missingDates = dateRange.filter(
-                (date) => !recordedDates.includes(date)
-            );
+                // Find missing dates (including today if not present)
+                const missingDates = dateRange.filter(
+                    (date) => !recordedDates.includes(date)
+                );
     
-            missingDates.forEach((date) => {
-                labour.Attendance.push({
-                    date: new Date(date),
-                    status: "Absent",
-                    remarks: "Automatically marked as absent",
-                });
-            });
+                if (missingDates.length > 0) {
+                    missingDates.forEach((date) => {
+                        labour.Attendance.push({
+                            date: new Date(date),
+                            status: "Absent",
+                            remarks: "Automatically marked as absent",
+                        });
+                    });
     
-            // Save the updated labour document with attendance added
-            await labour.save();
-        }
+                    // Sort attendance in descending order (latest date first)
+                    labour.Attendance.sort((a, b) => new Date(b.date) - new Date(a.date));
     
-        // Return the labour data
+                    // Save the updated labour document
+                    await labour.save();
+                }
+            })
+        );
+    
+        // Return the updated labour data
         return res.status(200).json(
             new ApiResponse(200, labours, "All labours retrieved successfully")
         );
     });
+    
+    
 
     const getAllLaborsForTaskDetails=async (req,res)=>{
         
