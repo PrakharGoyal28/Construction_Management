@@ -218,17 +218,7 @@ const TaskDetails = ({ route, navigation }) => {
                   style={styles.laborImage}
                 />
                 <Text style={styles.laborName}>{labor.name}</Text>
-                <TouchableOpacity onPress={() => {
-                        if (isAssigned) {
-                          // Unassign labor
-                          setAssignedLabors((prev) =>
-                            prev.filter((labor) => labor.id !== item.id)
-                          );
-                        } else {
-                          // Assign labor
-                          setAssignedLabors((prev) => [...prev, item]);
-                        }
-                      }} style={styles.assignedButton}>
+                <TouchableOpacity style={styles.assignedButton}>
                   <Text style={styles.assignedText}>Assigned</Text>
                 </TouchableOpacity>
               </View>

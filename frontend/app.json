@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "package": "com.abhy1234.frontend"
+      "package": "com.abhy1234.frontend",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
@@ -36,7 +40,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "4c2c2227-286b-4fd4-80f4-85ae213ba313"
+        "projectId": "b60ea419-365f-40b7-856e-174a55658592"
       }
     }
   }

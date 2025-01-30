@@ -4,7 +4,7 @@ import { Calendar } from "react-native-calendars";
 
 
 const LabourCalender = ({route}) => {
-  const { allAttend } = route.params
+  const { allAttend=[] } = route.params || {}
 
   
   const renderDay = ({ date, state }) => {
@@ -12,7 +12,8 @@ const LabourCalender = ({route}) => {
     const today = new Date().toISOString().split('T')[0]; // Current date in YYYY-MM-DD format
   
     // Find data for the specific date
-    const dayData = allAttend.find((item) => item.date === formattedDate) || { totalPresent: 0 };
+    
+    const dayData = allAttend?.find((item) => item.date === formattedDate) || { totalPresent: 0 };
   
     // Determine background color
     let backgroundColor = "#ffffff";

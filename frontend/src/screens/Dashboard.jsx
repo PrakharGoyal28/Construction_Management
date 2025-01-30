@@ -24,8 +24,8 @@ const Dashboard = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.grid}>
           <DashboardButton icon="calendar" label="Attendance" selected goTo="LabourDashboard"/>
-          <DashboardButton icon="checkbox-marked-circle" label="Tasks" selected />
-          <DashboardButton icon="account-group" label="Labor Calendar" />
+          <DashboardButton icon="checkbox-marked-circle" label="Tasks" selected goTo="TaskList"/>
+          <DashboardButton icon="account-group" label="Labor Calendar" goTo="LabourCalender"/>
           <DashboardButton icon="calendar-range" label="Task Calendar" goTo="TaskCalendar" />
         </View>
         <Text style={styles.header}>Tasks Status</Text>

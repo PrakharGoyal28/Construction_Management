@@ -426,6 +426,10 @@ const AppStack = () => {
       component={TaskCalendar}
       />
 
+      <Stack.Screen name="TaskDashboard"
+      component={TaskDashboard}/>
+
+      
 
     </Stack.Navigator>
   );
