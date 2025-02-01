@@ -43,7 +43,7 @@ const Router = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
   {isLoggedIn ? (
-    userRole === "Admin" ? <AppStack /> : <EngineerStack />
+    userRole === "Supervisor"? <AppStack /> : <EngineerStack />
   ) : (
     <Login />
   )}

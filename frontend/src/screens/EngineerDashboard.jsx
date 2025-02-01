@@ -24,7 +24,7 @@ const EngineerDashboard = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.grid}>
           <DashboardButton icon="calendar" label="Scheduling" />
-          <DashboardButton icon="clipboard-list" label="Inventory" />
+          <DashboardButton icon="clipboard-list" label="Inventory"  goTo={'InventoryDashboard'}/>
           <DashboardButton icon="receipt-text" label="Billing" />
           <DashboardButton icon="comment-question-outline" label="Q/A" />
           </View>
