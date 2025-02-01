@@ -44,13 +44,16 @@ const getDate = () => {
 };
 
 const CustomHeader = () => {
-  return (
-    <View style={styles.headerContainer}>
-      <Text style={styles.dateText}>{getDate()}</Text>
-      <Text style={styles.titleText}>Dashboard</Text>
-    </View>
-  );
-};
+    return (
+      <View style={styles.headerContainer}>
+        <View style={styles.locationContainer}>
+          <MaterialCommunityIcons name="map-marker" size={24} color="black" />
+          <Text style={styles.siteName}>Jodhpur</Text>
+        </View>
+        <Text style={styles.titleText}>Dashboard</Text>
+      </View>
+    );
+  };
 
 const gettDate = () => {
   const today = new Date();
@@ -486,6 +489,7 @@ const styles = StyleSheet.create({
     elevation: 5, // For Android shadow
     paddingTop: 10,
   },
+  
   // tabIcon: {
   //   width: 0.071 * width, // Adjust the icon width as needed
   //   height: 0.158 * height, // Adjust the icon height as needed

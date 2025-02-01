@@ -24,10 +24,10 @@ const EngineerDashboard = () => {
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.grid}>
           <DashboardButton icon="calendar" label="Scheduling" />
-          <DashboardButton icon="checkbox-marked-circle" label="Inventory"/>
-          <DashboardButton icon="account-group" label="Billing" />
-          <DashboardButton icon="calendar-range" label="Q&A"/>
-        </View>
+          <DashboardButton icon="clipboard-list" label="Inventory" />
+          <DashboardButton icon="receipt-text" label="Billing" />
+          <DashboardButton icon="comment-question-outline" label="Q/A" />
+          </View>
         <Text style={styles.header}>Notifications</Text> 
         </ScrollView>
     </View>
