@@ -47,7 +47,6 @@ const addMaterial = asyncHandler(async (req, res) => {
     return res.status(500).json(new ApiError(500, "Failed to add material"));
   }
 });
-
 const getMaterialById = asyncHandler(async (req, res) => {
   const { materialId } = req.params;
 
@@ -56,11 +55,17 @@ const getMaterialById = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Material ID is required.");
   }
 
-  // Find the material by ID
+  // Find the material by ID and populate the necessary fields
   const material = await Material.findById(materialId)
-    .populate("UserId", "name email") // Optionally populate user details
-    .populate("VendorID", "VendorName Contact") // Optionally populate vendor details
-    .populate("ProjectId", "ProjectName Description") // Optionally populate project details
+    .populate("UserId", "name email") // Populate user details
+    .populate({
+      path: "VendorID", 
+      select: "VendorName Contact",
+      populate: {
+        path: "UserID", // Populate the user details from the Vendor
+        select: "name email" // Select the user fields you need
+      }
+    })
     .exec();
 
   // Check if material exists
@@ -71,6 +76,7 @@ const getMaterialById = asyncHandler(async (req, res) => {
   // Return the material details
   res.status(200).json(new ApiResponse(200, material, "Material retrieved successfully."));
 });
+
 
 const getMaterialsByProjectId = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
@@ -127,18 +133,29 @@ const createPurchaseOrder = asyncHandler(async (req, res) => {
   res.status(201).json(new ApiResponse(201, savedPurchaseOrder, "Purchase order created successfully."));
 });
 
-
 const getMaterialsByType = async (req, res) => {
   try {
     const { type } = req.query;
 
-    // Validate type query parameter
-    if (!type || !["Current", "Recieve"].includes(type)) {
-      throw new ApiError(400, "Invalid or missing type parameter. Valid values are 'Current' or 'Recieve'");
+    // Validate the type query parameter
+    if (!type || !["Current", "Recieve", "ordered"].includes(type)) {
+      throw new ApiError(400, "Invalid or missing type parameter. Valid values are 'Current', 'Recieve', or 'ordered'");
     }
 
-    // Find materials based on the type
-    const materials = await Material.find({ type });
+    let materials;
+
+    if (type === 'ordered') {
+      // Fetch materials where Recieve is either 'ForApproval' or 'Approved'
+      materials = await Material.find({
+        Recieve: { $in: ['ForApproval', 'Approved'] },
+      });
+    } else if (type === 'Current') {
+      // Fetch materials where type is 'Current'
+      materials = await Material.find({ type: 'Current' });
+    } else if (type === 'Recieve') {
+      // Fetch materials where type is 'Recieve'
+      materials = await Material.find({ type: 'Recieve' });
+    }
 
     // If no materials are found
     if (!materials || materials.length === 0) {
