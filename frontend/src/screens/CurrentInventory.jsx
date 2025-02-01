@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '../auth/config';
+import { useNavigation } from '@react-navigation/native';
 
 const ReceiveInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [currInventory, setCurrInventory] = useState([]);
   const [orderedInventory, setOrderedInventory] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('Current');
+  const navigation = useNavigation();
 
   const getInventory = async () => {
     try {
@@ -23,10 +25,10 @@ const ReceiveInventory = () => {
   };
 
   const filterMaterials = (data, status) => {
-    if(status=='Current'){
+    if (status == 'Current') {
       setInventory(currInventory)
     }
-    else{
+    else {
       setInventory(orderedInventory)
     }
   };
@@ -39,6 +41,13 @@ const ReceiveInventory = () => {
   useEffect(() => {
     getInventory();
   }, []);
+
+  const handleMaterialClick = (item) => {
+    // Navigate to MaterialDetail page and pass materialId as a parameter
+    // console.log(materialId);
+    
+    navigation.navigate('InventoryDetail', { materialId:item._id, name:item.Name});
+  };
 
   const renderStatus = (status) => {
     switch (status) {
@@ -62,7 +71,7 @@ const ReceiveInventory = () => {
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        {['Current','Ordered'].map((status) => (
+        {['Current', 'Ordered'].map((status) => (
           <TouchableOpacity
             key={status}
             style={[styles.button, selectedStatus === status && styles.selectedButton]}
@@ -86,11 +95,13 @@ const ReceiveInventory = () => {
           data={inventory}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <View style={styles.tableRow}>
-              {renderCell((index + 1).toString().padStart(2, '0'), cellStyles.indexColumn)}
-              {renderCell(item.Name, cellStyles.nameColumn)}
-              {renderCell(`${item.Quantity} Nos.`, [cellStyles.qtyColumn, cellStyles.lastCell])}
-            </View>
+            <TouchableOpacity onPress={() => handleMaterialClick(item)}>
+              <View style={styles.tableRow}>
+                {renderCell((index + 1).toString().padStart(2, '0'), cellStyles.indexColumn)}
+                {renderCell(item.Name, cellStyles.nameColumn)}
+                {renderCell(`${item.Quantity} Nos.`, [cellStyles.qtyColumn, cellStyles.lastCell])}
+              </View>
+            </TouchableOpacity>
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

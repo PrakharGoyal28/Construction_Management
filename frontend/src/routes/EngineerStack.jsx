@@ -22,6 +22,7 @@ import EngineerDashboard from "../screens/EngineerDashboard";
 import InventoryDashboard from "../screens/InventoryDashboard";
 import ReceiveInventory from "../screens/ReceiveInventory";
 import CurrentInventory from "../screens/CurrentInventory";
+import InventoryDetail from "../components/InventoryDetail";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
@@ -326,6 +327,53 @@ const EngineerStack = () => {
           },
         }}
       />
+      <Stack.Screen
+          name="InventoryDetail"
+          component={InventoryDetail}
+          options={({ route, navigation }) => ({
+            header: () => (
+              <SafeAreaView
+                style={{
+                  height: 150,
+                  backgroundColor: "white",
+                  paddingHorizontal: 16,
+                  justifyContent: "center",
+                  elevation: 0,
+                  shadowOpacity: 0,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 55,
+                    left: 16,
+                    zIndex: 1,
+                  }}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Ionicons
+                    name="chevron-back-sharp"
+                    size={24}
+                    color="black"
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+                </TouchableOpacity>
+                <View style={{ marginTop: 50 }}>
+                  <GeneralHeader label={route.params.name} />
+                </View>
+              </SafeAreaView>
+            ),
+            headerStyle: {
+              height: 150,
+              borderBottomWidth: 0,
+              elevation: 0,
+              shadowOpacity: 0,
+            },
+          })}
+        />
     </Stack.Navigator>
   );
 };
