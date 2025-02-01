@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState,useEffect } from 'react'
 import { BASE_URL } from './config'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +20,20 @@ export const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [user, setUser] = useState(null)
+  const [userRole, setUserRole] = useState(null);
+  useEffect(() => {
+    const loadUserFromStorage = async () => {
+      const storedUser = await AsyncStorage.getItem('user');
+      const storedRole = await AsyncStorage.getItem('userRole');
+
+      if (storedUser && storedRole) {
+        setUser(JSON.parse(storedUser));
+        setUserRole(storedRole);
+        setIsLoggedIn(true);
+      }
+    };
+    loadUserFromStorage();
+  }, []);
 
   const loginUser = async (email, password) => {
     try {
@@ -31,8 +45,15 @@ export const AuthProvider = ({ children }) => {
       const data =await response.data; // Access user from response
       setUser(data.data)
       console.log(user)
+      console.log(userRole);
+      // console.log(data);
+      
+      setUserRole(data.data.role);
+
       setIsLoggedIn(true)
       await AsyncStorage.setItem('user', JSON.stringify(data.data));
+      await AsyncStorage.setItem('userRole', data.data.role);
+
       return data.data
     } catch (error) {
       console.error('Login failed:', result.message);
@@ -48,8 +69,11 @@ export const AuthProvider = ({ children }) => {
       // console.log(user);
       
       await AsyncStorage.removeItem('user');
+      await AsyncStorage.removeItem('userRole');
+
       
       setUser(null);
+      setUserRole(null);
       setIsLoggedIn(false);
     } catch (error) {
       console.error('Failed to logout:', error.message);
@@ -61,6 +85,8 @@ export const AuthProvider = ({ children }) => {
     setIsLoggedIn,
     setUser: setUser,
     loginUser,
+    userRole:userRole,
+    setUserRole:setUserRole,
     logoutUser
   }
   return (
