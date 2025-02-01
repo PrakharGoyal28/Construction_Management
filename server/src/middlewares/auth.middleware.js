@@ -27,7 +27,7 @@ export const verifyJWT=asyncHandler(async(req,res,next)=>{
     req.user = user; // Attach the user to the request object for use in subsequent handlers
     next(); // Proceed to the next middleware or route
   } catch (error) {
-    throw new ApiError(401, "Unauthorized access");
+    throw new ApiError(401, `Unauthorized access ${error}`);
   }
 });
 export const checkRole = (req, res, next) => {

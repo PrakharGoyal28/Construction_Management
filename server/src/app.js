@@ -3,6 +3,32 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { Router } from "express";
 
+import AdminJS from 'adminjs'
+import AdminJSExpress from '@adminjs/express'
+import * as AdminJSMongoose from '@adminjs/mongoose'
+
+import { Inventory } from "./models/inventry.model.js";
+import { Labour } from "./models/labour.model.js";
+import { Material } from "./models/Material.model.js";
+import { User } from "./models/user.model.js";
+import { Vendor } from "./models/vendor.model.js";
+import { Project } from "./models/project.model.js";
+import { Task } from "./models/Task.model.js";
+
+
+
+AdminJS.registerAdapter({
+    Resource: AdminJSMongoose.Resource,
+    Database: AdminJSMongoose.Database,
+})
+
+const adminOptions = {
+    resources: [
+        Inventory,Labour,Material,User,Vendor,Project,Task
+    ],
+}
+
+
 const app=express()
 
 app.use(cors({
@@ -14,6 +40,11 @@ app.use(express.json({limit:"100kb"}))
 app.use(express.urlencoded({extended:true,limit:"100kb"}))
 app.use(express.static("public"))
 app.use(cookieParser())
+
+
+const admin = new AdminJS(adminOptions)
+const adminRouter = AdminJSExpress.buildRouter(admin)
+app.use(admin.options.rootPath, adminRouter)
 
 
 import userRouter from "./routes/user.routes.js"

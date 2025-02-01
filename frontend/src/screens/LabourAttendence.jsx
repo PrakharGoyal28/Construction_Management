@@ -24,6 +24,8 @@ const LabourAttendence = ({ route }) => {
   const [allAttend, setAllAttend] = useState({});
   const [loading, setloading] = useState(true);
   const [labours, setlabours] = useState([]);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handlepress = (labourId) => {
     setcnt((prevCnt) => prevCnt + 1);
@@ -35,7 +37,8 @@ const LabourAttendence = ({ route }) => {
       const response = await axios.get(`${BASE_URL}/labours/allLabours`);
       setlabours(response.data.data);
       setloading(false);
-      // console.log(response.data.data);
+
+      // console.log(response.data.data[0].ImageUrl?.replace(/^http:/, "https:") );
     } catch (error) {
       console.error("Error fetching labours:", error);
     }
@@ -43,6 +46,8 @@ const LabourAttendence = ({ route }) => {
   const markAttendance = async (labourId, status) => {
     try {
       const date = new Date().toISOString().split("T")[0]; // Get current date
+      console.log(user._id);
+      
       const response = await axios.post(
         `${BASE_URL}/labours/updateAttendance`,
         {
@@ -62,21 +67,21 @@ const LabourAttendence = ({ route }) => {
     }
   };
 
-  const handlePresentPress =async (labourId) => {
+  const handlePresentPress = async (labourId) => {
     const result = labours.find((labour) => labour._id === labourId);
     // console.log(result.Attendance);
-    if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
-      // return;
+    if (result.Attendance.at(0).remarks != "Automatically marked as absent") {
+      return;
     }
-    
+
     await markAttendance(labourId, "Present");
     navigation.navigate("LabourFace", { labourId });
   };
 
   const handleAbsentPress = (labourId) => {
     const result = labours.find((labour) => labour._id === labourId);
-    // console.log(result.Attendance.at(-1).remarks);
-    if (result.Attendance.at(-1).remarks != "Automatically marked as absent") {
+    // console.log(result.Attendance.at(0));
+    if (result.Attendance.at(0).remarks != "Automatically marked as absent") {
       return;
     }
     ToastAndroid.show("Attendance Marked", ToastAndroid.SHORT);
@@ -111,8 +116,8 @@ const LabourAttendence = ({ route }) => {
       {loading ? (
         <Text>Loading...</Text>
       ) : (
-        <ScrollView>
-          <View style={styles.labourList}>
+        <ScrollView style={styles.labourList}>
+          <View >
             {labours.map((labour, index) => (
               <View key={index} style={styles.labourCard}>
                 <View style={styles.labourInfo}>
@@ -124,19 +129,25 @@ const LabourAttendence = ({ route }) => {
                       })
                     }
                   >
-                    {/* <MaterialCommunityIcons
-                      name="account"
-                      size={40}
-                      color="black"
-                    /> */}
-                    <Image
-                      source={{
-                        uri:
-                          labour.ImageUrl ||
-                          "https://th.bing.com/th/id/OIP.F7AAZ51YNslUUrejRKkDeQHaE1?rs=1&pid=ImgDetMain",
-                      }}
-                      style={{ width: 80, height: 80 ,borderRadius: 50}}
-                    />
+                    <View>
+                      <Image
+                        source={
+                          hasError
+                            ? require('../assets/icon.png')
+                            : { uri: labour.ImageUrl?.replace(/^http:/, "https:") }
+                        }
+                        style={{ width: 80, height: 80, borderRadius: 50 }}
+                        onLoadStart={() => setIsLoading(true)}
+                        onLoadEnd={() => setIsLoading(false)}
+                        onError={() => {
+                          setHasError(true);
+                          setIsLoading(false);
+                        }}
+                      />
+                      {isLoading && (
+                        <Text>loading..</Text>
+                      )}
+                    </View>
                   </View>
                 </View>
                 <View style={styles.buttonContainer}>
@@ -145,16 +156,15 @@ const LabourAttendence = ({ route }) => {
                     <TouchableOpacity
                       style={[
                         styles.absentButton,
-                        labour.Attendance.at(-1).remarks !==
+                        labour.Attendance.at(0).remarks !==
                           "Automatically marked as absent" &&
-                        labour.Attendance.at(-1).status === "Present"
+                          labour.Attendance.at(0).status === "Present"
                           ? { opacity: 0 }
                           : { opacity: 1 },
                       ]}
                       disabled={
-                        labour.Attendance.at(-1).remarks !==
-                          "Automatically marked as absent" &&
-                        labour.Attendance.at(-1).status === "Absent"
+                        labour.Attendance.at(0).remarks !==
+                        "Automatically marked as absent" 
                       }
                       onPress={() => handleAbsentPress(labour._id)}
                     >
@@ -164,16 +174,15 @@ const LabourAttendence = ({ route }) => {
                     <TouchableOpacity
                       style={[
                         styles.presentButton,
-                        labour.Attendance.at(-1).remarks !==
+                        labour.Attendance.at(0).remarks !==
                           "Automatically marked as absent" &&
-                        labour.Attendance.at(-1).status === "Absent"
+                          labour.Attendance.at(0).status === "Absent"
                           ? { opacity: 0 }
                           : { opacity: 1 },
                       ]}
-                      // disabled={
-                      //   labour.Attendance.at(-1).remarks !== "Automatically marked as absent" &&
-                      //   labour.Attendance.at(-1).status === "Present"
-                      // }
+                      disabled={
+                        labour.Attendance.at(0).remarks !== "Automatically marked as absent"
+                      }
                       onPress={() => handlePresentPress(labour._id)}
                     >
                       <Text style={[styles.buttonText, { color: "white" }]}>

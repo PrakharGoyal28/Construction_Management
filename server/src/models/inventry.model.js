@@ -8,17 +8,9 @@ const inventorySchema = new mongoose.Schema({
       required: true
     }
   ],
-  FutureMaterialIds: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Material",
-      required: true
-    }
-  ],
   ProjectID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Project",
-    required: true
   }
 });
 

@@ -2,25 +2,50 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Material } from "../models/Material.model.js";
+import { PurchaseOrder } from "../models/purchaseOrder.model.js";
+import { uploadCloudinary } from "../utils/cloudinary.js";
 
 const addMaterial = asyncHandler(async (req, res) => {
-  const { Name, UserId, VendorID, ProjectId, Quantity, Description } = req.body;
+  try {
+    const { Name, UserId, VendorID, ProjectId, Quantity, Description, unit, unitPrice, location, lastRecieved, type, Recieve } = req.body;
+    const imagePath = req.file.path;
 
-  if (!Name || !UserId || !VendorID || !ProjectId) {
-    throw new ApiError(400, "All required fields (Name, UserId, VendorID, ProjectId) must be provided.");
+    const upload = await uploadCloudinary(imagePath);
+    const upload_url = upload.url;
+    if (!upload) {
+      throw new ApiError(500, "Failed to upload photo to Cloudinary");
   }
 
-  // Create a new material
-  const material = await Material.create({
-    Name,
-    UserId,
-    VendorID,
-    ProjectId,
-    Quantity,
-    Description,
-  });
+    // Check if required fields are present
+    if (!Name || !UserId || !VendorID || !unit || !type) {
+      throw new ApiError(400, "Required fields: Name, UserId, VendorID, unit, type");
+    }
 
-  res.status(201).json(new ApiResponse(201, material, "Material added successfully."));
+    // Create a new material object
+    const newMaterial = new Material({
+      Name,
+      UserId,
+      VendorID,
+      ProjectId,
+      Quantity: Quantity || 0, // Default to 0 if not provided
+      Description,
+      unit,
+      unitPrice: unitPrice || 0, // Default to 0 if not provided
+      location,
+      lastRecieved,
+      type,
+      Recieve,
+      proofImage:upload_url,
+    });
+
+    // Save the new material to the database
+    const savedMaterial = await newMaterial.save();
+
+    return res.status(201).json(new ApiResponse(201, savedMaterial, "Material added successfully"));
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(new ApiError(500, "Failed to add material"));
+  }
 });
 
 const getMaterialById = asyncHandler(async (req, res) => {
@@ -65,8 +90,10 @@ const getMaterialsByProjectId = asyncHandler(async (req, res) => {
 
   res.status(200).json(new ApiResponse(200, materials, "Materials retrieved successfully."));
 });
+
+
 const createPurchaseOrder = asyncHandler(async (req, res) => {
-  const { Name, VendorID, Quantity, Description, Price, StorageLocation, Status, MaterialIds,UserId } = req.body;
+  const { Name, VendorID, Quantity, Description, Price, StorageLocation, Status, MaterialIds, UserId } = req.body;
 
   // Validation: Required fields
   if (!Name || !UserId || !VendorID || !Quantity || !MaterialIds || MaterialIds.length === 0) {
@@ -84,10 +111,10 @@ const createPurchaseOrder = asyncHandler(async (req, res) => {
     Name,
     VendorID,
     Quantity,
-    Date: Date || new Date(),
+    Date: new Date(), // Set the current date for Date
     Description,
     Price,
-    StorageLocation,
+    location: StorageLocation, // Fixed `StorageLocation` to lowercase `location` in schema
     Status,
     MaterialIds,
     UserId
@@ -96,14 +123,39 @@ const createPurchaseOrder = asyncHandler(async (req, res) => {
   // Save to the database
   const savedPurchaseOrder = await newPurchaseOrder.save();
 
+  // Return a successful response
   res.status(201).json(new ApiResponse(201, savedPurchaseOrder, "Purchase order created successfully."));
 });
 
 
+const getMaterialsByType = async (req, res) => {
+  try {
+    const { type } = req.query;
+
+    // Validate type query parameter
+    if (!type || !["Current", "Recieve"].includes(type)) {
+      throw new ApiError(400, "Invalid or missing type parameter. Valid values are 'Current' or 'Recieve'");
+    }
+
+    // Find materials based on the type
+    const materials = await Material.find({ type });
+
+    // If no materials are found
+    if (!materials || materials.length === 0) {
+      return res.status(404).json(new ApiResponse(404, [], "No materials found for the specified type"));
+    }
+
+    return res.status(200).json(new ApiResponse(200, materials, "Materials retrieved successfully"));
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json(new ApiError(500, "Failed to retrieve materials"));
+  }
+};
 
 export {
   addMaterial,
   getMaterialsByProjectId,
   getMaterialById,
   createPurchaseOrder,
+  getMaterialsByType
 }

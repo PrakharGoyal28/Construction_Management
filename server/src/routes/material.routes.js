@@ -5,15 +5,16 @@ import {
   getMaterialsByProjectId,
   createPurchaseOrder,
 } from "../controllers/material.controller.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const router = express.Router();
 
 // Material Routes
-router.post("/", addMaterial); // Add Material
-router.get("/:materialId", getMaterialById); // Get Material by ID
+router.post("/addMaterial", upload.single("image"),addMaterial); // Add Material
+router.get("/getMaterial/:materialId", getMaterialById); // Get Material by ID
 router.get("/:projectId", getMaterialsByProjectId); // Get Materials by Project ID
 
 // Purchase Order Route
-router.post("/purchase-orders", createPurchaseOrder); // Create Purchase Order
+router.post("/genrate-purchase-order", createPurchaseOrder); // Create Purchase Order
 
 export default router;

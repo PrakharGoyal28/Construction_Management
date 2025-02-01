@@ -3,18 +3,8 @@ import React, { createContext, useState,useEffect } from 'react'
 import { BASE_URL } from './config'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import bodyParser from 'body-parser';
-
 
 export const AuthContext = createContext()
-
-// var bodyParser = require('body-parser');
-
-// // For parsing application/json
-// app.use(bodyParser.json());
-
-// // For parsing application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: true }));
 
 
 export const AuthProvider = ({ children }) => {
@@ -60,6 +50,8 @@ export const AuthProvider = ({ children }) => {
     }
   }
   const logoutUser = async () => {
+    setUser(null);
+    setUserRole(null);
     try {
       const response = await axios.post(
         `${BASE_URL}/users/logout`,
@@ -72,8 +64,6 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.removeItem('userRole');
 
       
-      setUser(null);
-      setUserRole(null);
       setIsLoggedIn(false);
     } catch (error) {
       console.error('Failed to logout:', error.message);

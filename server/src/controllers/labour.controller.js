@@ -67,7 +67,6 @@ const registerLabour = asyncHandler(async function (req, res) {
         throw new ApiError(500, `Error generating embeddings: ${error.message}`);
     }
 });
-
 const updateAttendance = asyncHandler(async (req, res) => {
     const { labourId, date, status, remarks } = req.body;
 
@@ -87,34 +86,6 @@ const updateAttendance = asyncHandler(async (req, res) => {
     if (!labour) {
         throw new ApiError(404, "Labour not found");
     }
-
-    // Get the registration date (createdAt)
-    const registrationDate = new Date(labour.createdAt);
-
-    // Generate all dates from registration date to today
-    const today = new Date();
-    const dateRange = [];
-    for (let d = new Date(registrationDate); d <= today; d.setDate(d.getDate() + 1)) {
-        dateRange.push(new Date(d).toISOString().split("T")[0]);
-    }
-
-    // Check existing attendance dates
-    const recordedDates = labour.Attendance.map(
-        (entry) => entry.date.toISOString().split("T")[0]
-    );
-
-    // Find missing dates and add absent entries for them
-    const missingDates = dateRange.filter(
-        (date) => !recordedDates.includes(date)
-    );
-
-    missingDates.forEach((date) => {
-        labour.Attendance.push({
-            date: new Date(date),
-            status: "Absent",
-            remarks: "Automatically marked as absent",
-        });
-    });
 
     // Check if an attendance entry for the given date already exists
     const existingAttendance = labour.Attendance.find(
@@ -138,7 +109,7 @@ const updateAttendance = asyncHandler(async (req, res) => {
     }
 
     // Sort the attendance array by date (ascending order)
-    labour.Attendance.sort((a, b) => new Date(a.date) - new Date(b.date));
+    labour.Attendance.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Save the updated labour document
     const updatedLabour = await labour.save();
@@ -149,6 +120,7 @@ const updateAttendance = asyncHandler(async (req, res) => {
             new ApiResponse(200, updatedLabour, "Attendance updated successfully")
         );
 });
+
 
     const getLabourDetails = asyncHandler(async (req, res) => {
         const { labourId } = req.params;
