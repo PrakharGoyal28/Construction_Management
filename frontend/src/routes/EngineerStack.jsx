@@ -23,6 +23,7 @@ import InventoryDashboard from "../screens/InventoryDashboard";
 import ReceiveInventory from "../screens/ReceiveInventory";
 import CurrentInventory from "../screens/CurrentInventory";
 import InventoryDetail from "../components/InventoryDetail";
+import PlaceOrder from "../components/PlaceOrder";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
@@ -42,7 +43,7 @@ const CustomHeader = () => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.locationContainer}>
-        <MaterialCommunityIcons name="map-marker" size={24} color="black" />
+        <MaterialCommunityIcons name="map-marker" size={20} color="black" />
         <Text style={styles.siteName}>Jodhpur</Text>
       </View>
       <Text style={styles.titleText}>Dashboard</Text>
@@ -106,7 +107,7 @@ const MyTabs = () => {
           ),
           headerTitle: () => <CustomHeader />,
           headerStyle: {
-            height: 150,
+            height: 120,
             borderBottomWidth: 0, // Remove the bottom border
             elevation: 0, // Remove shadow on Android
             shadowOpacity: 0, // Remove shadow on iOS
@@ -374,7 +375,58 @@ const EngineerStack = () => {
             },
           })}
         />
+
+
+
+<Stack.Screen
+          name="PlaceOrder"
+          component={PlaceOrder}
+          options={({ route, navigation }) => ({
+            header: () => (
+              <SafeAreaView
+                style={{
+                  height: 150,
+                  backgroundColor: "white",
+                  paddingHorizontal: 16,
+                  justifyContent: "center",
+                  elevation: 0,
+                  shadowOpacity: 0,
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    position: "absolute",
+                    top: 55,
+                    left: 16,
+                    zIndex: 1,
+                  }}
+                  onPress={() => navigation.goBack()}
+                >
+                  <Ionicons
+                    name="chevron-back-sharp"
+                    size={24}
+                    color="black"
+                    style={{ marginRight: 8 }}
+                  />
+                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+                </TouchableOpacity>
+                <View style={{ marginTop: 50 }}>
+                  <GeneralHeader label="Place Order" />
+                </View>
+              </SafeAreaView>
+            ),
+            headerStyle: {
+              height: 150,
+              borderBottomWidth: 0,
+              elevation: 0,
+              shadowOpacity: 0,
+            },
+          })}
+        />
     </Stack.Navigator>
+    
   );
 };
 

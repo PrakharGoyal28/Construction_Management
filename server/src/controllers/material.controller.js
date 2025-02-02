@@ -145,12 +145,10 @@ const getMaterialsByType = async (req, res) => {
     let materials;
 
     if (type === 'ordered') {
-      // Fetch materials where Recieve is either 'ForApproval' or 'Approved'
       materials = await Material.find({
         Recieve: { $in: ['ForApproval', 'Approved'] },
       });
     } else if (type === 'Current') {
-      // Fetch materials where type is 'Current'
       materials = await Material.find({ type: 'Current' });
     } else if (type === 'Recieve') {
       // Fetch materials where type is 'Recieve'

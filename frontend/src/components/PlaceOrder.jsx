@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { BASE_URL } from '../auth/config';
-import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons, Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const DetailRow = ({ icon, label, value }) => (
     <View style={styles.detailRow}>
@@ -16,12 +16,10 @@ const DetailRow = ({ icon, label, value }) => (
     </View>
 );
 
-const InventoryDetail = () => {
+const PlaceOrder = () => {
     const { params } = useRoute();
     const { materialId } = params;
     const [material, setMaterial] = useState({});
-    const navigation = useNavigation();
-    
 
     const getMaterialDetail = async () => {
         try {
@@ -45,6 +43,17 @@ const InventoryDetail = () => {
     return (
             
         <ScrollView style={styles.container}>
+             <View >
+                <View style={styles.vendor}>
+
+                <Text style={styles.label}>Vendor Name:</Text>
+                <Text style={styles.value}>{material.VendorID?.UserID?.name || "N/A"}</Text>
+            </View>
+            <View style={styles.vendor}>
+                <Text style={styles.label}>Contact Number:</Text>
+                <Text style={styles.value}>{material.VendorID?.UserID?.contact || "12345"}</Text>
+            </View>
+                </View>
 
             <View style={styles.card}>
                 <DetailRow
@@ -52,107 +61,83 @@ const InventoryDetail = () => {
                     label="Quantity"
                     value={material.Quantity ? `${material.Quantity} Nos` : null}
                 />
-                <View style={styles.divider} />
 
-                <DetailRow
-                    icon={<Ionicons name="location-outline" size={24} color="#666" />}
-                    label="Location"
-                    value={material.location}
-                />
-                <View style={styles.divider} />
+                
 
                 <DetailRow
                     icon={<FontAwesome5 name="money-bill-wave" size={20} color="#666" />}
-                    label="Price"
+                    label="Unit Price"
                     value={material.unitPrice}
                 />
-                <View style={styles.divider} />
 
                 <DetailRow
                     icon={<MaterialIcons name="description" size={24} color="#666" />}
                     label="Specifications"
                     value={material.Description}
                     />
-                <View style={styles.divider} />
 
                 <DetailRow
                     icon={<MaterialIcons name="event" size={24} color="#666" />}
                     label="Last Received"
                     value={formatDate(material.lastRecieved)}
                     />
-                <View style={styles.divider} />
+            </View>
 
-                <DetailRow
-                    icon={<MaterialIcons name="update" size={24} color="#666" />}
-                    label="Last Updated"
-                    value={formatDate(material.lastRecieved)}
-                />
-            </View>
-            <View style={styles.locationSection}>
-                <View style={styles.locationHeader}>
-                    <Ionicons name="location-outline" size={24} color="#666" />
-                    <Text style={styles.locationTitle}>Location Images</Text>
-                </View>
-                <View style={styles.imageCard}>
-                    <Image
-                        source={{
-                            uri: material.proofImage ||
-                            "https://th.bing.com/th/id/OIP.F7AAZ51YNslUUrejRKkDeQHaE1?rs=1&pid=ImgDetMain",
-                        }}
-                        style={styles.locationImage}
-                        resizeMode="cover"
-                    />
-                </View>
-            </View>
             <TouchableOpacity
-                style={[styles.button]}
-                onPress={() => navigation.navigate("PlaceOrder", { materialId })}
-
-                >
-                <Text style={[styles.buttonText]} >
-                    Order more
-                </Text>
-            </TouchableOpacity>
+                            style={[styles.button]}            
+                            >
+                            <Text style={[styles.buttonText]} >
+                                Place Order
+                            </Text>
+                        </TouchableOpacity>
+            
         </ScrollView >
     );
 };
 
-export default InventoryDetail;
+export default PlaceOrder;
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
-        padding: 16,
+        backgroundColor: '#fff',
+        padding: 20,
     },
     card: {
-        backgroundColor: '#fff',
+        backgroundColor: '#f7f7f7',
         borderRadius: 12,
         padding: 16,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
-        elevation: 3,
+        elevation: 2,
     },
+    
     detailRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 12,
+        borderRadius: 8,
+        backgroundColor: '#F2F2F2',
+        paddingHorizontal: 12,
+        marginVertical: 6,
+    },
+    vendor:{
+        flexDirection:'row',
+        gap:73,
     },
     labelContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 10,
     },
     label: {
         fontSize: 16,
         color: '#333',
-        fontWeight: '500',
+        fontWeight: 'bold',
+        marginBottom:23,
     },
     value: {
         fontSize: 16,
@@ -161,44 +146,25 @@ const styles = StyleSheet.create({
     divider: {
         height: 1,
         backgroundColor: '#e0e0e0',
-        marginLeft: 36, // Aligns with the text after icon
+        marginVertical: 8,
     },
-    locationContainer: {
-        flexDirection: 'row',
-        gap: 8,
-        marginBottom: 8,
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#666',
+        marginTop: 10,
     },
-    locationSection: {
-        marginTop: 16,
-    },
-    locationHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12,
-        marginBottom: 12,
-    },
-    locationTitle: {
+    vendorValue: {
         fontSize: 16,
         color: '#333',
         fontWeight: '500',
+        marginBottom: 10,
     },
-    imageCard: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        padding: 12,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    locationImage: {
-        width: '100%',
-        height: 200,
-        borderRadius: 8,
+    orderDetailsTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 20,
+        marginBottom: 10,
     },
     button: {
         marginTop: 20,
@@ -214,9 +180,10 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
     },
     buttonText: {
-        fontSize: 14,
-        fontWeight: '600',
+        fontSize: 16,
+        fontWeight: 'bold',
         textAlign: 'center',
         color: 'white',
+
     },
 });
