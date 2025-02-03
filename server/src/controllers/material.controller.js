@@ -8,13 +8,16 @@ import { uploadCloudinary } from "../utils/cloudinary.js";
 const addMaterial = asyncHandler(async (req, res) => {
   try {
     const { Name, UserId, VendorID, ProjectId, Quantity, Description, unit, unitPrice, location, lastRecieved, type, Recieve } = req.body;
-    const imagePath = req.file.path;
-
-    const upload = await uploadCloudinary(imagePath);
-    const upload_url = upload.url;
-    if (!upload) {
-      throw new ApiError(500, "Failed to upload photo to Cloudinary");
-  }
+    if (req.file) {
+      const imagePath = req.file.path;
+      const upload = await uploadCloudinary(imagePath);
+    
+      if (!upload) {
+        throw new ApiError(500, "Failed to upload photo to Cloudinary");
+      }
+    
+      const upload_url = upload.url;
+    } 
 
     // Check if required fields are present
     if (!Name || !UserId || !VendorID || !unit || !type) {
@@ -35,7 +38,7 @@ const addMaterial = asyncHandler(async (req, res) => {
       lastRecieved,
       type,
       Recieve,
-      proofImage:upload_url,
+      // proofImage: upload_url,
     });
 
     // Save the new material to the database
@@ -59,7 +62,7 @@ const getMaterialById = asyncHandler(async (req, res) => {
   const material = await Material.findById(materialId)
     .populate("UserId", "name email") // Populate user details
     .populate({
-      path: "VendorID", 
+      path: "VendorID",
       select: "VendorName Contact",
       populate: {
         path: "UserID", // Populate the user details from the Vendor

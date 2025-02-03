@@ -1,18 +1,27 @@
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useRoute } from '@react-navigation/native';
+import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import { BASE_URL } from '../auth/config';
 import { MaterialIcons, Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { AuthContext } from '../auth/Auth';
 
-const DetailRow = ({ icon, label, value }) => (
+const DetailRow = ({ icon, label, value, onChangeText, editable = false }) => (
     <View style={styles.detailRow}>
         <View style={styles.labelContainer}>
             {icon}
             <Text style={styles.label}>{label}</Text>
         </View>
-        <Text style={styles.value}>{value || 'Empty'}</Text>
+        {editable ? (
+            <TextInput
+                style={[styles.value, styles.input]}
+                value={String(value)}
+                onChangeText={onChangeText}
+            />
+        ) : (
+            <Text style={styles.value}>{value || 'Empty'}</Text>
+        )}
     </View>
 );
 
@@ -20,20 +29,56 @@ const PlaceOrder = () => {
     const { params } = useRoute();
     const { materialId } = params;
     const [material, setMaterial] = useState({});
+    const [formData, setFormData] = useState({
+        Quantity: '',
+        unitPrice: '',
+        Description: ''
+    });
+    const { user } = useContext(AuthContext);
+    const navigation = useNavigation();
 
     const getMaterialDetail = async () => {
         try {
             const response = await axios.get(`${BASE_URL}/materials/getMaterial/${materialId}`);
-            setMaterial(response.data.data);
-            // console.log(response.data.data);
+            const materialData = response.data.data;
+            setMaterial(materialData);
+            // Initialize form data with material values
+            setFormData({
+                Quantity: String(materialData.Quantity || ''),
+                unitPrice: String(materialData.unitPrice || ''),
+                Description: materialData.Description || ''
+            });
         } catch (error) {
             console.error(error);
         }
     };
 
+    const handlePlaceOrder = async () => {
+        try {
+            const response = await axios.post(`${BASE_URL}/materials/addMaterial`, {
+                Name: material.Name,
+                userId: user._id,
+                UserId: user._id,
+                VendorID: material.VendorID.UserID._id,
+                Quantity: Number(formData.Quantity),
+                Description: formData.Description,
+                unit: material.unit,
+                unitPrice: Number(formData.unitPrice),
+                location: material.location,
+                lastRecieved: material.lastRecieved,
+                type: "Recieve",
+                Recieve: "ForApproval"
+            });
+            ToastAndroid.show("Order Placed", ToastAndroid.SHORT);
+            navigation.goBack();
+        } catch (error) {
+            ToastAndroid.show("Error Placing Order", ToastAndroid.SHORT);
+        }
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(); // Formats the date in a readable format (e.g., "1/31/2025")
+        return date.toLocaleDateString();
     };
 
     useEffect(() => {
@@ -41,60 +86,61 @@ const PlaceOrder = () => {
     }, []);
 
     return (
-            
         <ScrollView style={styles.container}>
-             <View >
+            <View>
                 <View style={styles.vendor}>
-
-                <Text style={styles.label}>Vendor Name:</Text>
-                <Text style={styles.value}>{material.VendorID?.UserID?.name || "N/A"}</Text>
-            </View>
-            <View style={styles.vendor}>
-                <Text style={styles.label}>Contact Number:</Text>
-                <Text style={styles.value}>{material.VendorID?.UserID?.contact || "12345"}</Text>
-            </View>
+                    <Text style={styles.label}>Vendor Name:</Text>
+                    <Text style={styles.value}>{material.VendorID?.UserID?.name || "N/A"}</Text>
                 </View>
+                <View style={styles.vendor}>
+                    <Text style={styles.label}>Contact Number:</Text>
+                    <Text style={styles.value}>{material.VendorID?.UserID?.contact || "12345"}</Text>
+                </View>
+            </View>
 
             <View style={styles.card}>
                 <DetailRow
                     icon={<MaterialIcons name="format-list-numbered" size={24} color="#666" />}
                     label="Quantity"
-                    value={material.Quantity ? `${material.Quantity} Nos` : null}
+                    value={formData.Quantity}
+                    onChangeText={(text) => setFormData(prev => ({ ...prev, Quantity: text }))}
+                    editable={true}
                 />
-
-                
 
                 <DetailRow
                     icon={<FontAwesome5 name="money-bill-wave" size={20} color="#666" />}
                     label="Unit Price"
-                    value={material.unitPrice}
+                    value={formData.unitPrice}
+                    onChangeText={(text) => setFormData(prev => ({ ...prev, unitPrice: text }))}
+                    editable={true}
                 />
 
                 <DetailRow
                     icon={<MaterialIcons name="description" size={24} color="#666" />}
                     label="Specifications"
-                    value={material.Description}
-                    />
+                    value={formData.Description}
+                    onChangeText={(text) => setFormData(prev => ({ ...prev, Description: text }))}
+                    editable={true}
+                />
 
                 <DetailRow
                     icon={<MaterialIcons name="event" size={24} color="#666" />}
                     label="Last Received"
                     value={formatDate(material.lastRecieved)}
-                    />
+                />
             </View>
 
             <TouchableOpacity
-                            style={[styles.button]}            
-                            >
-                            <Text style={[styles.buttonText]} >
-                                Place Order
-                            </Text>
-                        </TouchableOpacity>
-            
-        </ScrollView >
+                style={[styles.button]}
+                onPress={handlePlaceOrder}
+            >
+                <Text style={[styles.buttonText]}>
+                    Place Order
+                </Text>
+            </TouchableOpacity>
+        </ScrollView>
     );
 };
-
 export default PlaceOrder;
 
 const styles = StyleSheet.create({
@@ -113,7 +159,6 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 2,
     },
-    
     detailRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -124,24 +169,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         marginVertical: 6,
     },
-    vendor:{
-        flexDirection:'row',
-        gap:73,
+    vendor: {
+        flexDirection: 'row',
+        gap: 73,
+        marginBottom: 20,
     },
     labelContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
+        flex: 1,  // Added flex to ensure proper spacing
     },
     label: {
         fontSize: 16,
         color: '#333',
         fontWeight: 'bold',
-        marginBottom:23,
     },
     value: {
         fontSize: 16,
         color: '#666',
+        flex: 1,  // Added flex to ensure proper spacing
     },
     divider: {
         height: 1,
@@ -184,6 +231,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: 'white',
-
     },
+    input: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 4,
+        padding: 8,
+        flex: 1,
+        marginLeft: 8,
+    }
 });
