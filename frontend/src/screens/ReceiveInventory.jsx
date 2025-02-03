@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import axios from 'axios';
 import { BASE_URL } from '../auth/config';
+import { useNavigation } from '@react-navigation/native';
 
 const ReceiveInventory = () => {
   const [inventory, setInventory] = useState([]);
   const [filteredInventory, setFilteredInventory] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState('InTransit');
+  const navigation = useNavigation();
 
   const getInventory = async () => {
     try {
@@ -26,6 +28,12 @@ const ReceiveInventory = () => {
   const handleStatusChange = (status) => {
     setSelectedStatus(status);
     filterMaterials(inventory, status);
+  };
+
+  const handleMaterialClick = (item) => {
+    if (selectedStatus == "Recievable") {
+      navigation.navigate('InventoryDetailForReceviable', { materialId: item._id, name: item.Name });
+    }
   };
 
   useEffect(() => {
@@ -78,11 +86,15 @@ const ReceiveInventory = () => {
           data={filteredInventory}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <View style={styles.tableRow}>
-              {renderCell((index + 1).toString().padStart(2, '0'), cellStyles.indexColumn)}
-              {renderCell(item.Name, cellStyles.nameColumn)}
-              {renderCell(`${item.Quantity} Nos.`, [cellStyles.qtyColumn, cellStyles.lastCell])}
-            </View>
+            <TouchableOpacity onPress={() => handleMaterialClick(item)}
+              disabled={selectedStatus!="Recievable"}
+            >
+              <View style={styles.tableRow}>
+                {renderCell((index + 1).toString().padStart(2, '0'), cellStyles.indexColumn)}
+                {renderCell(item.Name, cellStyles.nameColumn)}
+                {renderCell(`${item.Quantity} Nos.`, [cellStyles.qtyColumn, cellStyles.lastCell])}
+              </View>
+            </TouchableOpacity>
           )}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>

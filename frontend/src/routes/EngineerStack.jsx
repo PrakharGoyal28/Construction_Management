@@ -24,6 +24,7 @@ import ReceiveInventory from "../screens/ReceiveInventory";
 import CurrentInventory from "../screens/CurrentInventory";
 import InventoryDetail from "../components/InventoryDetail";
 import PlaceOrder from "../components/PlaceOrder";
+import InventoryDetailForReceviable from "../components/InventoryDetailForReceviable";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
@@ -68,11 +69,11 @@ const gettDate = () => {
   return { monthDay, rest: rest.trim(), year };
 };
 
-const GeneralHeader = ({label}) => {
+const GeneralHeader = ({ label }) => {
   return (
     <View style={styles.headerContainer}>
       <Text>
-        <Text style={styles.restText}> {label} </Text> 
+        <Text style={styles.restText}> {label} </Text>
       </Text>
     </View>
   );
@@ -214,7 +215,7 @@ const EngineerStack = () => {
         component={MyTabs}
         options={{ headerShown: false }} // Hide header for bottom tabs
       />
-      
+
       <Stack.Screen name="CurrentInventory"
         component={CurrentInventory}
         options={{
@@ -259,7 +260,7 @@ const EngineerStack = () => {
                     marginTop: 50, // Space below the back button
                   }}
                 >
-                  <GeneralHeader label={"Inventory"}/>
+                  <GeneralHeader label={"Inventory"} />
                 </View>
               </SafeAreaView>
             )
@@ -315,7 +316,7 @@ const EngineerStack = () => {
                     marginTop: 50,
                   }}
                 >
-                  <GeneralHeader label={"Receive Inventory"}/>
+                  <GeneralHeader label={"Receive Inventory"} />
                 </View>
               </SafeAreaView>
             )
@@ -329,104 +330,151 @@ const EngineerStack = () => {
         }}
       />
       <Stack.Screen
-          name="InventoryDetail"
-          component={InventoryDetail}
-          options={({ route, navigation }) => ({
-            header: () => (
-              <SafeAreaView
+        name="InventoryDetail"
+        component={InventoryDetail}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  height: 150,
-                  backgroundColor: "white",
-                  paddingHorizontal: 16,
-                  justifyContent: "center",
-                  elevation: 0,
-                  shadowOpacity: 0,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
                 }}
+                onPress={() => navigation.goBack()}
               >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 55,
-                    left: 16,
-                    zIndex: 1,
-                  }}
-                  onPress={() => navigation.goBack()}
-                >
-                  <Ionicons
-                    name="chevron-back-sharp"
-                    size={24}
-                    color="black"
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
-                </TouchableOpacity>
-                <View style={{ marginTop: 50 }}>
-                  <GeneralHeader label={route.params.name} />
-                </View>
-              </SafeAreaView>
-            ),
-            headerStyle: {
-              height: 150,
-              borderBottomWidth: 0,
-              elevation: 0,
-              shadowOpacity: 0,
-            },
-          })}
-        />
-
-
-
-<Stack.Screen
-          name="PlaceOrder"
-          component={PlaceOrder}
-          options={({ route, navigation }) => ({
-            header: () => (
-              <SafeAreaView
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label={route.params.name} />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="InventoryDetailForReceviable"
+        component={InventoryDetailForReceviable}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
                 style={{
-                  height: 150,
-                  backgroundColor: "white",
-                  paddingHorizontal: 16,
-                  justifyContent: "center",
-                  elevation: 0,
-                  shadowOpacity: 0,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
                 }}
+                onPress={() => navigation.goBack()}
               >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    position: "absolute",
-                    top: 55,
-                    left: 16,
-                    zIndex: 1,
-                  }}
-                  onPress={() => navigation.goBack()}
-                >
-                  <Ionicons
-                    name="chevron-back-sharp"
-                    size={24}
-                    color="black"
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
-                </TouchableOpacity>
-                <View style={{ marginTop: 50 }}>
-                  <GeneralHeader label="Place Order" />
-                </View>
-              </SafeAreaView>
-            ),
-            headerStyle: {
-              height: 150,
-              borderBottomWidth: 0,
-              elevation: 0,
-              shadowOpacity: 0,
-            },
-          })}
-        />
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label={"Ordered Inventory"} />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
+
+
+
+      <Stack.Screen
+        name="PlaceOrder"
+        component={PlaceOrder}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
+                }}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label="Place Order" />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
     </Stack.Navigator>
-    
+
   );
 };
 
@@ -439,7 +487,7 @@ const styles = StyleSheet.create({
     // marginBottom: 80,
     height: 100,
   },
-  
+
   titleText: {
     // marginTop: 10,
     fontSize: 24,
@@ -449,7 +497,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     lineHeight: 38.4,
   },
-  locationContainer:{
+  locationContainer: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 8,
@@ -458,7 +506,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     fontFamily: "AlbertSans", // Ensure the font is properly loaded and linked
-    fontSize: 32,
     fontWeight: "700",
     lineHeight: 38.4,
   },

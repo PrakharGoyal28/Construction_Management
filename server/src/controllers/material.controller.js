@@ -11,13 +11,13 @@ const addMaterial = asyncHandler(async (req, res) => {
     if (req.file) {
       const imagePath = req.file.path;
       const upload = await uploadCloudinary(imagePath);
-    
+
       if (!upload) {
         throw new ApiError(500, "Failed to upload photo to Cloudinary");
       }
-    
+
       const upload_url = upload.url;
-    } 
+    }
 
     // Check if required fields are present
     if (!Name || !UserId || !VendorID || !unit || !type) {
@@ -169,11 +169,66 @@ const getMaterialsByType = async (req, res) => {
     return res.status(500).json(new ApiError(500, "Failed to retrieve materials"));
   }
 };
+const putMaterialForApproval = async (req, res) => {
+  try {
+      const {  Quantity,Description } = req.body;
+      const { materialId } = req.params;
+      if (!materialId) {
+          throw new ApiError(400, "Material ID is required.");
+      }
+      const material = await Material.findById(materialId);
+      if (!material) {
+          throw new ApiError(404, "Material not found");
+      }
+      if (material.Recieve !== 'Recievable') {
+          throw new ApiError(400, "Material must be in Recievable state to update to ForApproval");
+      }
+      const updateData = {
+          Recieve: 'ForApproval',
+          Quantity,
+          Description
+      };
+      if (req.file) {
+          const imagePath = req.file.path;
+          const upload = await uploadCloudinary(imagePath);
 
+          if (!upload) {
+              throw new ApiError(500, "Failed to upload photo to Cloudinary");
+          }
+
+          updateData.proofImage = upload.url;
+      }
+      const updatedMaterial = await Material.findByIdAndUpdate(
+          materialId,
+          {
+              $set: updateData
+          },
+          {
+              new: true, 
+              runValidators: true
+          }
+      );
+      return res.status(200).json({
+          success: true,
+          message: "Material updated to ForApproval successfully",
+          data: updatedMaterial
+      });
+
+  } catch (error) {
+      if (error instanceof ApiError) {
+          throw error;
+      }
+      throw new ApiError(
+          error.statusCode || 500,
+          error.message || "Something went wrong while updating material"
+      );
+  }
+};
 export {
   addMaterial,
   getMaterialsByProjectId,
   getMaterialById,
   createPurchaseOrder,
-  getMaterialsByType
+  getMaterialsByType,
+  putMaterialForApproval
 }

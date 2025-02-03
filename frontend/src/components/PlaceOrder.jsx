@@ -59,7 +59,7 @@ const PlaceOrder = () => {
                 Name: material.Name,
                 userId: user._id,
                 UserId: user._id,
-                VendorID: material.VendorID.UserID._id,
+                VendorID: material.VendorID._id,
                 Quantity: Number(formData.Quantity),
                 Description: formData.Description,
                 unit: material.unit,
