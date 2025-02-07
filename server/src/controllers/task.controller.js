@@ -6,14 +6,22 @@ import { deletCloudinary, uploadCloudinary } from "../utils/cloudinary.js";
 import { Notification } from "../models/Notification.model.js";
 
 const createTask = asyncHandler(async (req, res) => {
-    const { TaskName, AssignedTo, Starttime,Deadline, Status, Description, ProjectID, LabourRequired,Prerequisites } = req.body;
-
+    const { TaskName, AssignedTo, Starttime, Deadline, Status, Description, ProjectID, LabourRequired, Prerequisites } = req.body;
     // Check required fields
-    if (!TaskName || !ProjectID) {
+    if (!TaskName) {
         throw new ApiError(400, "TaskName and ProjectID are required.");
     }
-
-    
+    let upload_url=null; 
+    if (req.file) {
+        const imagePath = req.file.path;
+        const upload = await uploadCloudinary(imagePath);
+  
+        if (!upload) {
+          throw new ApiError(500, "Failed to upload photo to Cloudinary");
+        }
+  
+        upload_url = upload.url;
+      }
 
     // Create a new task
     const newTask = await Task.create({
@@ -26,6 +34,7 @@ const createTask = asyncHandler(async (req, res) => {
         ProjectID,
         LabourRequired,
         Prerequisites,
+        ImageUrl:upload_url
     });
 
     res.status(201).json(new ApiResponse(201, { taskId: newTask._id, ...newTask._doc }, "Task created successfully."));
@@ -175,38 +184,38 @@ const getTaskDetails = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, task, "Task details retrieved successfully."));
 });
 
-const getAllTasks=async(req,res)=>{
+const getAllTasks = async (req, res) => {
     try {
         const tasks = await Task.find();
 
-    // Send tasks as the response
-    res.status(200).json(tasks);
+        // Send tasks as the response
+        res.status(200).json(tasks);
     } catch (error) {
         console.error("Error fetching tasks:", error);
-    res.status(500).json({ message: "Failed to fetch tasks." });
+        res.status(500).json({ message: "Failed to fetch tasks." });
     }
 }
 
-const getTaskByDate=async(req,res)=>{
+const getTaskByDate = async (req, res) => {
     try {
         console.log("hello");
-        
+
         const { date } = req.params;
-    
+
         // Parse the date parameter into a Date object
         const targetDate = new Date(date);
-    
+
         // Find tasks where the target date is between Starttime and Deadline
         const tasks = await Task.find({
-          Starttime: { $lte: targetDate }, // Starttime is less than or equal to the target date
-          Deadline: { $gte: targetDate }, // Deadline is greater than or equal to the target date
+            Starttime: { $lte: targetDate }, // Starttime is less than or equal to the target date
+            Deadline: { $gte: targetDate }, // Deadline is greater than or equal to the target date
         }).populate('AssignedTo').populate('ProjectID').populate('Prerequisites');
-    
+
         res.status(200).json(tasks);
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).json({ message: 'Failed to fetch tasks', error });
-      }
+    }
 }
 const createNotification = asyncHandler(async (req, res) => {
     const { taskId, Message, Type, Status } = req.body;
@@ -224,8 +233,8 @@ const createNotification = asyncHandler(async (req, res) => {
             Message,
             ImageUrl,
             Type,
-            Status: Status || "Unread", 
-            users: [userId], 
+            Status: Status || "Unread",
+            users: [userId],
         }))
     );
 
@@ -236,13 +245,13 @@ const createNotification = asyncHandler(async (req, res) => {
 
 const getTaskDetailsNew = async (req, res) => {
     try {
-      const task = await Task.findById(req.params.id).populate('AssignedTo', 'name'); // Fetch only name and image
-      res.status(200).json(task);
+        const task = await Task.findById(req.params.id).populate('AssignedTo', 'name'); // Fetch only name and image
+        res.status(200).json(task);
     } catch (error) {
-      res.status(500).json({ error: 'Error fetching task details' });
+        res.status(500).json({ error: 'Error fetching task details' });
     }
-  };
-  
+};
+
 
 
 export {

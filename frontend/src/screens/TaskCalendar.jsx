@@ -179,7 +179,7 @@ export default function TaskCalendar() {
   };
 
   useEffect(() => {
-    fetchTasks(); // Fetch tasks when the component mounts
+    fetchTasks();
     
   }, []);
   // console.log(tasks);

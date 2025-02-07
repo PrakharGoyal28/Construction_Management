@@ -1,26 +1,27 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
+import {  FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const DashboardButton = ({ icon, label, selected, goTo }) => {
     const navigation = useNavigation();
     return (
         <TouchableOpacity style={[styles.button, selected && styles.selectedButton]} onPress={() => navigation.navigate(goTo)}>
-            <MaterialIcons name={icon} size={29} color={selected ? 'white' : 'black'} />
+            <FontAwesome  name={icon} size={29} color={selected ? 'white' : 'black'} />
             <Text style={[styles.buttonLabel, selected && styles.selectedLabel]}>{label}</Text>
         </TouchableOpacity>
     );
 };
 
-
-const InventoryDashboard = () => {
+const SchedulingDashboard = () => {
     return (
         <View style={styles.container} >
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.grid}>
-                    <DashboardButton icon="move-to-inbox" selected={true} label="Current/ Order Inventory" goTo={"CurrentInventory"} />
-                    <DashboardButton icon="move-to-inbox" label="Receive Inventory" goTo={"ReceiveInventory"} />
+                    <DashboardButton icon="calendar-plus-o" selected={true} label="Create Task" goTo={"CreateTask"} />
+                    <DashboardButton icon="calendar" label="Timeline Overview" goTo={"CurrentInventory"} />
+                    <DashboardButton icon="gear" label="Supervisor Management" goTo={"CurrentInventory"} />
+                    <DashboardButton icon="users" label="Request labor" goTo={"LabourReqDashboard"} />
                 </View>
                 <Text style={styles.header}>Notifications</Text>
             </ScrollView>
@@ -28,7 +29,7 @@ const InventoryDashboard = () => {
     )
 }
 
-export default InventoryDashboard
+export default SchedulingDashboard
 
 const styles = StyleSheet.create({
     container: {
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '45%',
+        height: '85%',
     },
     button: {
         width: '100%',
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: 'center', 
+        paddingLeft:'20%', 
         gap: 8,
     },
     selectedButton: {

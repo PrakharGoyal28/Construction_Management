@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, StyleSheet,ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView } from "react-native";
 import axios from 'axios';
 
 import { BASE_URL } from '../auth/config';
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5 } from "@expo/vector-icons";
 const TaskList = () => {
-  const navigation=useNavigation()
+  const navigation = useNavigation()
   const [activeTab, setActiveTab] = useState("Assigned");
   const [tasks, setTasks] = useState([]);
-  
-  
-  const fetchTasks=async ()=>{
+
+
+  const fetchTasks = async () => {
     try {
       const today = new Date().toISOString().split('T')[0];
       // console.log(`${today}`);
       // console.log(`${BASE_URL}/task/info/2025-01-25`);
-      
+
       const response = await axios.get(`${BASE_URL}/task/info/${today}`);
       // console.log("response",response.data);
-      
-      
-      
+
+
+
       setTasks(response.data);
-      
-      
-      
+
+
+
     } catch (error) {
       console.error('Error fetching task data:', error);
     }
   }
-  
+
   useEffect(() => {
     fetchTasks(); // Fetch tasks when the component mounts
   }, []);
@@ -39,36 +39,37 @@ const TaskList = () => {
 
   const navigateToDetails = (task) => {
     // console.log("yo yo",task.TaskName);
-    
+
     navigation.navigate("TaskDetails", { task });
   };
 
   const renderTask = ({ item }) => {
-    console.log("Item",item.AssignedTo);
-      return (item.AssignedTo.length>0?(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
+    console.log("Item", item.AssignedTo);
+    return (item.AssignedTo.length > 0 ? (<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
       <View style={styles.radioCircleGreen}>
-        <FontAwesome5 name="check" color="green" size={14}/>
+        <FontAwesome5 name="check" color="green" size={14} />
       </View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
         <Text style={styles.numberText}>{item.LabourRequired}</Text>
       </View>
-    </TouchableOpacity>):(<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
+    </TouchableOpacity>) : (<TouchableOpacity style={styles.taskCard} onPress={() => navigateToDetails(item)}>
       <View style={styles.radioCircleGreen}>
-      
-        </View>
+
+      </View>
       <Text style={styles.taskName}>{item.TaskName}</Text>
       <View style={styles.taskNumber}>
-        <Text style={styles.numberText}>{item.LabourRequired}</Text>
+        {/* <Text style={styles.numberText}>{item.LabourRequired}</Text> */}
       </View>
     </TouchableOpacity>)
-    
-  
-  )};
+
+
+    )
+  };
 
   return (
     <View style={styles.container}>
-      
+
       {/* Task List */}
       {tasks.length === 0 ? (
         <View style={styles.noTasksContainer}>
@@ -78,14 +79,14 @@ const TaskList = () => {
         <FlatList data={tasks} renderItem={renderTask} keyExtractor={(item) => item._id} contentContainerStyle={styles.flatListContent} />
       )}
 
-      
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    
+
     backgroundColor: "#fff",
     paddingHorizontal: 16,
   },
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f8f8",
     borderRadius: 8,
     marginVertical: 8,
-    
+
   },
   radioCircleGreen: {
     width: 20,
@@ -146,7 +147,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#000",
     marginRight: 16,
-    color:"green"
+    color: "green"
   },
   radioCircle: {
     width: 20,

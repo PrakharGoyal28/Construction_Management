@@ -16,7 +16,12 @@ const ReceiveInventory = () => {
       const currResponse = await axios.get(`${BASE_URL}/materials/getMaterialByType?type=Current`);
       setInventory(currResponse.data.data);
       setCurrInventory(currResponse.data.data)
-
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const getOderInventory = async () => {
+    try {
       const orderedResponse = await axios.get(`${BASE_URL}/materials/getMaterialByType?type=ordered`);
       setOrderedInventory(orderedResponse.data.data)
     } catch (error) {
@@ -40,6 +45,7 @@ const ReceiveInventory = () => {
 
   useEffect(() => {
     getInventory();
+    getOderInventory();
   }, []);
 
   const handleMaterialClick = (item) => {

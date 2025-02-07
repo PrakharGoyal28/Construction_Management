@@ -25,6 +25,9 @@ import CurrentInventory from "../screens/CurrentInventory";
 import InventoryDetail from "../components/InventoryDetail";
 import PlaceOrder from "../components/PlaceOrder";
 import InventoryDetailForReceviable from "../components/InventoryDetailForReceviable";
+import SchedulingDashboard from "../screens/SchedulingDashboard";
+import CreateTask from "../screens/CreateTask";
+import LabourReqDash from "../screens/LabourReqDash";
 
 // Get device width dynamically
 const { width } = Dimensions.get("window");
@@ -423,9 +426,6 @@ const EngineerStack = () => {
           },
         })}
       />
-
-
-
       <Stack.Screen
         name="PlaceOrder"
         component={PlaceOrder}
@@ -462,6 +462,147 @@ const EngineerStack = () => {
               </TouchableOpacity>
               <View style={{ marginTop: 50 }}>
                 <GeneralHeader label="Place Order" />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="SchedulingDashboard"
+        component={SchedulingDashboard}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
+                }}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label="Scheduling" />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="CreateTask"
+        component={CreateTask}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
+                }}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label="Create Task" />
+              </View>
+            </SafeAreaView>
+          ),
+          headerStyle: {
+            height: 150,
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="LabourReqDashboard"
+        component={LabourReqDash}
+        options={({ route, navigation }) => ({
+          header: () => (
+            <SafeAreaView
+              style={{
+                height: 150,
+                backgroundColor: "white",
+                paddingHorizontal: 16,
+                justifyContent: "center",
+                elevation: 0,
+                shadowOpacity: 0,
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: 55,
+                  left: 16,
+                  zIndex: 1,
+                }}
+                onPress={() => navigation.goBack()}
+              >
+                <Ionicons
+                  name="chevron-back-sharp"
+                  size={24}
+                  color="black"
+                  style={{ marginRight: 8 }}
+                />
+                <Text style={{ fontSize: 16, color: "black" }}>Back</Text>
+              </TouchableOpacity>
+              <View style={{ marginTop: 50 }}>
+                <GeneralHeader label="Labour Requirement" />
               </View>
             </SafeAreaView>
           ),

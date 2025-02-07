@@ -9,12 +9,13 @@ import {
     getTaskDetailsNew,
 
 } from "../controllers/task.controller.js"
+import { upload } from "../middlewares/multer.middleware.js";
 
 
 
 const router = express.Router();
 
-router.post("/create", createTask);
+router.post("/create",upload.single("image"), createTask);
 
 // Route to update an existing task
 router.put("/update/:taskId", updateTask);

@@ -1,26 +1,25 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const DashboardButton = ({ icon, label, selected, goTo }) => {
     const navigation = useNavigation();
     return (
         <TouchableOpacity style={[styles.button, selected && styles.selectedButton]} onPress={() => navigation.navigate(goTo)}>
-            <MaterialIcons name={icon} size={29} color={selected ? 'white' : 'black'} />
+            <FontAwesome name={icon} size={29} color={selected ? 'white' : 'black'} />
             <Text style={[styles.buttonLabel, selected && styles.selectedLabel]}>{label}</Text>
         </TouchableOpacity>
     );
 };
 
-
-const InventoryDashboard = () => {
+const LabourReqDash = () => {
     return (
         <View style={styles.container} >
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.grid}>
-                    <DashboardButton icon="move-to-inbox" selected={true} label="Current/ Order Inventory" goTo={"CurrentInventory"} />
-                    <DashboardButton icon="move-to-inbox" label="Receive Inventory" goTo={"ReceiveInventory"} />
+                    <DashboardButton icon="user-plus" selected={true} label="Create Labor Requirement" goTo={"CurrentInventory"} />
+                    <DashboardButton icon="eye" label="Receive Inventory" goTo={"ReceiveInventory"} />
                 </View>
                 <Text style={styles.header}>Notifications</Text>
             </ScrollView>
@@ -28,7 +27,7 @@ const InventoryDashboard = () => {
     )
 }
 
-export default InventoryDashboard
+export default LabourReqDash
 
 const styles = StyleSheet.create({
     container: {

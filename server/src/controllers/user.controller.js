@@ -159,6 +159,14 @@ const getNotification = asyncHandler(async (req, res) => {
     );
 });
 
+const getSupervisors = async (req, res) => {
+    try {
+        const supervisors = await User.find({ role: "Supervisor" });
+        res.status(200).json(supervisors);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching supervisors", error });
+    }
+};
 
 export {
     registerUser,
@@ -167,4 +175,5 @@ export {
     changeCurrentPassword,
     getCurrentUser,
     updateAccountDetails,
+    getSupervisors
 }

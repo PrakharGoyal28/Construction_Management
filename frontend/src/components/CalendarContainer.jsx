@@ -16,12 +16,11 @@ const CalendarContainer = ({ tasks, calendarDays }) => {
         style={styles.innerContainer} // Horizontal scrolling container
         contentContainerStyle={styles.horizontalContentContainer}
       >
-        {/* Render calendar columns */}
         {calendarDays.map((day, index) => (
           <DayColumn key={index} date={day} />
         ))}
 
-        {/* Render task bars */}
+       
         {tasks.map((task) => (
           <TaskBar
             key={task.id}
